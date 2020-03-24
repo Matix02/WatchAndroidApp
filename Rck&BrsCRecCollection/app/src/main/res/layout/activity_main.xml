@@ -20,6 +20,6 @@
         android:layout_height="match_parent"
         android:layout_above="@id/main_nav"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"></FrameLayout>
+        android:layout_alignParentTop="true"/>
 
 </RelativeLayout>
