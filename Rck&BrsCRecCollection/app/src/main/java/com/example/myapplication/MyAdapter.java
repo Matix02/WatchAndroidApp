@@ -11,9 +11,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-///////NIE DZIAA rozwijalnosc menu, ale samo sie juz wyswietla group position jest 0 !!!!
-/////// Jest parę opcji. Jak np. zmienic w MyAdapter na nowatchfragment - layout z parent-layout itd
-/////// Wywalic z nowatch i watch element framelayout i dac linearlayout
+
 public class MyAdapter extends BaseExpandableListAdapter {
     private List<String> header_titles;
     private HashMap<String, List<String>> child_titles;

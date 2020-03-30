@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".NoWatchFragment">
+    tools:context=".NoWatchFragment"
+    android:layout_margin="5dp">
 
 
         <ExpandableListView
             android:id="@+id/exp_no_listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            />
 
 
 </LinearLayout>

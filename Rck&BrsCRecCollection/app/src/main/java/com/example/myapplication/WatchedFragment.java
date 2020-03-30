@@ -46,8 +46,8 @@ public class WatchedFragment extends  WatchingState{
         L2.add("l2 element");
         L2.add("l2 element nr.2");
 
-        childList.put(headings.get(0), L1);
-        childList.put(headings.get(1), L2);
+        childList.put(headings.get(1), L1);
+        //childList.put(headings.get(0), L2);
         MyAdapter myAdapter = new MyAdapter(this, headings, childList);
         expandableListView.setAdapter(myAdapter);
 
