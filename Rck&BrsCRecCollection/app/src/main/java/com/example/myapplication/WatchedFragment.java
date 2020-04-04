@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class WatchedFragment extends  WatchingState{
 
-    private ExpandableListView expandableListView;
+    private ListView expandableListView;
     private LayoutInflater layoutInflater;
 
     public WatchedFragment() {
@@ -31,7 +32,7 @@ public class WatchedFragment extends  WatchingState{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_watched, container, false);
-        expandableListView = (ExpandableListView) view.findViewById(R.id.exp_listview);
+        expandableListView = (ListView) view.findViewById(R.id.exp_listview);
 
 
         List<String> headings = new ArrayList<String>();
@@ -48,8 +49,7 @@ public class WatchedFragment extends  WatchingState{
 
         childList.put(headings.get(1), L1);
         //childList.put(headings.get(0), L2);
-        MyAdapter myAdapter = new MyAdapter(this, headings, childList);
-        expandableListView.setAdapter(myAdapter);
+
 
 
 
