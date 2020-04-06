@@ -36,17 +36,25 @@ public class ListAdapter extends ArrayAdapter<String > {
 
 
     public View getView(int position, View view, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService((Context.LAYOUT_INFLATER_SERVICE));
-        view = inflater.inflate(resource, parent,false);
-
+       // view = view;
+        if(view == null){
+           LayoutInflater inflater = (LayoutInflater) context.getSystemService((Context.LAYOUT_INFLATER_SERVICE));
+            view = inflater.inflate(R.layout.mylist, parent,false);
+        }
         holder = new Holder();
-        holder.titleTv = (TextView) view.findViewById(R.id.titleTextView);
-        holder.subtitleTv = (TextView) view.findViewById(R.id.categoryTextView);
-
-
-        //?!?!?!
+        String item = title.get(position);
+        String item2 = category.get(position);
+        if(item!=null && item2!=null){
+            holder.titleTv = (TextView) view.findViewById(R.id.titleTextView);
+            holder.subtitleTv = (TextView)   view.findViewById(R.id.categoryTextView);
+            if(holder.titleTv!=null && holder.subtitleTv!=null){
+                holder.titleTv.setText(item);
+                holder.subtitleTv.setText(item2);
+            }
+        }
         return view;
     };
+
 
     public class Holder
     {
