@@ -33,10 +33,10 @@ public class NoWatchFragment extends WatchingState{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        L1.add("l1 element");
-        L1.add("l1 element nr.2");
-        L2.add("kategoria 1");
-        L2.add("kategoria 2");
+        L1.add("Once upon a hollywood");
+        L1.add("Metro Exdodus");
+        L2.add("Film");
+        L2.add("Gra");
 
         if(view == null){
             view = inflater.inflate(R.layout.fragment_no_watch, container, false);

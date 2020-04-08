@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "848517523894",
+    "firebase_url": "https://watchapp-cd5cf.firebaseio.com",
+    "project_id": "watchapp-cd5cf",
+    "storage_bucket": "watchapp-cd5cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848517523894:android:e304b0e76b893dffd0b917",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848517523894-vcv0a6fmakiednj5tsgh50ltgbtc6k4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLbhg9OVqs2Ttj_dx45aDZ8PcO8iumE_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848517523894-vcv0a6fmakiednj5tsgh50ltgbtc6k4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
