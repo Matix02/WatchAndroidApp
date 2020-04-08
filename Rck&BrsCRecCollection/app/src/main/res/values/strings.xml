@@ -6,4 +6,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="checkbox">CheckBox</string>
+    <string name="enter_title">Enter title</string>
+    <string name="save">Save</string>
+    <string name="film">Film</string>
+    <string name="gra">Gra</string>
+    <string name="ksi_ka">Książka</string>
+    <string name="serial">Serial</string>
 </resources>
