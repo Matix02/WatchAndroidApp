@@ -8,11 +8,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -20,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout mMainFrame;
     private NoWatchFragment noWatchFragment;
     private WatchedFragment watchedFragment;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +42,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mMainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
+        mMainNav = findViewById(R.id.main_nav);
+        fab =  findViewById(R.id.fab_btn);
 
         noWatchFragment = new NoWatchFragment();
         watchedFragment = new WatchedFragment();
 
         setFragment(noWatchFragment);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NewElement.class);
+                startActivity(intent);
+               // Toast.makeText(MainActivity.this, "You clicked on fab", Toast.LENGTH_LONG).show();
+            }
+        });
+
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

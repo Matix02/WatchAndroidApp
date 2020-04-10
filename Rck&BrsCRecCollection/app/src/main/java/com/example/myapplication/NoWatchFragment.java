@@ -33,10 +33,14 @@ public class NoWatchFragment extends WatchingState{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        L1.add("Once upon a hollywood");
-        L1.add("Metro Exdodus");
-        L2.add("Film");
-        L2.add("Gra");
+
+            L1.add("Once upon a hollywood");
+            L1.add("Metro Exdodus");
+            L2.add("Film");
+            L2.add("Gra");
+
+
+
 
         if(view == null){
             view = inflater.inflate(R.layout.fragment_no_watch, container, false);
@@ -73,13 +77,10 @@ public class NoWatchFragment extends WatchingState{
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        switch(item.getItemId())
-        {
-            case R.id.delete_id:
-                L1.remove(info.position);
-                adapter.notifyDataSetChanged();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        if (item.getItemId() == R.id.delete_id) {
+            L1.remove(info.position);
+            adapter.notifyDataSetChanged();
+            return true;
         }
+        return super.onContextItemSelected(item);
     }}

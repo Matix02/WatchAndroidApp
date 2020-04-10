@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".NewElement"
+            android:parentActivityName=".MainActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <intent-filter>
+                <action android:name="new_add_element_page"/>
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
