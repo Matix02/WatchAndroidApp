@@ -14,6 +14,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,16 +33,45 @@ public class NoWatchFragment extends WatchingState{
     private List<String> L2 = new ArrayList<String>();
     private View view;
     private ArrayAdapter<String> adapter;
+    private DatabaseReference reff;
+
     public NoWatchFragment() {
         // Required empty public constructor
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        L1.add("Once upon a hollywood");
+        L1.add("Metro Exdodus");
+        L2.add("Film");
+        L2.add("Gra");
+        reff = FirebaseDatabase.getInstance().getReference().child("Element");
+        reff.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                   // L1.add(String.valueOf(postSnapshot.getKey()));
+                    L2.add(Objects.requireNonNull(dataSnapshot.getValue(Element.class)).getTitle());
+                    System.out.println(L2);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            L1.add("Once upon a hollywood");
-            L1.add("Metro Exdodus");
-            L2.add("Film");
-            L2.add("Gra");
+
 
         if(view == null)
             view = inflater.inflate(R.layout.fragment_no_watch, container, false);
@@ -73,6 +109,10 @@ public class NoWatchFragment extends WatchingState{
         if (item.getItemId() == R.id.delete_id) {
             L1.remove(info.position);
             adapter.notifyDataSetChanged();
+            return true;
+        }
+        else if(item.getItemId() == R.id.edit_id) {
+
             return true;
         }
         return super.onContextItemSelected(item);
