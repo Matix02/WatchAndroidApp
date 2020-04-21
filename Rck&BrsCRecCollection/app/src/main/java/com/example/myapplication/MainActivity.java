@@ -1,20 +1,25 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
 
 import android.app.Activity;
 import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -23,33 +28,51 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView mMainNav;
-    private FrameLayout mMainFrame;
-    private NoWatchFragment noWatchFragment;
-    private WatchedFragment watchedFragment;
+    private ArrayAdapter<String> adapter;
     private FloatingActionButton fab;
+    private RecyclerView recyclerView;
+    private List<String> L1 = new ArrayList<String>();
+    private List<String> L2 = new ArrayList<String>();
+    private DatabaseReference databaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        mMainNav = findViewById(R.id.main_nav);
+        recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
+        new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
+            @Override
+            public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
+            }
+
+            @Override
+            public void DataIsInserted() {
+
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+
+            @Override
+            public void DataIsDeleted() {
+
+            }
+        });
         fab =  findViewById(R.id.fab_btn);
-
-        noWatchFragment = new NoWatchFragment();
-        watchedFragment = new WatchedFragment();
-
-        setFragment(noWatchFragment);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,29 +81,15 @@ public class MainActivity extends AppCompatActivity {
                // Toast.makeText(MainActivity.this, "You clicked on fab", Toast.LENGTH_LONG).show();
             }
         });
-
-        mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.nav_NoWatch:
-                        setFragment(noWatchFragment);
-                        return true;
-                    case R.id.nav_Watched :
-                        setFragment(watchedFragment);
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.nav_bar_items, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -94,9 +103,33 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    private void setFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.main_context_menu, menu);
+
+        MenuItem.OnMenuItemClickListener listener = new MenuItem.OnMenuItemClickListener(){
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                onContextItemSelected(item);
+                return false;
+            }
+        }; }
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        if (item.getItemId() == R.id.delete_id) {
+            L1.remove(info.position);
+            adapter.notifyDataSetChanged();
+            return true;
+        }
+        else if(item.getItemId() == R.id.edit_id) {
+
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 }

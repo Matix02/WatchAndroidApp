@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 
 import android.util.Log;
 import android.view.ContextMenu;
@@ -32,7 +33,7 @@ import static android.content.ContentValues.TAG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoWatchFragment extends WatchingState{
+public class NoWatchFragment extends ListFragment {
     private LayoutInflater layoutInflater;
     private List<String> L1 = new ArrayList<String>();
     private List<String> L2 = new ArrayList<String>();
@@ -42,59 +43,6 @@ public class NoWatchFragment extends WatchingState{
 
     public NoWatchFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        reff = FirebaseDatabase.getInstance().getReference().child("Element");
-        ValueEventListener eventListener =  new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    // L1.add(String.valueOf(postSnapshot.getKey()));
-                    String d = (String) postSnapshot.child("title").getValue();
-                    String e = (String) postSnapshot.child("category").getValue();
-                    // L2.add(Objects.requireNonNull(dataSnapshot.getValue(Element.class)).getTitle());
-                    //  System.out.println(L2);
-                    // L1.add(reff.child(d).child("title"));
-                    L1.add(d);
-                    L2.add(e);
-                }
-                Log.d("TAG", String.valueOf(L2));
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        };
-        reff.addValueEventListener(eventListener);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reff = FirebaseDatabase.getInstance().getReference().child("Element");
-        ValueEventListener eventListener =  new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    // L1.add(String.valueOf(postSnapshot.getKey()));
-                    String d = (String) postSnapshot.child("title").getValue();
-                    String e = (String) postSnapshot.child("category").getValue();
-                    // L2.add(Objects.requireNonNull(dataSnapshot.getValue(Element.class)).getTitle());
-                    //  System.out.println(L2);
-                    // L1.add(reff.child(d).child("title"));
-                    L1.add(d);
-                    L2.add(e);
-                }
-                Log.d("TAG", String.valueOf(L2));
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        };
-        reff.addValueEventListener(eventListener);
-
-
     }
 
     @Override
@@ -111,7 +59,7 @@ public class NoWatchFragment extends WatchingState{
         L2.add("dasdasd");
         reff = FirebaseDatabase.getInstance().getReference().child("Element");
 
-reff.addValueEventListener(new ValueEventListener() {
+        reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
