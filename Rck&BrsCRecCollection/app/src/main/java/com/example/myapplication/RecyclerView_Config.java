@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerView_Config {
     private Context mContext;
     private ElementAdapter elementAdapter;
+
     public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys){
         mContext = context;
         elementAdapter = new ElementAdapter(elements, keys);
@@ -27,19 +28,19 @@ public class RecyclerView_Config {
         private TextView title;
         private TextView category;
         private CheckBox isWatched;
-
         private String key;
 
         public ElementItemView(ViewGroup parent){
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false) );
-
-            title = (TextView) parent.findViewById(R.id.titleTextView);
-            category = (TextView) parent.findViewById(R.id.categoryTextView);
-            isWatched = (CheckBox) parent.findViewById(R.id.checkBox);
+            title = (TextView) itemView.findViewById(R.id.titleTextView);
+            category = (TextView) itemView.findViewById(R.id.categoryTextView);
+            isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
 
         public void bind(Element element, String key){
-            title.setText(element.getTitle());
+          //  title.setText(element.getTitle());
+            String e = element.getTitle();
+            title.setText(e);
             category.setText(element.getCategory());
             //isWatched.set
             this.key = key;
