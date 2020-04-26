@@ -22,7 +22,7 @@ public class RecyclerView_Config {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
     }
-
+//spróbować zmodyfikować tą klasę jak z filmiku, by zadziałoało popup menu
 
     class ElementItemView extends RecyclerView.ViewHolder{
         private TextView title;

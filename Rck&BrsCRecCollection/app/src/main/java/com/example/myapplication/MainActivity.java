@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
+                 new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
             }
 
             @Override
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                // Toast.makeText(MainActivity.this, "You clicked on fab", Toast.LENGTH_LONG).show();
             }
         });
+        registerForContextMenu(recyclerView);
     }
 
     @Override
@@ -107,16 +108,13 @@ public class MainActivity extends AppCompatActivity {
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        MenuInflater inflater = this.getMenuInflater();
+     //   getMenuInflater().inflate(R.menu.main_context_menu, menu);
+   MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.main_context_menu, menu);
+//
 
-        MenuItem.OnMenuItemClickListener listener = new MenuItem.OnMenuItemClickListener(){
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                onContextItemSelected(item);
-                return false;
-            }
-        }; }
+    }
+
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -127,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         else if(item.getItemId() == R.id.edit_id) {
-
             return true;
         }
         return super.onContextItemSelected(item);
