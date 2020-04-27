@@ -1,7 +1,9 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,17 +27,20 @@ public class RecyclerView_Config {
     }
 //spróbować zmodyfikować tą klasę jak z filmiku, by zadziałoało popup menu
 
-    class ElementItemView extends RecyclerView.ViewHolder{
+    class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         private TextView title;
         private TextView category;
         private CheckBox isWatched;
         private String key;
+        private CardView cardView;
 
         public ElementItemView(ViewGroup parent){
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false) );
             title = (TextView) itemView.findViewById(R.id.titleTextView);
             category = (TextView) itemView.findViewById(R.id.categoryTextView);
             isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
+            cardView = itemView.findViewById(R.id.cardLayout);
+            cardView.setOnCreateContextMenuListener(this);
         }
 
         public void bind(Element element, String key){
@@ -44,6 +50,12 @@ public class RecyclerView_Config {
             category.setText(element.getCategory());
             //isWatched.set
             this.key = key;
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(this.getAdapterPosition(), 121, 0, "Delete this item");
+            menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
         }
     }
     class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
@@ -58,12 +70,16 @@ public class RecyclerView_Config {
         @NonNull
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ElementItemView(parent);
+           // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mylist, parent, false);
+
+           return new ElementItemView(parent);
+          //  return new ElementItemView((ViewGroup) view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {
             holder.bind(elementList.get(position), keysList.get(position));
+
         }
 
         @Override
