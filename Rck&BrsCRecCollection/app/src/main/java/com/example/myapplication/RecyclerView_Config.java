@@ -58,6 +58,8 @@ public class RecyclerView_Config {
             menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
         }
     }
+
+
     class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
         private List<Element> elementList;
         private List<String> keysList;
@@ -79,12 +81,18 @@ public class RecyclerView_Config {
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {
             holder.bind(elementList.get(position), keysList.get(position));
-
         }
 
+//Ostatni filmik pokazuje jak zrobić to context menu ale my działamy na innej zasadzie, kontynuować ze starego filmiku
         @Override
         public int getItemCount() {
             return elementList.size();
         }
+
+        public void removeItem(int position){
+            elementList.remove(position);
+            notifyDataSetChanged();
+        }
     }
+
 }

@@ -3,41 +3,28 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
 
-import android.app.Activity;
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayAdapter<String> adapter;
+    private RecyclerView_Config.ElementAdapter adapter;
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
     private List<String> L1 = new ArrayList<String>();
@@ -78,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NewElement.class);
                 startActivity(intent);
-               // Toast.makeText(MainActivity.this, "You clicked on fab", Toast.LENGTH_LONG).show();
             }
         });
+        adapter = new RecyclerView()
         registerForContextMenu(recyclerView);
     }
 
@@ -107,26 +94,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-
-     //   getMenuInflater().inflate(R.menu.main_context_menu, menu);
-   MenuInflater inflater = this.getMenuInflater();
+        MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.main_context_menu, menu);
-//
-
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        if (item.getItemId() == R.id.delete_id) {
-            L1.remove(info.position);
-            adapter.notifyDataSetChanged();
-            return true;
+        switch (item.getItemId()){
+            case 121:
+                adapter.removeItem(item.getGroupId());
+                adapter.notifyDataSetChanged();
+                return true;
+            case 122:
+                return true;
+            default:
+                return  super.onContextItemSelected(item);
         }
-        else if(item.getItemId() == R.id.edit_id) {
-            return true;
-        }
-        return super.onContextItemSelected(item);
+      //  if (item.getItemId() == R.id.delete_id) {
+           // L1.remove(info.position);
+          //  adapter.remove(item.getGroupId());
+//            adapter.removeItem(item.getGroupId());
+//            adapter.notifyDataSetChanged();
+//            return true;
+//        }
+//        else if(item.getItemId() == R.id.edit_id) {
+//            return true;
+//        }
+//        return super.onContextItemSelected(item);
     }
 }
