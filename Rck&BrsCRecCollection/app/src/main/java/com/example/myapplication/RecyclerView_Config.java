@@ -8,6 +8,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -18,6 +25,35 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerView_Config {
     private Context mContext;
     private ElementAdapter elementAdapter;
+    private DatabaseReference reff;
+    private List<Element> elements = new ArrayList<>();
+//możliwe że nie trzeba tego wszystkie tu umieszczać, tylko listę na której sie operuje.
+  /*  public RecyclerView_Config(Context mContext, RecyclerView recyclerView, List<Element> elements, List<String> keys) {
+        this.mContext = mContext;
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setAdapter(elementAdapter);
+    }*/
+
+  //niby adapter
+     public RecyclerView_Config(final List<Element> elements){
+      this.elements = elements;
+         reff = FirebaseDatabase.getInstance().getReference().child("Element");
+         reff.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                 List<String> keys = new ArrayList<>();
+                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
+                     keys.add(keyNode.getKey());
+                     Element element = keyNode.getValue(Element.class);
+                     elements.add(element);
+                 }
+             }
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) { }
+         });
+     }
+
+     public RecyclerView_Config() { }
 
     public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys){
         mContext = context;
@@ -25,6 +61,8 @@ public class RecyclerView_Config {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
     }
+
+
 //spróbować zmodyfikować tą klasę jak z filmiku, by zadziałoało popup menu
 
     class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
@@ -60,7 +98,7 @@ public class RecyclerView_Config {
     }
 
 
-    class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
+        class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
         private List<Element> elementList;
         private List<String> keysList;
 
@@ -68,6 +106,7 @@ public class RecyclerView_Config {
             this.elementList = elementList;
             this.keysList = keysList;
         }
+
 
         @NonNull
         @Override

@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,10 +41,17 @@ public class FirebaseDatabaseHelper {
                 }
                 dataStatus.DataIsLoaded(elements, keys);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
+    public void deleteElement(int key, final DataStatus dataStatus){
+        mReferenceBooks.setValue(key)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        dataStatus.DataIsDeleted();
+                    }
+                }); }
 }

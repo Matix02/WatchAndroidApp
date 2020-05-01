@@ -24,20 +24,25 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView_Config.ElementAdapter adapter;
+    private RecyclerView_Config adapter;
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
     private List<String> L1 = new ArrayList<String>();
     private List<String> L2 = new ArrayList<String>();
     private DatabaseReference databaseReference;
-
+    private List<Element> elements = new ArrayList<>();
+    private RecyclerView_Config.ElementAdapter elementAdapter;
+    private List<String> keys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
+      //  adapter = new RecyclerView_Config(elements);
+
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -67,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        adapter = new RecyclerView()
         registerForContextMenu(recyclerView);
     }
 
@@ -77,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.nav_bar_items, menu);
         return true;
     }
-
+//spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
+    //go tam samo, jako było w przypadku ListAdaptera
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -104,8 +109,31 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case 121:
-                adapter.removeItem(item.getGroupId());
-                adapter.notifyDataSetChanged();
+               adapter.removeItem(item.getGroupId());
+               adapter.notifyDataSetChanged();
+               // int cnt = item
+               // String nr = ((String) cnt);
+           /*     new FirebaseDatabaseHelper().deleteElement(item.getItemId(), new FirebaseDatabaseHelper.DataStatus() {
+                    @Override
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+
+                    }
+
+                    @Override
+                    public void DataIsInserted() {
+
+                    }
+
+                    @Override
+                    public void DataIsUpdated() {
+
+                    }
+
+                    @Override
+                    public void DataIsDeleted() {
+                        Toast.makeText(MainActivity.this, "deleted", Toast.LENGTH_LONG).show();
+                    }
+                });*/
                 return true;
             case 122:
                 return true;
@@ -124,4 +152,5 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        return super.onContextItemSelected(item);
     }
+
 }
