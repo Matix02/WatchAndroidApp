@@ -3,8 +3,10 @@ package com.example.myapplication;
 import android.content.Context;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -27,33 +29,7 @@ public class RecyclerView_Config {
     private ElementAdapter elementAdapter;
     private DatabaseReference reff;
     private List<Element> elements = new ArrayList<>();
-//możliwe że nie trzeba tego wszystkie tu umieszczać, tylko listę na której sie operuje.
-  /*  public RecyclerView_Config(Context mContext, RecyclerView recyclerView, List<Element> elements, List<String> keys) {
-        this.mContext = mContext;
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerView.setAdapter(elementAdapter);
-    }*/
 
-  //niby adapter
-     public RecyclerView_Config(final List<Element> elements){
-      this.elements = elements;
-         reff = FirebaseDatabase.getInstance().getReference().child("Element");
-         reff.addValueEventListener(new ValueEventListener() {
-             @Override
-             public void onDataChange(DataSnapshot dataSnapshot) {
-                 List<String> keys = new ArrayList<>();
-                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
-                     keys.add(keyNode.getKey());
-                     Element element = keyNode.getValue(Element.class);
-                     elements.add(element);
-                 }
-             }
-             @Override
-             public void onCancelled(@NonNull DatabaseError databaseError) { }
-         });
-     }
-
-     public RecyclerView_Config() { }
 
     public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys){
         mContext = context;
@@ -61,16 +37,28 @@ public class RecyclerView_Config {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
     }
+    public interface  OnItemClickListener{
+        void onItemClick(int position);
+
+        void onWhatEverClick(int position);
+
+        void onDeleteClick(int position);
+    }
 
 
-//spróbować zmodyfikować tą klasę jak z filmiku, by zadziałoało popup menu
-
-    class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         private TextView title;
         private TextView category;
         private CheckBox isWatched;
         private String key;
         private CardView cardView;
+        OnItemClickListener mListener;
+
+        public void setOnItemClickListener(OnItemClickListener listener) {
+            mListener = (OnItemClickListener) listener;
+        }
+
+
 
         public ElementItemView(ViewGroup parent){
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false) );
@@ -94,11 +82,12 @@ public class RecyclerView_Config {
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(this.getAdapterPosition(), 121, 0, "Delete this item");
             menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
+
         }
     }
 
 
-        class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
+    class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
         private List<Element> elementList;
         private List<String> keysList;
 
@@ -106,7 +95,6 @@ public class RecyclerView_Config {
             this.elementList = elementList;
             this.keysList = keysList;
         }
-
 
         @NonNull
         @Override
@@ -122,7 +110,6 @@ public class RecyclerView_Config {
             holder.bind(elementList.get(position), keysList.get(position));
         }
 
-//Ostatni filmik pokazuje jak zrobić to context menu ale my działamy na innej zasadzie, kontynuować ze starego filmiku
         @Override
         public int getItemCount() {
             return elementList.size();
@@ -132,6 +119,7 @@ public class RecyclerView_Config {
             elementList.remove(position);
             notifyDataSetChanged();
         }
+
     }
 
 }

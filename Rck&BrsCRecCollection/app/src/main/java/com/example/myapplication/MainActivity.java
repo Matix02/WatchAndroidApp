@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -41,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
-      //  adapter = new RecyclerView_Config(elements);
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                  new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
+
             }
 
             @Override
@@ -72,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        registerForContextMenu(recyclerView);
+
+
     }
 
     @Override
@@ -109,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case 121:
-               adapter.removeItem(item.getGroupId());
-               adapter.notifyDataSetChanged();
+            //   adapter.removeItem(item.getGroupId());
+            //   adapter.notifyDataSetChanged();
                // int cnt = item
                // String nr = ((String) cnt);
            /*     new FirebaseDatabaseHelper().deleteElement(item.getItemId(), new FirebaseDatabaseHelper.DataStatus() {
