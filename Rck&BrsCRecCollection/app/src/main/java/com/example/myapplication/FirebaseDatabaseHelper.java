@@ -46,6 +46,33 @@ public class FirebaseDatabaseHelper {
             }
         });
     }
+    //reff.push().setValue(element);
+   /*                reff.addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if(dataSnapshot.exists()){
+                maxId = (dataSnapshot.getChildrenCount());}
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {}
+    });*/
+    ///////////////////////////////////
+       //         reff.child(String.valueOf(maxId+1)).setValue(element);
+
+    public void addElement(Element element, long id, final DataStatus dataStatus){
+        String key = mReferenceBooks.push().getKey();
+      //  mReferenceBooks.child(key).setValue(element)
+        mReferenceBooks.child(String.valueOf((id+1))).setValue(element)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        dataStatus.DataIsInserted();
+
+                    }
+                });
+    }
+
+
     public void deleteElement(int key, final DataStatus dataStatus){
         mReferenceBooks.setValue(key)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

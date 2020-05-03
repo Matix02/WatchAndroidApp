@@ -39,13 +39,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B
+        //chyba Rck&Brs byłoby za długie
 
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                findViewById(R.id.loading_elements).setVisibility(View.GONE);
                  new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
 
             }
@@ -73,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
     @Override
