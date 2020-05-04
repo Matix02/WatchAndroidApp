@@ -64,8 +64,10 @@ public class NewElement extends Activity {
                 finish(); return;
             }
         });
+        /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //Poprawić !!! Validation - walidacja
         //przemyslec jak to powinno dzialac, bo tak srednio
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+       radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (radioGroup.getCheckedRadioButtonId() == -1){
@@ -109,9 +111,11 @@ public class NewElement extends Activity {
                         }
                     });
                 }
+                //Zabrane znaki do elementów wyżej
             }
-        });
-
+        }
+        );
+//Koniec zabranych znaków
      /*   saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -71,7 +71,26 @@ public class FirebaseDatabaseHelper {
                     }
                 });
     }
+    public void updateElement(String key, Element element, final DataStatus dataStatus){
+        mReferenceBooks.child(key).setValue(element)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        dataStatus.DataIsUpdated();
+                    }
+                });
+    }
 
+    //4/5 2:20 tworzenie layouty
+    public void deleteElement(String key, final DataStatus dataStatus){
+        mReferenceBooks.child(key).setValue(null)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        dataStatus.DataIsDeleted();
+                    }
+                });
+    }
 
     public void deleteElement(int key, final DataStatus dataStatus){
         mReferenceBooks.setValue(key)
@@ -81,4 +100,5 @@ public class FirebaseDatabaseHelper {
                         dataStatus.DataIsDeleted();
                     }
                 }); }
+
 }
