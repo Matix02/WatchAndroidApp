@@ -13,4 +13,6 @@
     <string name="ksi_ka">Książka</string>
     <string name="serial">Serial</string>
     <string name="back">back</string>
+    <string name="delete">delete</string>
+    <string name="update">update</string>
 </resources>

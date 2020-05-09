@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -66,7 +67,19 @@ public class RecyclerView_Config {
             category = (TextView) itemView.findViewById(R.id.categoryTextView);
             isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
             cardView = itemView.findViewById(R.id.cardLayout);
-            cardView.setOnCreateContextMenuListener(this);
+          //  cardView.setOnCreateContextMenuListener(this);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext,  EditElement.class);
+                    intent.putExtra("key", key);
+                    intent.putExtra("title", title.getText().toString());
+                    intent.putExtra("category", category.getText().toString());
+
+                    mContext.startActivity(intent);
+                }
+            });
+
         }
 
         public void bind(Element element, String key){

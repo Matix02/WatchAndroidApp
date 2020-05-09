@@ -23,32 +23,44 @@
         android:layout_gravity="center">
 
         <RadioButton
+            android:id="@+id/film"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/film" />
 
         <RadioButton
+            android:id="@+id/Serial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/serial" />
 
         <RadioButton
+            android:id="@+id/ksiazka"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ksi_ka" />
 
         <RadioButton
+            android:id="@+id/gra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/gra" />
     </RadioGroup>
 
     <Button
-        android:id="@+id/saveButton"
+        android:id="@+id/updateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save" />
-
-
+        android:text="@string/update" />
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete" />
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/back" />
 </LinearLayout>
 
