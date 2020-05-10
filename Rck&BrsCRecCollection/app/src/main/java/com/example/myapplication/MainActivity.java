@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView_Config adapter;
     private FloatingActionButton fab;
+    private CheckBox isWatched;
     private RecyclerView recyclerView;
     private List<String> L1 = new ArrayList<String>();
     private List<String> L2 = new ArrayList<String>();
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Element> elements = new ArrayList<>();
     private RecyclerView_Config.ElementAdapter elementAdapter;
     private List<String> keys;
+    private String key;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         //chyba Rck&Brs byłoby za długie
 
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
+        isWatched = (CheckBox) findViewById(R.id.checkBox);
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
@@ -75,6 +80,38 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //sprawdzić jak dodać OnClikcListener do checkbox'a
+        isWatched.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Element element = new Element();
+                element.setWatched(isWatched.isChecked());
+
+                new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+                    @Override
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+
+                    }
+
+                    @Override
+                    public void DataIsInserted() {
+
+                    }
+
+                    @Override
+                    public void DataIsUpdated() {
+                        Toast.makeText(MainActivity.this, "Element has been updated", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void DataIsDeleted() {
+
+                    }
+                });
+            }
+        });
+
     }
 
     @Override

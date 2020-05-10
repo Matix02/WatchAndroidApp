@@ -21,7 +21,7 @@ import java.util.List;
 
 public class EditElement extends AppCompatActivity {
 
-//Skonczono edycję i usuwanie itd.
+
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private Element element;
@@ -53,6 +53,7 @@ public class EditElement extends AppCompatActivity {
         mUpdate_btn = (Button) findViewById(R.id.updateButton);
         mDelete_btn = (Button) findViewById(R.id.deleteButton);
         mBack_btn = (Button) findViewById(R.id.backButton);
+        //poniżej linijka może być niepotrzebna redudant
         radioGroup.check(getIndex(radioGroup, category));
 
         mUpdate_btn.setOnClickListener(new View.OnClickListener() {

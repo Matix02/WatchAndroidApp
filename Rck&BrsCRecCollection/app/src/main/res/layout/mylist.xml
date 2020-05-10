@@ -19,7 +19,7 @@
         tools:layout_editor_absoluteY="1dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="353dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
