@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         //chyba Rck&Brs byłoby za długie
 
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
-        isWatched = (CheckBox) findViewById(R.id.checkBox);
+      //  isWatched = (CheckBox) findViewById(R.id.checkBox);
+       //   isWatched = (CheckBox)
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
@@ -81,36 +82,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+/////!!!!!!!!!!!!!!!!////////////****************************************************************
+        // Druga opcja poszukac jak dostac sie do ID z mylist'y =, b ozawsze jest przy pomocy innego layout a moze tez jest bezposrednio
+        ////////////!!!!!!!!!!!!!!!!!!//////////
+
+
+      //  isWatched.setOnCheckedChangeListener(new );
         //sprawdzić jak dodać OnClikcListener do checkbox'a
-        isWatched.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Element element = new Element();
-                element.setWatched(isWatched.isChecked());
+    //    isWatched.setOnClickListener(new View.OnClickListener() {
+     //       @Override
+    //        public void onClick(View v) {
+               // Element element = new Element();
+              //  isWatched.setChecked(element.isWatched());
+              // element.setWatched(isWatched.isChecked());
+                //    element.setWatched(false);
 
-                new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
-                    }
-
-                    @Override
-                    public void DataIsInserted() {
-
-                    }
-
-                    @Override
-                    public void DataIsUpdated() {
-                        Toast.makeText(MainActivity.this, "Element has been updated", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void DataIsDeleted() {
-
-                    }
-                });
-            }
-        });
+//                new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+//                    @Override
+//                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+//
+//                    }
+//
+//                    @Override
+//                    public void DataIsInserted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void DataIsUpdated() {
+//                        Toast.makeText(MainActivity.this, "Element has been updated", Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    @Override
+//                    public void DataIsDeleted() {
+//
+//                    }
+//                });
+         //   }
+    //    });
 
     }
 

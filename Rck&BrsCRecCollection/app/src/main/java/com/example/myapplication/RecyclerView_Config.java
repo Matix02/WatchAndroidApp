@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -79,7 +80,38 @@ public class RecyclerView_Config {
                     mContext.startActivity(intent);
                 }
             });
+            isWatched.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Element element = new Element();
+                    //boolean isOrNot =   element.isWatched();
+                    element.setWatched(isWatched.isChecked());
+                    element.setTitle(title.getText().toString());
+                    element.setCategory(category.getText().toString());
+                    new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+                        @Override
+                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
 
+                        }
+
+                        @Override
+                        public void DataIsInserted() {
+
+                        }
+
+                        @Override
+                        public void DataIsUpdated() {
+
+                        }
+
+                        @Override
+                        public void DataIsDeleted() {
+
+                        }
+                    });
+
+                }
+            });
         }
 
         public void bind(Element element, String key){
@@ -87,7 +119,7 @@ public class RecyclerView_Config {
             String e = element.getTitle();
             title.setText(e);
             category.setText(element.getCategory());
-            //isWatched.set
+            isWatched.setChecked(element.isWatched());
             this.key = key;
         }
 
