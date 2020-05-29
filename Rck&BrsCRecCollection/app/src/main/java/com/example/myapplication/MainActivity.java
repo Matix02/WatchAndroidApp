@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView_Config.ElementAdapter elementAdapter;
     private List<String> keys;
     private String key;
+    private List<Element> elements2 = new ArrayList<>();
 
 
     @Override
@@ -45,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B
         //chyba Rck&Brs byłoby za długie
-
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
       //  isWatched = (CheckBox) findViewById(R.id.checkBox);
        //   isWatched = (CheckBox)
+
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         fab =  findViewById(R.id.fab_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,52 +84,43 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
-/////!!!!!!!!!!!!!!!!////////////****************************************************************
-        // Druga opcja poszukac jak dostac sie do ID z mylist'y =, b ozawsze jest przy pomocy innego layout a moze tez jest bezposrednio
-        ////////////!!!!!!!!!!!!!!!!!!//////////
+    private ArrayList<Element> getElements(){
+        ArrayList<Element> elemTryList = new ArrayList<>();
+        Element e;
 
+        for (int i=0; i<elements.size(); i++){
+            e = new Element(elements.get(i).getTitle(), elements.get(i).getCategory(), elements.get(i).isWatched());
+            elemTryList.add(e);
 
-      //  isWatched.setOnCheckedChangeListener(new );
-        //sprawdzić jak dodać OnClikcListener do checkbox'a
-    //    isWatched.setOnClickListener(new View.OnClickListener() {
-     //       @Override
-    //        public void onClick(View v) {
-               // Element element = new Element();
-              //  isWatched.setChecked(element.isWatched());
-              // element.setWatched(isWatched.isChecked());
-                //    element.setWatched(false);
-
-//                new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
-//                    @Override
-//                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-//
-//                    }
-//
-//                    @Override
-//                    public void DataIsInserted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void DataIsUpdated() {
-//                        Toast.makeText(MainActivity.this, "Element has been updated", Toast.LENGTH_LONG).show();
-//                    }
-//
-//                    @Override
-//                    public void DataIsDeleted() {
-//
-//                    }
-//                });
-         //   }
-    //    });
-
+        }
+        return elemTryList;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.nav_bar_items, menu);
+        MenuItem menuItem = menu.findItem(R.id.search_item1);
+//        SearchView searchView = (SearchView) menuItem.getActionView();
+//        searchView.setQueryHint("Search Here");
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//
+//
+//                return false;
+//            }
+//        });
+
         return true;
     }
 //spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
@@ -134,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.search_item1:
-                Toast.makeText(this, "Item 1 selected", Toast.LENGTH_SHORT).show();
-                return true;
+//            case R.id.search_item1:
+//                Toast.makeText(this, "Item 1 selected", Toast.LENGTH_SHORT).show();
+//                return true;
             case R.id.item1:
                 Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
                 return true;
@@ -188,17 +182,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return  super.onContextItemSelected(item);
         }
-      //  if (item.getItemId() == R.id.delete_id) {
-           // L1.remove(info.position);
-          //  adapter.remove(item.getGroupId());
-//            adapter.removeItem(item.getGroupId());
-//            adapter.notifyDataSetChanged();
-//            return true;
-//        }
-//        else if(item.getItemId() == R.id.edit_id) {
-//            return true;
-//        }
-//        return super.onContextItemSelected(item);
+
     }
 
 }

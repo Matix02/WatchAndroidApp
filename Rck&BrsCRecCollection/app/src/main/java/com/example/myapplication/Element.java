@@ -9,6 +9,12 @@ public class Element {
 
     }
 
+    public Element(String title, String category, boolean isWatched) {
+        this.title = title;
+        this.category = category;
+        this.isWatched = isWatched;
+    }
+
     public String getTitle() {
         return title;
     }

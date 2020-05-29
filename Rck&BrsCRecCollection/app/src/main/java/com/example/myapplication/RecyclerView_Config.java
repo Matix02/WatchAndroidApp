@@ -4,19 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +31,14 @@ public class RecyclerView_Config {
     private List<Element> elements = new ArrayList<>();
 
 
-    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys){
+    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
         mContext = context;
         elementAdapter = new ElementAdapter(elements, keys);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
     }
-    public interface  OnItemClickListener{
+
+    public interface OnItemClickListener {
         void onItemClick(int position);
 
         void onWhatEverClick(int position);
@@ -48,12 +47,13 @@ public class RecyclerView_Config {
     }
 
 
-    class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         private TextView title;
         private TextView category;
         private CheckBox isWatched;
         private String key;
         private CardView cardView;
+        SearchView sv;
         OnItemClickListener mListener;
 
         public void setOnItemClickListener(OnItemClickListener listener) {
@@ -61,22 +61,34 @@ public class RecyclerView_Config {
         }
 
 
-
-        public ElementItemView(ViewGroup parent){
-            super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false) );
+        public ElementItemView(ViewGroup parent) {
+            super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
             title = (TextView) itemView.findViewById(R.id.titleTextView);
             category = (TextView) itemView.findViewById(R.id.categoryTextView);
             isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
             cardView = itemView.findViewById(R.id.cardLayout);
-          //  cardView.setOnCreateContextMenuListener(this);
+            sv = (SearchView) itemView.findViewById(R.id.search_item1);
+
+            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+               // https://stackoverflow.com/questions/27378981/how-to-use-searchview-in-toolbar-android
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    elementAdapter.getFilter().filter(newText);
+                    return false;
+                }
+            });
+            //  cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext,  EditElement.class);
+                    Intent intent = new Intent(mContext, EditElement.class);
                     intent.putExtra("key", key);
                     intent.putExtra("title", title.getText().toString());
                     intent.putExtra("category", category.getText().toString());
-
                     mContext.startActivity(intent);
                 }
             });
@@ -109,13 +121,12 @@ public class RecyclerView_Config {
 
                         }
                     });
-
                 }
             });
         }
 
-        public void bind(Element element, String key){
-          //  title.setText(element.getTitle());
+        public void bind(Element element, String key) {
+            //  title.setText(element.getTitle());
             String e = element.getTitle();
             title.setText(e);
             category.setText(element.getCategory());
@@ -127,27 +138,63 @@ public class RecyclerView_Config {
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(this.getAdapterPosition(), 121, 0, "Delete this item");
             menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
-
         }
     }
 
 
-    class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
+    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable {
         private List<Element> elementList;
         private List<String> keysList;
+        public List<Element> filterElementList;
+
 
         public ElementAdapter(List<Element> elementList, List<String> keysList) {
             this.elementList = elementList;
             this.keysList = keysList;
         }
 
+        //Konstruktor do filtracji
+        public ElementAdapter(List<Element> elementList, List<String> keysList, List<Element> filterElementList) {
+            this.elementList = elementList;
+            this.keysList = keysList;
+            this.filterElementList = filterElementList;
+        }
+        //        private Filter elementFilter = new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(CharSequence constraint) {
+//                FilterResults results = new FilterResults();
+//                List<Element> sugElementList = new ArrayList<>();
+//
+//                if (constraint == null || constraint.length() == 0) {
+//                    sugElementList.addAll(elementList);
+//                }
+//                else {
+//                    String filterPattern = constraint.toString().toLowerCase().trim();
+//
+//                    for (Element item : elementList){
+//                        sugElementList.add(item);
+//                    }
+//                }
+//                results.values = sugElementList;
+//                results.count = sugElementList.size();
+//                return  results;
+//            }
+//
+//
+//            @Override
+//            protected void publishResults(CharSequence constraint, FilterResults results) {
+//
+//
+//            }
+//        };
+
         @NonNull
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-           // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mylist, parent, false);
+            // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mylist, parent, false);
 
-           return new ElementItemView(parent);
-          //  return new ElementItemView((ViewGroup) view);
+            return new ElementItemView(parent);
+            //  return new ElementItemView((ViewGroup) view);
         }
 
         @Override
@@ -160,11 +207,57 @@ public class RecyclerView_Config {
             return elementList.size();
         }
 
-        public void removeItem(int position){
+        public void removeItem(int position) {
             elementList.remove(position);
             notifyDataSetChanged();
         }
 
+        @Override
+        public Filter getFilter() {
+
+            if (filterElementList == null)
+                filterElementList = (List<Element>) new CustomFilter();
+//brak pewnosci co do CustomFilter'a
+            return (Filter) filterElementList;
+        }
+
+        class CustomFilter extends Filter {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+
+                if (constraint != null && constraint.length()>0)
+                {
+                    constraint = constraint.toString().toUpperCase();
+                    List<Element> filters = new ArrayList<Element>();
+
+                    for (int i=0; i<filterElementList.size(); i++){
+                        if(filterElementList.get(i).getTitle().toUpperCase().contains(constraint))
+                        {
+                            Element element = new Element(filterElementList.get(i).getTitle(), filterElementList.get(i).getCategory(), filterElementList.get(i).isWatched());
+                            filters.add(element);
+
+                            //23:22 Android ListView Ep0.9 sprobowac dokonczy ale to tak srednio idzie
+                        }
+                    }
+                    filterResults.count = filterElementList.size();
+                    filterResults.values = filterElementList;
+                }
+                else {
+                    filterResults.count = filterElementList.size();
+                    filterResults.values = filterElementList;
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                elementList = (ArrayList<Element>) results.values;
+                notifyDataSetChanged();
+            }
+        }
     }
+
 
 }
