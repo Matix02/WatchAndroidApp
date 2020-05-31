@@ -91,14 +91,4 @@ public class FirebaseDatabaseHelper {
                     }
                 });
     }
-
-    public void deleteElement(int key, final DataStatus dataStatus){
-        mReferenceBooks.setValue(key)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        dataStatus.DataIsDeleted();
-                    }
-                }); }
-
 }

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -14,9 +16,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import androidx.appcompat.widget.SearchView;
+
 import android.widget.CheckBox;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
     private RecyclerView_Config adapter;
     private FloatingActionButton fab;
@@ -48,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
 //Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B
         //chyba Rck&Brs byłoby za długie
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
-      //  isWatched = (CheckBox) findViewById(R.id.checkBox);
-       //   isWatched = (CheckBox)
+        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys);
+
 
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
@@ -57,22 +59,17 @@ public class MainActivity extends AppCompatActivity {
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
                  new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
-
             }
-
             @Override
             public void DataIsInserted() {
-
             }
 
             @Override
             public void DataIsUpdated() {
-
             }
 
             @Override
             public void DataIsDeleted() {
-
             }
         });
 
@@ -103,6 +100,15 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.nav_bar_items, menu);
         MenuItem menuItem = menu.findItem(R.id.search_item1);
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if(searchView == null){
+            searchView = (SearchView) menuItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+        }
 //        SearchView searchView = (SearchView) menuItem.getActionView();
 //        searchView.setQueryHint("Search Here");
 //
@@ -121,8 +127,68 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+       // searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                elementAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+//        searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+
+//      ---->>>>// https://stackoverflow.com/questions/27378981/how-to-use-searchview-in-toolbar-android
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+
+//            }
+//        });
+        searchView.setIconified(false);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Toast.makeText(this, "Query Inserted", Toast.LENGTH_SHORT).show();
         return true;
     }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        return false;
+    }
+
+//    public void filter(String queryText){
+//        list.clear();
+//
+//        if(queryText.isEmpty())
+//        {
+//            list.addAll(copyList);
+//        }
+//        else
+//        {
+//
+//            for(String name: copyList)
+//            {
+//                if(name.toLowerCase().contains(queryText.toLowerCase()))
+//                {
+//                    list.add(name);
+//                }
+//            }
+//
+//        }
+//
+//        elementAdapter.notifyDataSetChanged();
+//    }
 //spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
     //go tam samo, jako było w przypadku ListAdaptera
     @Override
@@ -182,7 +248,5 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return  super.onContextItemSelected(item);
         }
-
     }
-
 }

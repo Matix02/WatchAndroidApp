@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -55,6 +56,7 @@ public class RecyclerView_Config {
         private CardView cardView;
         SearchView sv;
         OnItemClickListener mListener;
+        MenuItem searchItem;
 
         public void setOnItemClickListener(OnItemClickListener listener) {
             mListener = (OnItemClickListener) listener;
@@ -67,21 +69,11 @@ public class RecyclerView_Config {
             category = (TextView) itemView.findViewById(R.id.categoryTextView);
             isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
             cardView = itemView.findViewById(R.id.cardLayout);
-            sv = (SearchView) itemView.findViewById(R.id.search_item1);
+           // sv = (SearchView) itemView.findViewById(R.id.search_item1);
 
-            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-               // https://stackoverflow.com/questions/27378981/how-to-use-searchview-in-toolbar-android
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    elementAdapter.getFilter().filter(newText);
-                    return false;
-                }
-            });
-            //  cardView.setOnCreateContextMenuListener(this);
+
+
+            cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -159,7 +151,7 @@ public class RecyclerView_Config {
             this.keysList = keysList;
             this.filterElementList = filterElementList;
         }
-        //        private Filter elementFilter = new Filter() {
+//       private Filter elementFilter = new Filter() {
 //            @Override
 //            protected FilterResults performFiltering(CharSequence constraint) {
 //                FilterResults results = new FilterResults();
@@ -179,12 +171,8 @@ public class RecyclerView_Config {
 //                results.count = sugElementList.size();
 //                return  results;
 //            }
-//
-//
 //            @Override
 //            protected void publishResults(CharSequence constraint, FilterResults results) {
-//
-//
 //            }
 //        };
 
@@ -250,7 +238,6 @@ public class RecyclerView_Config {
                 }
                 return filterResults;
             }
-
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 elementList = (ArrayList<Element>) results.values;
@@ -258,6 +245,4 @@ public class RecyclerView_Config {
             }
         }
     }
-
-
 }
