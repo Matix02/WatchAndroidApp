@@ -33,16 +33,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private FloatingActionButton fab;
     private CheckBox isWatched;
     private RecyclerView recyclerView;
-    private List<String> L1 = new ArrayList<String>();
-    private List<String> L2 = new ArrayList<String>();
+
     private DatabaseReference databaseReference;
     private List<Element> elements = new ArrayList<>();
+    private List<Element> elementsFilter = new ArrayList<>();
+
     private RecyclerView_Config.ElementAdapter elementAdapter;
     private List<String> keys;
     private String key;
     private List<Element> elements2 = new ArrayList<>();
 
 
+    //co niby nie ma połączenia, brak reakcji na to co jest wpisywane, funkcja w debbugerze - nieaktywna
+    //dwa albo trzy filmiki zostały zamieszczone, by to ogarnąć
+    //lipa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +54,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B
         //chyba Rck&Brs byłoby za długie
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
-        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys);
-
+      //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
-                 new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys);
+
+               new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
             }
             @Override
             public void DataIsInserted() {
@@ -72,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsDeleted() {
             }
         });
-
         fab =  findViewById(R.id.fab_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +86,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
     }
 
+    private void setUpRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(elementAdapter);
+    }
     private ArrayList<Element> getElements(){
         ArrayList<Element> elemTryList = new ArrayList<>();
         Element e;
@@ -90,44 +101,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         for (int i=0; i<elements.size(); i++){
             e = new Element(elements.get(i).getTitle(), elements.get(i).getCategory(), elements.get(i).isWatched());
             elemTryList.add(e);
-
         }
         return elemTryList;
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.nav_bar_items, menu);
+
         MenuItem menuItem = menu.findItem(R.id.search_item1);
-        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+      //  SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
         SearchView searchView = null;
         if(searchView == null){
             searchView = (SearchView) menuItem.getActionView();
         }
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-        }
-//        SearchView searchView = (SearchView) menuItem.getActionView();
-//        searchView.setQueryHint("Search Here");
-//
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//
-//
-//                return false;
-//            }
-//        });
-
-       // searchView.setOnQueryTextListener(this);
+//        if (searchView != null) {
+//            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+//        }
+ //       assert searchView != null;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -136,24 +128,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                elementAdapter.getFilter().filter(newText);
+
                 return false;
             }
         });
-//        searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-
-//      ---->>>>// https://stackoverflow.com/questions/27378981/how-to-use-searchview-in-toolbar-android
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-
-//            }
-//        });
-        searchView.setIconified(false);
-        return super.onCreateOptionsMenu(menu);
+    //    searchView.setIconified(false);
+       // return super.onCreateOptionsMenu(menu);
+        return true;
     }
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -163,32 +144,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
+        elementAdapter.getFilter().filter(newText);
+      //  adapter.setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
         return false;
     }
 
-//    public void filter(String queryText){
-//        list.clear();
-//
-//        if(queryText.isEmpty())
-//        {
-//            list.addAll(copyList);
-//        }
-//        else
-//        {
-//
-//            for(String name: copyList)
-//            {
-//                if(name.toLowerCase().contains(queryText.toLowerCase()))
-//                {
-//                    list.add(name);
-//                }
-//            }
-//
-//        }
-//
-//        elementAdapter.notifyDataSetChanged();
-//    }
 //spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
     //go tam samo, jako było w przypadku ListAdaptera
     @Override

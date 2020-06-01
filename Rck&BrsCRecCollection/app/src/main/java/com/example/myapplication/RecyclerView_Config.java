@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -30,11 +31,19 @@ public class RecyclerView_Config {
     private ElementAdapter elementAdapter;
     private DatabaseReference reff;
     private List<Element> elements = new ArrayList<>();
+    private List<Element> elementsFilter = new ArrayList<>();
 
+    //ten prawdziwy setConfig - setAdapter
+//    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
+//        mContext = context;
+//        elementAdapter = new ElementAdapter(elements, keys);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//        recyclerView.setAdapter(elementAdapter);
+//    }
 
-    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
+    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter) {
         mContext = context;
-        elementAdapter = new ElementAdapter(elements, keys);
+        elementAdapter = new ElementAdapter(elements, keys, elementsFilter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
     }
@@ -62,16 +71,12 @@ public class RecyclerView_Config {
             mListener = (OnItemClickListener) listener;
         }
 
-
         public ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
             title = (TextView) itemView.findViewById(R.id.titleTextView);
             category = (TextView) itemView.findViewById(R.id.categoryTextView);
             isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
             cardView = itemView.findViewById(R.id.cardLayout);
-           // sv = (SearchView) itemView.findViewById(R.id.search_item1);
-
-
 
             cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -95,22 +100,15 @@ public class RecyclerView_Config {
                     new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
                         @Override
                         public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
                         }
-
                         @Override
                         public void DataIsInserted() {
-
                         }
-
                         @Override
                         public void DataIsUpdated() {
-
                         }
-
                         @Override
                         public void DataIsDeleted() {
-
                         }
                     });
                 }
@@ -134,11 +132,10 @@ public class RecyclerView_Config {
     }
 
 
-    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable {
+    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable{
         private List<Element> elementList;
         private List<String> keysList;
         public List<Element> filterElementList;
-
 
         public ElementAdapter(List<Element> elementList, List<String> keysList) {
             this.elementList = elementList;
@@ -151,30 +148,6 @@ public class RecyclerView_Config {
             this.keysList = keysList;
             this.filterElementList = filterElementList;
         }
-//       private Filter elementFilter = new Filter() {
-//            @Override
-//            protected FilterResults performFiltering(CharSequence constraint) {
-//                FilterResults results = new FilterResults();
-//                List<Element> sugElementList = new ArrayList<>();
-//
-//                if (constraint == null || constraint.length() == 0) {
-//                    sugElementList.addAll(elementList);
-//                }
-//                else {
-//                    String filterPattern = constraint.toString().toLowerCase().trim();
-//
-//                    for (Element item : elementList){
-//                        sugElementList.add(item);
-//                    }
-//                }
-//                results.values = sugElementList;
-//                results.count = sugElementList.size();
-//                return  results;
-//            }
-//            @Override
-//            protected void publishResults(CharSequence constraint, FilterResults results) {
-//            }
-//        };
 
         @NonNull
         @Override
@@ -202,47 +175,36 @@ public class RecyclerView_Config {
 
         @Override
         public Filter getFilter() {
-
-            if (filterElementList == null)
-                filterElementList = (List<Element>) new CustomFilter();
-//brak pewnosci co do CustomFilter'a
-            return (Filter) filterElementList;
+            return (Filter) exampleFilter;
         }
 
-        class CustomFilter extends Filter {
-
+        private Filter exampleFilter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults filterResults = new FilterResults();
+                List<Element> elementList = new ArrayList<>();
 
-                if (constraint != null && constraint.length()>0)
-                {
-                    constraint = constraint.toString().toUpperCase();
-                    List<Element> filters = new ArrayList<Element>();
+                if (constraint == null || constraint.length() == 0){
+                    filterElementList.addAll(elementList);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
 
-                    for (int i=0; i<filterElementList.size(); i++){
-                        if(filterElementList.get(i).getTitle().toUpperCase().contains(constraint))
-                        {
-                            Element element = new Element(filterElementList.get(i).getTitle(), filterElementList.get(i).getCategory(), filterElementList.get(i).isWatched());
-                            filters.add(element);
-
-                            //23:22 Android ListView Ep0.9 sprobowac dokonczy ale to tak srednio idzie
-                        }
+                    for (Element e : elementList){
+                        if (e.getTitle().toLowerCase().contains(filterPattern))
+                            filterElementList.add(e);
                     }
-                    filterResults.count = filterElementList.size();
-                    filterResults.values = filterElementList;
                 }
-                else {
-                    filterResults.count = filterElementList.size();
-                    filterResults.values = filterElementList;
-                }
-                return filterResults;
+
+                FilterResults results = new FilterResults();
+                results.values = filterElementList;
+                return results;
             }
+
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                elementList = (ArrayList<Element>) results.values;
+                elementList.clear();
+                elementList.addAll((List) results.values);
                 notifyDataSetChanged();
             }
-        }
+        };
     }
 }
