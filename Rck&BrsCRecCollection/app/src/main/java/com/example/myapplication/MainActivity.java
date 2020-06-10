@@ -33,11 +33,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private FloatingActionButton fab;
     private CheckBox isWatched;
     private RecyclerView recyclerView;
-
     private DatabaseReference databaseReference;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
-
     private RecyclerView_Config.ElementAdapter elementAdapter;
     private List<String> keys;
     private String key;
@@ -46,13 +44,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     //co niby nie ma połączenia, brak reakcji na to co jest wpisywane, funkcja w debbugerze - nieaktywna
     //dwa albo trzy filmiki zostały zamieszczone, by to ogarnąć
-    //lipa
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B
+        //Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B
         //chyba Rck&Brs byłoby za długie
+        //mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
       //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -61,8 +60,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
-
-               new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
+//!!!!!!!!!!! Ważne - filtrowana lista jest pusta, dlatego, ze wystepuje tylko w tym wywolaniu nizej- mozna rozdzielic ta metode setConfig na pół że napierw jest konstr
+                // konstrukcja adaptera z lista elements i keys a nastepie metoda z tej metody daje nam setAdapter, lub sprobowac zrobic metode getList czy cos i stąd WYCIAGANAC
+                // tą listę
+                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter, elementAdapter);
+                //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
             }
             @Override
             public void DataIsInserted() {
@@ -85,78 +87,92 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
     }
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String userInput = newText.toLowerCase();
+        List<Element> newList = new ArrayList<>();
 
+        for (Element name : elements){
+            if(name.getTitle().contains(userInput)){
+                newList.add(name);
+            }
+        }
+        elementAdapter.updateList(newList);
+        return true;
+    }
     private void setUpRecyclerView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
         elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
-
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(elementAdapter);
     }
-    private ArrayList<Element> getElements(){
-        ArrayList<Element> elemTryList = new ArrayList<>();
-        Element e;
-
-        for (int i=0; i<elements.size(); i++){
-            e = new Element(elements.get(i).getTitle(), elements.get(i).getCategory(), elements.get(i).isWatched());
-            elemTryList.add(e);
-        }
-        return elemTryList;
+    private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter  elementAdapter){
+        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
+        return elementAdapter;
     }
+//    private ArrayList<Element> getElements(){
+//        ArrayList<Element> elemTryList = new ArrayList<>();
+//        Element e;
+//
+//        for (int i=0; i<elements.size(); i++){
+//            e = new Element(elements.get(i).getTitle(), elements.get(i).getCategory(), elements.get(i).isWatched());
+//            elemTryList.add(e);
+//        }
+//        return elemTryList;
+//    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.nav_bar_items, menu);
-
+        getMenuInflater().inflate(R.menu.nav_bar_items, menu);
         MenuItem menuItem = menu.findItem(R.id.search_item1);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+        return true;
+    }
       //  SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
-        SearchView searchView = null;
-        if(searchView == null){
-            searchView = (SearchView) menuItem.getActionView();
-        }
+//        SearchView searchView = null;
+//        if(searchView == null){
+//            searchView = (SearchView) menuItem.getActionView();
+//        }
 //        if (searchView != null) {
 //            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
 //        }
  //       assert searchView != null;
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return false;
-            }
-        });
-    //    searchView.setIconified(false);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                //ble kod, w ogóle szajs bym powiedział poprawic jak bedzie działac
+//                elementAdapter = setUpRecyclerView(elementAdapter);
+//                elementAdapter.getFilter().filter(newText);
+//                return false;
+//            }
+//        });
        // return super.onCreateOptionsMenu(menu);
-        return true;
-    }
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Toast.makeText(this, "Query Inserted", Toast.LENGTH_SHORT).show();
-        return true;
-    }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        elementAdapter.getFilter().filter(newText);
-      //  adapter.setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
-        return false;
-    }
-
-//spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
+//    @Override
+//    public boolean onQueryTextSubmit(String query) {
+//        Toast.makeText(this, "Query Inserted", Toast.LENGTH_SHORT).show();
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onQueryTextChange(String newText) {
+//        elementAdapter.getFilter().filter(newText);
+//      //  adapter.setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
+//        return false;
+//    }
+    //spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
     //go tam samo, jako było w przypadku ListAdaptera
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-//            case R.id.search_item1:
-//                Toast.makeText(this, "Item 1 selected", Toast.LENGTH_SHORT).show();
-//                return true;
             case R.id.item1:
                 Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
                 return true;
@@ -177,36 +193,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         switch (item.getItemId()){
             case 121:
-            //   adapter.removeItem(item.getGroupId());
-            //   adapter.notifyDataSetChanged();
-               // int cnt = item
-               // String nr = ((String) cnt);
-           /*     new FirebaseDatabaseHelper().deleteElement(item.getItemId(), new FirebaseDatabaseHelper.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
-                    }
-
-                    @Override
-                    public void DataIsInserted() {
-
-                    }
-
-                    @Override
-                    public void DataIsUpdated() {
-
-                    }
-
-                    @Override
-                    public void DataIsDeleted() {
-                        Toast.makeText(MainActivity.this, "deleted", Toast.LENGTH_LONG).show();
-                    }
-                });*/
                 return true;
             case 122:
                 return true;
             default:
                 return  super.onContextItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 }

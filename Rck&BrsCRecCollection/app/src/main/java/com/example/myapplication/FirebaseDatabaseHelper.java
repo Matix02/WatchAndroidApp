@@ -67,7 +67,6 @@ public class FirebaseDatabaseHelper {
                     @Override
                     public void onSuccess(Void aVoid) {
                         dataStatus.DataIsInserted();
-
                     }
                 });
     }

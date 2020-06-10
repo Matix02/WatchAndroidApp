@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -47,15 +48,14 @@ public class RecyclerView_Config {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
     }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-
-        void onWhatEverClick(int position);
-
-        void onDeleteClick(int position);
+    //przeciążona metoda wersji wyżej - tej prawdziwej
+    public RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter, ElementAdapter elementAdapter) {
+        mContext = context;
+        this.elementAdapter = new ElementAdapter(elements, keys, elementsFilter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(this.elementAdapter);
+        return this.elementAdapter;
     }
-
 
     class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         private TextView title;
@@ -64,12 +64,8 @@ public class RecyclerView_Config {
         private String key;
         private CardView cardView;
         SearchView sv;
-        OnItemClickListener mListener;
+        AdapterView.OnItemClickListener mListener;
         MenuItem searchItem;
-
-        public void setOnItemClickListener(OnItemClickListener listener) {
-            mListener = (OnItemClickListener) listener;
-        }
 
         public ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
@@ -206,5 +202,11 @@ public class RecyclerView_Config {
                 notifyDataSetChanged();
             }
         };
+        public void updateList(List<Element> newList){
+            elementList = new ArrayList<>();
+            elementList.addAll(newList);
+            notifyDataSetChanged();
+        }
     }
+
 }
