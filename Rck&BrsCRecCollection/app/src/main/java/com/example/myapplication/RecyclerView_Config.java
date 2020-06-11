@@ -49,6 +49,7 @@ public class RecyclerView_Config {
         recyclerView.setAdapter(elementAdapter);
     }
     //przeciążona metoda wersji wyżej - tej prawdziwej
+    //gównianie zdefiniowana metoda do usieniecia lub poprawienia
     public RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter, ElementAdapter elementAdapter) {
         mContext = context;
         this.elementAdapter = new ElementAdapter(elements, keys, elementsFilter);

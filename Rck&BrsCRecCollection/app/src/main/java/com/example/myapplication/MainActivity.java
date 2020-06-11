@@ -88,16 +88,37 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
     }
     @Override
-    public boolean onQueryTextChange(String newText) {
-        String userInput = newText.toLowerCase();
-        List<Element> newList = new ArrayList<>();
+    public boolean onQueryTextChange(final String newText) {
+        new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
+            @Override
+            public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                String userInput = newText.toLowerCase();
+                List<Element> newList = new ArrayList<>();
 
-        for (Element name : elements){
-            if(name.getTitle().contains(userInput)){
-                newList.add(name);
+                for (Element name : elements){
+                    if(name.getTitle().contains(userInput)){
+                        newList.add(name);
+                    }
+                }
+                elementAdapter.updateList(newList);
             }
-        }
-        elementAdapter.updateList(newList);
+
+            @Override
+            public void DataIsInserted() {
+
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+
+            @Override
+            public void DataIsDeleted() {
+
+            }
+        });
+
         return true;
     }
     private void setUpRecyclerView() {
