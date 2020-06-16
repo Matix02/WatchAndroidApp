@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditElement"></activity>
+        <activity
+            android:name=".PopActivity"
+            android:theme="@style/AppTheme.PopMe" />
+        <activity android:name=".EditElement" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +29,7 @@
                 <action android:name="new_add_element_page" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

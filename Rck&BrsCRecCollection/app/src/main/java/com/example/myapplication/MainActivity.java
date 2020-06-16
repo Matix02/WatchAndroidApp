@@ -193,13 +193,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     //go tam samo, jako było w przypadku ListAdaptera
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.item1:
-                Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.item1) {
+           // Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), PopActivity.class);
+            startActivity(intent);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
