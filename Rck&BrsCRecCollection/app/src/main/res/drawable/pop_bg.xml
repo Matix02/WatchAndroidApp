@@ -6,6 +6,5 @@
         android:startColor="@color/cardview_dark_background"
         />
     <corners
-        android:radius="10dp"
-        />
+        android:radius="25sp" />
 </shape>

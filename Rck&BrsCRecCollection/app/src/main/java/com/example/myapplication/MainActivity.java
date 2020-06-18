@@ -132,16 +132,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
         return elementAdapter;
     }
-//    private ArrayList<Element> getElements(){
-//        ArrayList<Element> elemTryList = new ArrayList<>();
-//        Element e;
-//
-//        for (int i=0; i<elements.size(); i++){
-//            e = new Element(elements.get(i).getTitle(), elements.get(i).getCategory(), elements.get(i).isWatched());
-//            elemTryList.add(e);
-//        }
-//        return elemTryList;
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,44 +141,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchView.setOnQueryTextListener(this);
         return true;
     }
-      //  SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
-//        SearchView searchView = null;
-//        if(searchView == null){
-//            searchView = (SearchView) menuItem.getActionView();
-//        }
-//        if (searchView != null) {
-//            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-//        }
- //       assert searchView != null;
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                //ble kod, w ogóle szajs bym powiedział poprawic jak bedzie działac
-//                elementAdapter = setUpRecyclerView(elementAdapter);
-//                elementAdapter.getFilter().filter(newText);
-//                return false;
-//            }
-//        });
-       // return super.onCreateOptionsMenu(menu);
-
-//    @Override
-//    public boolean onQueryTextSubmit(String query) {
-//        Toast.makeText(this, "Query Inserted", Toast.LENGTH_SHORT).show();
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onQueryTextChange(String newText) {
-//        elementAdapter.getFilter().filter(newText);
-//      //  adapter.setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
-//        return false;
-//    }
     //spróbowac utworzyc tak jak to jest pokazane w NoWatchFragment, czyli set Config jako new Adapter albo utworzyc tam konstruktor, i zbudować
     //go tam samo, jako było w przypadku ListAdaptera
     @Override

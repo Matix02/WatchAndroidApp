@@ -22,7 +22,7 @@ public class PopActivity extends Activity {
         int height = dm.heightPixels;
 
         //zmiana rozmiaru popap-u
-        getWindow().setLayout((int)(width*.6), (int)(height*.6));
+        getWindow().setLayout((int)(width*.8), (int)(height*.7));
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
