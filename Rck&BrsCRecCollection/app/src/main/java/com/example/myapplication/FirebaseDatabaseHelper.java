@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,50 +21,42 @@ public class FirebaseDatabaseHelper {
 
     public interface DataStatus {
         void DataIsLoaded(List<Element> elements, List<String> keys);
+
         void DataIsInserted();
+
         void DataIsUpdated();
+
         void DataIsDeleted();
     }
-    public FirebaseDatabaseHelper() {
+
+    FirebaseDatabaseHelper() {
         mDatabase = FirebaseDatabase.getInstance();
         mReferenceBooks = mDatabase.getReference("Element");
     }
 
-    public void readElements(final DataStatus dataStatus){
+    void readElements(final DataStatus dataStatus) {
         mReferenceBooks.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 elements.clear();
                 List<String> keys = new ArrayList<>();
-                for(DataSnapshot keyNode : dataSnapshot.getChildren()){
+                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
                     keys.add(keyNode.getKey());
                     Element element = keyNode.getValue(Element.class);
                     elements.add(element);
                 }
                 dataStatus.DataIsLoaded(elements, keys);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
-    //reff.push().setValue(element);
-   /*                reff.addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if(dataSnapshot.exists()){
-                maxId = (dataSnapshot.getChildrenCount());}
-        }
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {}
-    });*/
-    ///////////////////////////////////
-       //         reff.child(String.valueOf(maxId+1)).setValue(element);
 
-    public void addElement(Element element, long id, final DataStatus dataStatus){
-        String key = mReferenceBooks.push().getKey();
-      //  mReferenceBooks.child(key).setValue(element)
-        mReferenceBooks.child(String.valueOf((id+1))).setValue(element)
+    void addElement(Element element, long id, final DataStatus dataStatus) {
+        // String key = mReferenceBooks.push().getKey();
+        mReferenceBooks.child(String.valueOf((id + 1))).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -70,7 +64,8 @@ public class FirebaseDatabaseHelper {
                     }
                 });
     }
-    public void updateElement(String key, Element element, final DataStatus dataStatus){
+
+    void updateElement(String key, Element element, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -80,8 +75,7 @@ public class FirebaseDatabaseHelper {
                 });
     }
 
-    //4/5 2:20 tworzenie layouty
-    public void deleteElement(String key, final DataStatus dataStatus){
+    void deleteElement(String key, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(null)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -89,5 +83,46 @@ public class FirebaseDatabaseHelper {
                         dataStatus.DataIsDeleted();
                     }
                 });
+    }
+
+    /*można powstawiać break'y w tych pętlach, by nie wykonywały się tak do końca zawsze
+    bo to może ograniczyć wydajność aplikacji
+     */
+    /*
+    inny pomsysł, bo też można zebrać wszystkie informacje do tablicy, jak już pętla ją
+    z'for'uje i wtedy wylosować, może to być wydajniejsze
+     */
+    /*
+    Raz działa a raz nie, znaczy działa za drugim razem (!!!), i jeszcze trzeba popatrzeć na filtrację, bo trzeba
+    zrobić odejmowanie oglądniętych i tych samych z tego RadioGroupa ... ta dam
+     */
+    void randomElement(final int sizeOfList, final DataStatus dataStatus) {
+        mReferenceBooks.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                double randomIndex = Math.floor(Math.random() * sizeOfList);
+                mReferenceBooks.orderByChild("index").startAt(randomIndex).endAt(randomIndex + 1);
+                elements.clear();
+                List<String> keys = new ArrayList<>();
+                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
+             //       for (DataSnapshot randomKeyNode : keyNode.getChildren()) {
+                        for (int i = 0; i < randomIndex; i++) {
+                            if (i == randomIndex - 1) {
+                                keys.add(keyNode.getKey());
+                                Element element = keyNode.getValue(Element.class);
+                                elements.add(element);
+                            }
+                        }
+             //       }
+                }
+                Log.i("Numer losowego indexu to - ", Double.toString(randomIndex));
+                Log.i("Tytuł losowego elementu to - ", elements.get(0).getTitle());
+                dataStatus.DataIsLoaded(elements, keys);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }

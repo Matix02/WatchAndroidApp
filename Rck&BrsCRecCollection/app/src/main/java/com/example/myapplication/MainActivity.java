@@ -29,6 +29,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
+
     private RecyclerView_Config adapter;
     private FloatingActionButton fab;
     private CheckBox isWatched;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<String> keys;
     private String key;
     private List<Element> elements2 = new ArrayList<>();
-
+    static int elementsSize;
 
     //co niby nie ma połączenia, brak reakcji na to co jest wpisywane, funkcja w debbugerze - nieaktywna
     //dwa albo trzy filmiki zostały zamieszczone, by to ogarnąć
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 // tą listę
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter, elementAdapter);
                 //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
+               elementsSize = elements.size();
             }
             @Override
             public void DataIsInserted() {

@@ -37,7 +37,7 @@ public class NewElement extends Activity {
     public NewElement() {
         // Required empty public constructor
     }
-
+//poprawić przyznawanie ID, bo zapisuje jako ostatni element co nie jest wcale dodawaniem nowego elementu, a edycją najstarszego
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +86,7 @@ public class NewElement extends Activity {
                             element.setCategory(radioButton.getText().toString());
                             String mGroupID = reff.push().getKey();
                             element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
-                            new FirebaseDatabaseHelper().addElement(element, maxId, new FirebaseDatabaseHelper.DataStatus() {
+                            new FirebaseDatabaseHelper().addElement(element, maxId+1, new FirebaseDatabaseHelper.DataStatus() {
                                 @Override
                                 public void DataIsLoaded(List<Element> elements, List<String> keys) {
 

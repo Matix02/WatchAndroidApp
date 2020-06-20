@@ -5,9 +5,7 @@ public class Element {
     private String category;
     private boolean isWatched;
 
-    public Element() {
-
-    }
+    public Element() { }
 
     public Element(String title, String category, boolean isWatched) {
         this.title = title;

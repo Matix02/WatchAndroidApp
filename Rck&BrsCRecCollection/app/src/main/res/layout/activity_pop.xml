@@ -9,7 +9,7 @@
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/popBtnSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Wyszukaj"
@@ -43,7 +43,7 @@
         />
 
     <RadioGroup
-        android:id="@+id/categoryRG"
+        android:id="@+id/popCategoryRG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -58,35 +58,35 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/film"
+            android:id="@+id/popFilm"
             android:textColor="@color/whiteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/film" />
 
         <RadioButton
-            android:id="@+id/Serial"
+            android:id="@+id/popSerial"
             android:textColor="@color/whiteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/serial" />
 
         <RadioButton
-            android:id="@+id/ksiazka"
+            android:id="@+id/popKsiazka"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/whiteText"
             android:text="@string/ksi_ka" />
 
         <RadioButton
-            android:id="@+id/gra"
+            android:id="@+id/popGra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/whiteText"
             android:text="@string/gra" />
 
         <RadioButton
-            android:id="@+id/all"
+            android:id="@+id/popAll"
             android:textColor="@color/whiteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/popResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bloodshot"
