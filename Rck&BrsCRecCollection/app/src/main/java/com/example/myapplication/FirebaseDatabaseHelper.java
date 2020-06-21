@@ -11,6 +11,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 
@@ -18,6 +20,7 @@ public class FirebaseDatabaseHelper {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
+    private static String resultTitle;
 
     public interface DataStatus {
         void DataIsLoaded(List<Element> elements, List<String> keys);
@@ -100,29 +103,87 @@ public class FirebaseDatabaseHelper {
         mReferenceBooks.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                double randomIndex = Math.floor(Math.random() * sizeOfList);
+             //   double randomIndex = Math.floor(Math.random() * sizeOfList);
+                int randomIndex = sizeOfList;
                 mReferenceBooks.orderByChild("index").startAt(randomIndex).endAt(randomIndex + 1);
                 elements.clear();
                 List<String> keys = new ArrayList<>();
+                int i=1;
                 for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-             //       for (DataSnapshot randomKeyNode : keyNode.getChildren()) {
-                        for (int i = 0; i < randomIndex; i++) {
-                            if (i == randomIndex - 1) {
-                                keys.add(keyNode.getKey());
-                                Element element = keyNode.getValue(Element.class);
-                                elements.add(element);
-                            }
-                        }
-             //       }
+                    if (i == randomIndex ) {
+                        keys.add(keyNode.getKey());
+                        Element element = keyNode.getValue(Element.class);
+                        elements.add(element);
+                        break;
+                    }
+                    i++;
                 }
-                Log.i("Numer losowego indexu to - ", Double.toString(randomIndex));
-                Log.i("Tytuł losowego elementu to - ", elements.get(0).getTitle());
                 dataStatus.DataIsLoaded(elements, keys);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
+    //Wersja liczeniowa ile elementó znajduje się w danej kategorii
+    void countCategory(){
+        mReferenceBooks.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                elements.clear();
+                List<String> keys = new ArrayList<>();
+                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
+                    switch (Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory()){
+                        case "Film":
+
+                            break;
+                        case "Serial":
+
+                            break;
+                        case "Książka":
+
+                            break;
+                        case "Gra":
+
+                            break;
+                    }
+                    keys.add(keyNode.getKey());
+                    Element element = keyNode.getValue(Element.class);
+                    elements.add(element);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+    //Wersja w której argument odrazu podaje wynik z danej kategorii
+    String countCategory(final String category, final DataStatus dataStatus){
+        mReferenceBooks.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               // elements.clear();
+                List<String> keys = new ArrayList<>();
+                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
+                    if (category.equals(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory())){
+                        keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
+                    }
+                  //  keys.add(keyNode.getKey());
+                //    Element element = keyNode.getValue(Element.class);
+                  //  elements.add(element);
+                }
+                int pop = new PopActivity().generateRandomIndex(keys.size());
+                resultTitle = keys.get(pop);
+                dataStatus.DataIsLoaded();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        return resultTitle;
+    }
+    /*
+    No nie działa zasięg zmiennych, bo niby jest dobrze, ale po skończeniu metody, dane te wygasją.
+    Poczytać o zasięgu w książce. I spróbować zmienić może argumenty przy wywoływaniu DataIsLoaded
+     */
 }
