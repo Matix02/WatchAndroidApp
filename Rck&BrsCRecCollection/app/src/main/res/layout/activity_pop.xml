@@ -83,6 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/whiteText"
+            android:checked="true"
             android:text="@string/gra" />
 
         <RadioButton
@@ -91,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Wszystko"
-            android:checked="true"
+
             />
     </RadioGroup>
 

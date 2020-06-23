@@ -41,10 +41,36 @@ public class PopActivity extends Activity {
                 String category = radioButton.getText().toString();
                 int sizeOfList = MainActivity.elementsSize;
                 String rozmiarConv = Integer.toString(sizeOfList);
-                int randomNumber = generateRandomIndex(sizeOfList);
+              //  int randomNumber = generateRandomIndex(sizeOfList);
                 String categoryName = radioButton.getText().toString();
-                String resultTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
-                tvResult.setText(resultTitle);
+
+                new FirebaseDatabaseHelper().countCategory(categoryName, new FirebaseDatabaseHelper.DataStatus() {
+                    @Override
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+
+                    }
+
+                    @Override
+                    public void DataIsInserted() {
+
+                    }
+
+                    @Override
+                    public void DataIsUpdated() {
+
+                    }
+
+                    @Override
+                    public void DataIsDeleted() {
+
+                    }
+
+                    @Override
+                    public void DataIsSelected(String randomElement) {
+                        tvResult.setText(randomElement);
+                    }
+                });
+              //  String resultTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
              //   Log.i("Wybrana kategoria to:", categoryName);
          /*       new FirebaseDatabaseHelper().randomElement(randomNumber, new FirebaseDatabaseHelper.DataStatus() {
                     @Override

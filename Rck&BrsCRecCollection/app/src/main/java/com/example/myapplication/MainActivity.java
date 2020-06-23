@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void DataIsDeleted() {
             }
+
+            @Override
+            public void DataIsSelected(String randomElement) {
+
+            }
         });
         fab =  findViewById(R.id.fab_btn);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             @Override
             public void DataIsDeleted() {
+
+            }
+
+            @Override
+            public void DataIsSelected(String randomElement) {
 
             }
         });

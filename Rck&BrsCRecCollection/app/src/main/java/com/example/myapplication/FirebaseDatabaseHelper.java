@@ -30,6 +30,8 @@ public class FirebaseDatabaseHelper {
         void DataIsUpdated();
 
         void DataIsDeleted();
+
+        void DataIsSelected(String randomElement);
     }
 
     FirebaseDatabaseHelper() {
@@ -158,7 +160,8 @@ public class FirebaseDatabaseHelper {
         });
     }
     //Wersja w której argument odrazu podaje wynik z danej kategorii
-    String countCategory(final String category, final DataStatus dataStatus){
+    //Trzeba innaczej to nazwać, jest mylące
+    void countCategory(final String category, final DataStatus dataStatus){
         mReferenceBooks.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -173,14 +176,13 @@ public class FirebaseDatabaseHelper {
                   //  elements.add(element);
                 }
                 int pop = new PopActivity().generateRandomIndex(keys.size());
-                resultTitle = keys.get(pop);
-                dataStatus.DataIsLoaded();
+                resultTitle = keys.get(pop-1);
+                dataStatus.DataIsSelected(resultTitle);
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-        return resultTitle;
+       // return resultTitle;
     }
     /*
     No nie działa zasięg zmiennych, bo niby jest dobrze, ale po skończeniu metody, dane te wygasją.

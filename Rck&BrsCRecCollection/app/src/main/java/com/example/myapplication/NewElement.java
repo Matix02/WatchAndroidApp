@@ -89,7 +89,6 @@ public class NewElement extends Activity {
                             new FirebaseDatabaseHelper().addElement(element, maxId+1, new FirebaseDatabaseHelper.DataStatus() {
                                 @Override
                                 public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
                                 }
 
                                 @Override
@@ -104,6 +103,11 @@ public class NewElement extends Activity {
 
                                 @Override
                                 public void DataIsDeleted() {
+
+                                }
+
+                                @Override
+                                public void DataIsSelected(String randomElement) {
 
                                 }
                             });

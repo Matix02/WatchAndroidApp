@@ -107,6 +107,11 @@ public class RecyclerView_Config {
                         @Override
                         public void DataIsDeleted() {
                         }
+
+                        @Override
+                        public void DataIsSelected(String randomElement) {
+
+                        }
                     });
                 }
             });

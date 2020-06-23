@@ -86,6 +86,11 @@ public class EditElement extends AppCompatActivity {
                     public void DataIsDeleted() {
 
                     }
+
+                    @Override
+                    public void DataIsSelected(String randomElement) {
+
+                    }
                 });
             }
         });
@@ -112,6 +117,11 @@ public class EditElement extends AppCompatActivity {
                     public void DataIsDeleted() {
                         Toast.makeText(EditElement.this, "Element has been deleted", Toast.LENGTH_LONG).show();
                         finish();
+
+                    }
+
+                    @Override
+                    public void DataIsSelected(String randomElement) {
 
                     }
                 });
