@@ -16,8 +16,7 @@ import java.util.Random;
 
 import androidx.annotation.NonNull;
 
-public class FirebaseDatabaseHelper {
-    private FirebaseDatabase mDatabase;
+class FirebaseDatabaseHelper {
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
     private static String resultTitle;
@@ -35,7 +34,7 @@ public class FirebaseDatabaseHelper {
     }
 
     FirebaseDatabaseHelper() {
-        mDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         mReferenceBooks = mDatabase.getReference("Element");
     }
 
@@ -106,13 +105,12 @@ public class FirebaseDatabaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
              //   double randomIndex = Math.floor(Math.random() * sizeOfList);
-                int randomIndex = sizeOfList;
-                mReferenceBooks.orderByChild("index").startAt(randomIndex).endAt(randomIndex + 1);
+                mReferenceBooks.orderByChild("index").startAt(sizeOfList).endAt(sizeOfList + 1);
                 elements.clear();
                 List<String> keys = new ArrayList<>();
                 int i=1;
                 for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    if (i == randomIndex ) {
+                    if (i == sizeOfList) {
                         keys.add(keyNode.getKey());
                         Element element = keyNode.getValue(Element.class);
                         elements.add(element);
@@ -160,29 +158,47 @@ public class FirebaseDatabaseHelper {
         });
     }
     //Wersja w której argument odrazu podaje wynik z danej kategorii
+
+    /*
+    Update#1
+        Poprawić wyświetlanie pustej listy, gdy w danej kategorii nie ma ani jednego elementu.
+        Można przyjrzeć się blokowi try/catch, lub sprawdzać czy w danej liście znajduje się cokolwiek, jeśli nie RadioButton jest wyłączany
+        przy rzeczonej kategorii.
+    Update#2
+        Po co szukać czegoś co już zostało oglądnięte :(
+        Czyli dodać kolejną filtrację ...
+     */
     //Trzeba innaczej to nazwać, jest mylące
     void countCategory(final String category, final DataStatus dataStatus){
         mReferenceBooks.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               // elements.clear();
                 List<String> keys = new ArrayList<>();
-                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    if (category.equals(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory())){
+                if (category.equals("Wszystko")){
+                    for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
                         keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
                     }
-                  //  keys.add(keyNode.getKey());
-                //    Element element = keyNode.getValue(Element.class);
-                  //  elements.add(element);
                 }
-                int pop = new PopActivity().generateRandomIndex(keys.size());
-                resultTitle = keys.get(pop-1);
-                dataStatus.DataIsSelected(resultTitle);
+                else{
+                    for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
+                        if (category.equals(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory())){
+                            keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
+                        }
+                    }
+                }
+                //gdy kategoria bedzie pusta
+                try{
+                    int pop = new PopActivity().generateRandomIndex(keys.size());
+                    resultTitle = keys.get(pop-1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }finally {
+                    dataStatus.DataIsSelected(resultTitle);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-       // return resultTitle;
     }
     /*
     No nie działa zasięg zmiennych, bo niby jest dobrze, ale po skończeniu metody, dane te wygasją.

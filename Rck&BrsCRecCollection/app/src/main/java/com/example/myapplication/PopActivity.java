@@ -67,6 +67,7 @@ public class PopActivity extends Activity {
 
                     @Override
                     public void DataIsSelected(String randomElement) {
+                        tvResult.setText("");
                         tvResult.setText(randomElement);
                     }
                 });

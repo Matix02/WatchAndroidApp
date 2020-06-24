@@ -13,6 +13,7 @@ public class UseElement {
     private String category;
     private boolean isWatched;
 
+
     public int getId() {
         return id;
     }

@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Wyszukaj"
-
         android:background="@drawable/btn_bg"
         android:layout_marginTop="320sp"
         android:layout_marginHorizontal="5dp"
@@ -83,7 +82,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/whiteText"
-            android:checked="true"
             android:text="@string/gra" />
 
         <RadioButton
@@ -92,15 +90,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Wszystko"
-
-            />
+            android:checked="true" />
     </RadioGroup>
 
     <TextView
         android:id="@+id/popResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bloodshot"
         android:layout_marginTop="388sp"
         android:textSize="25sp"
         android:textStyle="bold"
