@@ -1,11 +1,11 @@
 package com.example.myapplication;
 
 public class Element {
-    private String title;
-    private String category;
-    private boolean isWatched;
+    public String title;
+    public String category;
+    public boolean isWatched;
 
-    public Element() { }
+    Element() { }
 
     public Element(String title, String category, boolean isWatched) {
         this.title = title;
@@ -13,27 +13,28 @@ public class Element {
         this.isWatched = isWatched;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 
-    public String getCategory() {
+    String getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    void setCategory(String category) {
         this.category = category;
     }
 
-    public boolean isWatched() {
+    boolean isWatched() {
         return isWatched;
     }
 
-    public void setWatched(boolean watched) {
+    void setWatched(boolean watched) {
         isWatched = watched;
     }
 }
+

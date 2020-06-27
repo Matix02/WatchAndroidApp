@@ -5,11 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,9 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import androidx.appcompat.widget.SearchView;
+import androidx.room.Room;
 
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
@@ -38,10 +36,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
     private RecyclerView_Config.ElementAdapter elementAdapter;
-    private List<String> keys;
+    private ArrayList<Element> localList = new ArrayList<>();
     private String key;
+    private List<String> keys;
     private List<Element> elements2 = new ArrayList<>();
+    private RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
+
 
     //co niby nie ma połączenia, brak reakcji na to co jest wpisywane, funkcja w debbugerze - nieaktywna
     //dwa albo trzy filmiki zostały zamieszczone, by to ogarnąć
@@ -56,6 +57,23 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerView = (RecyclerView) findViewById(R.id.ele_listView);
       //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        /*
+        Złą praktyką jest gdy wywołujemy w taki spsoób bazę, lepiej zbudować coś w rodzaju tego modelu z Firebase'a, który występuje dotychczas lub
+        po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
+         */
+       roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
+      //  createElement("Elo", "Kanapka", true);
+
+        Element e1 = new Element("dzien dobry", "razy dwa", true);
+       // localList.add(e1);
+        localList.addAll(roomDatabaseHelper.getElementDao().getElements());
+        /*
+        Zadziałało!
+        Trzeba teraz spróbować opracować opcję, która będzie zakreślać te rzeczy, które juz oglądneliśmy na równie z bazą z firebase'a.
+         */
+        for (Element element : localList){
+            Log.d("Element:", element.getTitle());
+        }
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
@@ -141,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerView.setAdapter(elementAdapter);
     }
     private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter  elementAdapter){
+
         elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
         return elementAdapter;
     }
@@ -190,5 +209,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
+    }
+
+    private void createElement(String title, String category, boolean isWatched){
+        long id = roomDatabaseHelper.getElementDao().addElement(new RoomElement(0, title, category, isWatched));
+
+        Element roomElement =  roomDatabaseHelper.getElementDao().getElement(id);
+
+        if (roomElement != null){
+            localList.add(0, roomElement);
+            //tutaj powinien być jeszcze adapter.
+        }
     }
 }
