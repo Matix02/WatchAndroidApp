@@ -71,10 +71,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Zadziałało!
         Trzeba teraz spróbować opracować opcję, która będzie zakreślać te rzeczy, które juz oglądneliśmy na równie z bazą z firebase'a.
          */
+       // Element r0 =  localList.get(0);
+        deleteElement(localList.get(0), 0);
         for (Element element : localList){
             Log.d("Element:", element.getTitle());
         }
-
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -84,6 +85,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 // tą listę
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter, elementAdapter);
                 //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
+             /*   for(Element e : elements){
+                    createElement(e.getTitle(), e.getCategory(), e.isWatched);
+                }
+                for (Element element : localList){
+                    Log.d("Element:", element.getTitle());
+                }*/
+
+
                elementsSize = elements.size();
             }
             @Override
@@ -214,11 +223,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private void createElement(String title, String category, boolean isWatched){
         long id = roomDatabaseHelper.getElementDao().addElement(new RoomElement(0, title, category, isWatched));
 
-        Element roomElement =  roomDatabaseHelper.getElementDao().getElement(id);
+        Element roomElement = (Element) roomDatabaseHelper.getElementDao().getElement(id);
 
         if (roomElement != null){
             localList.add(0, roomElement);
             //tutaj powinien być jeszcze adapter.
         }
+    }
+    private void deleteElement(Element element, int index){
+   //     roomDatabaseHelper.getElementDao().deleteElement(element);
+//        Element e = roomDatabaseHelper.getElementDao().getElement(index);
+//        roomDatabaseHelper.getElementDao().deleteElement(e);
+        //Super rzutowanie, nie wiadomo co robisz
+        //Element roomElement =  roomDatabaseHelper.getElementDao().getElement(element);
+
+
+      //  localList.remove(index);
+       /* if (roomElement != null){
+            localList.remove(roomElement);
+            //tutaj powinien być jeszcze adapter.
+        }*/
     }
 }
