@@ -12,18 +12,21 @@ import androidx.room.Update;
 @Dao
 public interface ElementDao {
 
+    //Pierwsze trzy to jako argument były RoomElementy
     @Insert
-    public long addElement(RoomElement element);
+    public long addElement(Element element);
 
     @Update
-    public void updateElemet(RoomElement element);
+    public void updateElemet(Element element);
 
     @Delete
-    public void deleteElement(RoomElement element);
+    public void deleteElement(Element element);
 
     @Query("select * from Element")
     public List<Element> getElements();
 
-    @Query("select * from Element where id ==:elementId")
+    //Przydałoby się zmienić na z tym id, bo nie występuje w samej klasie Element
+    //Poprawić to Query, by dalej wyszukiwało informacje
+   // @Query("select * from Element where id ==:elementId")
     public Element getElement(long elementId);
 }

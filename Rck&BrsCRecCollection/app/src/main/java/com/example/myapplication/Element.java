@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import androidx.room.Entity;
+
+@Entity(tableName = "Element")
 public class Element {
     public String title;
     public String category;
