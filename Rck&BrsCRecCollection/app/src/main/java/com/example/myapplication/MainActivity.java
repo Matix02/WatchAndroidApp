@@ -47,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     //co niby nie ma połączenia, brak reakcji na to co jest wpisywane, funkcja w debbugerze - nieaktywna
     //dwa albo trzy filmiki zostały zamieszczone, by to ogarnąć
 
+
+    /*
+    !!!!!! Teraz skopiować wszystkie elementy z bazy firebase do bazy tej, która jest tą lokalną
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +76,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Trzeba teraz spróbować opracować opcję, która będzie zakreślać te rzeczy, które juz oglądneliśmy na równie z bazą z firebase'a.
          */
        // Element r0 =  localList.get(0);
-        deleteElement(localList.get(0), 0);
+       // deleteElement(localList.get(0), 0);
+       // deleteElement(localList.get(0),0);
+
+        deleteElement(localList);
         for (Element element : localList){
             Log.d("Element:", element.getTitle());
         }
@@ -221,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void createElement(String title, String category, boolean isWatched){
-        long id = roomDatabaseHelper.getElementDao().addElement(new RoomElement(0, title, category, isWatched));
+        long id = roomDatabaseHelper.getElementDao().addElement(new Element(0, title, category, isWatched));
 
         Element roomElement = (Element) roomDatabaseHelper.getElementDao().getElement(id);
 
@@ -230,7 +237,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             //tutaj powinien być jeszcze adapter.
         }
     }
-    private void deleteElement(Element element, int index){
+    private void deleteElement(ArrayList<Element> element){
+        roomDatabaseHelper.getElementDao().deleteAllElements();
+        ArrayList<Element> sampleList = new ArrayList<>();
+        sampleList.removeAll(element);
    //     roomDatabaseHelper.getElementDao().deleteElement(element);
 //        Element e = roomDatabaseHelper.getElementDao().getElement(index);
 //        roomDatabaseHelper.getElementDao().deleteElement(e);

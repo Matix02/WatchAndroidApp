@@ -4,7 +4,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 
-@Database(entities = {RoomElement.class}, version = 1)
+@Database(entities = {Element.class}, version = 1)
 public abstract class RoomDatabaseHelper extends RoomDatabase {
 
     public abstract ElementDao getElementDao();

@@ -22,11 +22,21 @@ public interface ElementDao {
     @Delete
     public void deleteElement(Element element);
 
+    @Query("delete from Element")
+    public void deleteAllElements();
+
     @Query("select * from Element")
     public List<Element> getElements();
 
     //Przydałoby się zmienić na z tym id, bo nie występuje w samej klasie Element
     //Poprawić to Query, by dalej wyszukiwało informacje
    // @Query("select * from Element where id ==:elementId")
+
+    //Jeden z możliwych pomysłów - below
+   // @Query("select * from Element where title ==:elementId AND category ==:")
+
+    @Query("select * from Element where id ==:elementId")
     public Element getElement(long elementId);
+
+
 }
