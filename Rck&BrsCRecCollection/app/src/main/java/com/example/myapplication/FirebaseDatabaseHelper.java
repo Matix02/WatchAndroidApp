@@ -77,7 +77,7 @@ class FirebaseDatabaseHelper {
                         dataStatus.DataIsUpdated();
                     }
                 });
-    }
+}
 
     void deleteElement(String key, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(null)

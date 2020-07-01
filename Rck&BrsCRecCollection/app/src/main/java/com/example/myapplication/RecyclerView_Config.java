@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 public class RecyclerView_Config {
     private Context mContext;
@@ -33,6 +34,8 @@ public class RecyclerView_Config {
     private DatabaseReference reff;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
+   // private RoomDatabaseHelper roomDatabaseHelper;
+
 
     //ten prawdziwy setConfig - setAdapter
 //    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
@@ -68,12 +71,14 @@ public class RecyclerView_Config {
         AdapterView.OnItemClickListener mListener;
         MenuItem searchItem;
 
-        public ElementItemView(ViewGroup parent) {
+        ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
-            title = (TextView) itemView.findViewById(R.id.titleTextView);
-            category = (TextView) itemView.findViewById(R.id.categoryTextView);
-            isWatched = (CheckBox) itemView.findViewById(R.id.checkBox);
+            title = itemView.findViewById(R.id.titleTextView);
+            category =  itemView.findViewById(R.id.categoryTextView);
+            isWatched =  itemView.findViewById(R.id.checkBox);
             cardView = itemView.findViewById(R.id.cardLayout);
+
+           // roomDatabaseHelper = Room.databaseBuilder(mContext.getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
             cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -86,43 +91,60 @@ public class RecyclerView_Config {
                     mContext.startActivity(intent);
                 }
             });
+            /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   * *********************************
+            * !!!!!!!!!!!!!!!!*/
+            //Tu się dzieje, gdy klika się oglądane lub też nie
             isWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int clickePosition = (int) v.getTag();
+
+
+                    /////////////////
+                    //Coś zrobić z tą pozycją, jak to przesłać ?!??!
+                    ///////////////////
+
                     Element element = new Element();
                     //boolean isOrNot =   element.isWatched();
+                    element.setId(getItemId());
                     element.setWatched(isWatched.isChecked());
                     element.setTitle(title.getText().toString());
                     element.setCategory(category.getText().toString());
-                    new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
-                        @Override
-                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                        }
-                        @Override
-                        public void DataIsInserted() {
-                        }
-                        @Override
-                        public void DataIsUpdated() {
-                        }
-                        @Override
-                        public void DataIsDeleted() {
-                        }
 
-                        @Override
-                        public void DataIsSelected(String randomElement) {
+                    MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
 
-                        }
-                    });
+
+//                    new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+//                        @Override
+//                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
+//                        }
+//                        @Override
+//                        public void DataIsInserted() {
+//                        }
+//                        @Override
+//                        public void DataIsUpdated() {
+//                        }
+//                        @Override
+//                        public void DataIsDeleted() {
+//                        }
+//                        @Override
+//                        public void DataIsSelected(String randomElement) {
+//
+//                        }
+//                    });
                 }
             });
         }
 
-        public void bind(Element element, String key) {
+        //łączenie elementów z listy do wyswietlenia na ekranie
+        public void bind(Element element, String key, Element roomE) {
             //  title.setText(element.getTitle());
             String e = element.getTitle();
             title.setText(e);
             category.setText(element.getCategory());
-            isWatched.setChecked(element.isWatched());
+            //Local isWatched
+            isWatched.setChecked(roomE.isWatched());
             this.key = key;
         }
 
@@ -151,6 +173,14 @@ public class RecyclerView_Config {
             this.filterElementList = filterElementList;
         }
 
+        private void updateLocalElement(String title, String category, boolean isWatched, int position){
+            Element element = filterElementList.get(position);
+
+            element.setTitle(title);
+            element.setCategory(category);
+            element.setWatched(isWatched);
+
+        }
         @NonNull
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -160,19 +190,15 @@ public class RecyclerView_Config {
             //  return new ElementItemView((ViewGroup) view);
         }
 
+
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {
-            holder.bind(elementList.get(position), keysList.get(position));
+            holder.bind(elementList.get(position), keysList.get(position), filterElementList.get(position));
         }
 
         @Override
         public int getItemCount() {
             return elementList.size();
-        }
-
-        public void removeItem(int position) {
-            elementList.remove(position);
-            notifyDataSetChanged();
         }
 
         @Override
@@ -208,6 +234,7 @@ public class RecyclerView_Config {
                 notifyDataSetChanged();
             }
         };
+
         public void updateList(List<Element> newList){
             elementList = new ArrayList<>();
             elementList.addAll(newList);

@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private String key;
     private List<String> keys;
     private List<Element> elements2 = new ArrayList<>();
-    private RoomDatabaseHelper roomDatabaseHelper;
+    public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
 
 
@@ -79,10 +79,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
        // deleteElement(localList.get(0), 0);
        // deleteElement(localList.get(0),0);
 
-        deleteElement(localList);
+       /* deleteEveryElements(localList);
         for (Element element : localList){
             Log.d("Element:", element.getTitle());
-        }
+        }*/
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -90,16 +90,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //!!!!!!!!!!! Ważne - filtrowana lista jest pusta, dlatego, ze wystepuje tylko w tym wywolaniu nizej- mozna rozdzielic ta metode setConfig na pół że napierw jest konstr
                 // konstrukcja adaptera z lista elements i keys a nastepie metoda z tej metody daje nam setAdapter, lub sprobowac zrobic metode getList czy cos i stąd WYCIAGANAC
                 // tą listę
-                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter, elementAdapter);
+                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
-             /*   for(Element e : elements){
+               /* for(Element e : elements){
                     createElement(e.getTitle(), e.getCategory(), e.isWatched);
-                }
-                for (Element element : localList){
-                    Log.d("Element:", element.getTitle());
                 }*/
-
-
+                for (Element element : localList){
+                    Log.d("Element:", String.valueOf(element.getId()));
+                }
                elementsSize = elements.size();
             }
             @Override
@@ -237,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             //tutaj powinien być jeszcze adapter.
         }
     }
-    private void deleteElement(ArrayList<Element> element){
+    private void deleteEveryElements(ArrayList<Element> element){
         roomDatabaseHelper.getElementDao().deleteAllElements();
         ArrayList<Element> sampleList = new ArrayList<>();
         sampleList.removeAll(element);
