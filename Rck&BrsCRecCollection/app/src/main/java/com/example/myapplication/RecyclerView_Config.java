@@ -98,7 +98,7 @@ public class RecyclerView_Config {
             isWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int clickePosition = (int) v.getTag();
+                  //  int clickePosition = (int) v.getTag();
 
 
                     /////////////////
@@ -107,32 +107,32 @@ public class RecyclerView_Config {
 
                     Element element = new Element();
                     //boolean isOrNot =   element.isWatched();
-                    element.setId(getItemId());
+                   // element.setId(getItemId());
                     element.setWatched(isWatched.isChecked());
                     element.setTitle(title.getText().toString());
                     element.setCategory(category.getText().toString());
 
-                    MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
+                  //  MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
 
 
-//                    new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
-//                        @Override
-//                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
-//                        }
-//                        @Override
-//                        public void DataIsInserted() {
-//                        }
-//                        @Override
-//                        public void DataIsUpdated() {
-//                        }
-//                        @Override
-//                        public void DataIsDeleted() {
-//                        }
-//                        @Override
-//                        public void DataIsSelected(String randomElement) {
-//
-//                        }
-//                    });
+                    new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+                        @Override
+                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                        }
+                        @Override
+                        public void DataIsInserted() {
+                        }
+                        @Override
+                        public void DataIsUpdated() {
+                        }
+                        @Override
+                        public void DataIsDeleted() {
+                        }
+                        @Override
+                        public void DataIsSelected(String randomElement) {
+
+                        }
+                    });
                 }
             });
         }
@@ -185,7 +185,6 @@ public class RecyclerView_Config {
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mylist, parent, false);
-
             return new ElementItemView(parent);
             //  return new ElementItemView((ViewGroup) view);
         }

@@ -20,6 +20,7 @@ class FirebaseDatabaseHelper {
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
     private static String resultTitle;
+    //private RoomDatabaseHelper roomDatabaseHelper;
 
     public interface DataStatus {
         void DataIsLoaded(List<Element> elements, List<String> keys);
@@ -60,6 +61,7 @@ class FirebaseDatabaseHelper {
 
     void addElement(Element element, long id, final DataStatus dataStatus) {
         // String key = mReferenceBooks.push().getKey();
+        MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
         mReferenceBooks.child(String.valueOf((id + 1))).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -70,6 +72,9 @@ class FirebaseDatabaseHelper {
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {
+//        roomDatabaseHelper.getElementDao().updateElemet(element);
+
+
         mReferenceBooks.child(key).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

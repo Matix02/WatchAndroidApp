@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         Element e1 = new Element("dzien dobry", "razy dwa", true);
        // localList.add(e1);
-        localList.addAll(roomDatabaseHelper.getElementDao().getElements());
         /*
         Zadziałało!
         Trzeba teraz spróbować opracować opcję, która będzie zakreślać te rzeczy, które juz oglądneliśmy na równie z bazą z firebase'a.
@@ -90,6 +89,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //!!!!!!!!!!! Ważne - filtrowana lista jest pusta, dlatego, ze wystepuje tylko w tym wywolaniu nizej- mozna rozdzielic ta metode setConfig na pół że napierw jest konstr
                 // konstrukcja adaptera z lista elements i keys a nastepie metoda z tej metody daje nam setAdapter, lub sprobowac zrobic metode getList czy cos i stąd WYCIAGANAC
                 // tą listę
+
+
+                //************************************
+                /////////////////// Teraz już dodaje się bez problemów. Należy jakoś edytować te wszystkie Id w lokalu i nadać im wartości z firebase'a
+                //////////////////
+                localList.addAll(roomDatabaseHelper.getElementDao().getElements());
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                /* for(Element e : elements){
