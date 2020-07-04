@@ -61,7 +61,7 @@ class FirebaseDatabaseHelper {
 
     void addElement(Element element, long id, final DataStatus dataStatus) {
         // String key = mReferenceBooks.push().getKey();
-        MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
+
         mReferenceBooks.child(String.valueOf((id + 1))).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -69,6 +69,9 @@ class FirebaseDatabaseHelper {
                         dataStatus.DataIsInserted();
                     }
                 });
+        element.setId(id+1);
+        MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
+
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {
@@ -92,6 +95,9 @@ class FirebaseDatabaseHelper {
                         dataStatus.DataIsDeleted();
                     }
                 });
+
+        MainActivity.roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
+
     }
 
     /*można powstawiać break'y w tych pętlach, by nie wykonywały się tak do końca zawsze

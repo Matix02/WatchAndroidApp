@@ -35,8 +35,15 @@ public interface ElementDao {
     //Jeden z możliwych pomysłów - below
    // @Query("select * from Element where title ==:elementId AND category ==:")
 
+    @Query("delete from Element where id ==:elementId")
+    public void deleteIdElement(int elementId);
+
     @Query("select * from Element where id ==:elementId")
     public Element getElement(long elementId);
 
+    @Query("UPDATE Element\n" +
+            "SET id =:actualID\n" +
+            "WHERE ID =:oldId ")
+    public void updateID(int actualID, int oldId);
 
 }

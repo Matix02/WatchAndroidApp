@@ -30,8 +30,6 @@ public class NewElement extends Activity {
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private DatabaseReference reff;
-    private Element element;
-    private Button mBackButton;
     long maxId = 0;
 
     public NewElement() {
@@ -46,14 +44,15 @@ public class NewElement extends Activity {
         final EditText editText = findViewById(R.id.nameET);
         radioGroup = findViewById(R.id.categoryRG);
         final Button saveButton = findViewById(R.id.saveButton);
-        mBackButton = findViewById(R.id.backButton);
-        element = new Element();
+        Button mBackButton = findViewById(R.id.backButton);
+        Element element = new Element();
         reff = FirebaseDatabase.getInstance().getReference().child("Element");
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    maxId = (dataSnapshot.getChildrenCount());}
+                    maxId = (dataSnapshot.getChildrenCount());
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
@@ -61,13 +60,13 @@ public class NewElement extends Activity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish(); return;
+                finish();
             }
         });
         /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Poprawić !!! Validation - walidacja
         //przemyslec jak to powinno dzialac, bo tak srednio
-       radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (radioGroup.getCheckedRadioButtonId() == -1){
@@ -86,7 +85,8 @@ public class NewElement extends Activity {
                             element.setCategory(radioButton.getText().toString());
                             String mGroupID = reff.push().getKey();
                             element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
-                            new FirebaseDatabaseHelper().addElement(element, maxId+1, new FirebaseDatabaseHelper.DataStatus() {
+                            //Tu jest ten static arghhhh !!!!
+                            new FirebaseDatabaseHelper().addElement(element, MainActivity.lastIndex, new FirebaseDatabaseHelper.DataStatus() {
                                 @Override
                                 public void DataIsLoaded(List<Element> elements, List<String> keys) {
                                 }
@@ -145,10 +145,5 @@ public class NewElement extends Activity {
                 Toast.makeText(NewElement.this, "Data inserted Successfully", Toast.LENGTH_LONG).show();
             }
         });*/
-    }
-    public void checkButton(View v){
-        int radioId = radioGroup.getCheckedRadioButtonId();
-        radioButton = (RadioButton) Objects.requireNonNull(findViewById(radioId));
-        Toast.makeText(this, "sdasd", Toast.LENGTH_SHORT).show();
     }
 }
