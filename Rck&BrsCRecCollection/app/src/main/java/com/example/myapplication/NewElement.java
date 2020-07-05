@@ -45,7 +45,6 @@ public class NewElement extends Activity {
         radioGroup = findViewById(R.id.categoryRG);
         final Button saveButton = findViewById(R.id.saveButton);
         Button mBackButton = findViewById(R.id.backButton);
-        Element element = new Element();
         reff = FirebaseDatabase.getInstance().getReference().child("Element");
         reff.addValueEventListener(new ValueEventListener() {
             @Override
@@ -83,7 +82,7 @@ public class NewElement extends Activity {
                             radioButton = findViewById(radioId);
                             element.setTitle(editText.getText().toString());
                             element.setCategory(radioButton.getText().toString());
-                            String mGroupID = reff.push().getKey();
+                            //String mGroupID = reff.push().getKey();
                             element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
                             //Tu jest ten static arghhhh !!!!
                             new FirebaseDatabaseHelper().addElement(element, MainActivity.lastIndex, new FirebaseDatabaseHelper.DataStatus() {
@@ -111,39 +110,10 @@ public class NewElement extends Activity {
 
                                 }
                             });
-
                         }
                     });
                 }
-                //Zabrane znaki do elementów wyżej
             }
-        }
-        );
-//Koniec zabranych znaków
-     /*   saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reff.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            maxId = (dataSnapshot.getChildrenCount());}
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
-
-                //co bedzie sie działo po naacisnieciu, dokonac poxniej jak juz zakocznyc sie instalacja firebase'a
-
-                int radioId = radioGroup.getCheckedRadioButtonId();
-                radioButton = findViewById(radioId);
-                element.setTitle(editText.getText().toString());
-                element.setCategory(radioButton.getText().toString());
-                element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
-                //reff.push().setValue(element);
-                reff.child(String.valueOf(maxId+1)).setValue(element);
-                Toast.makeText(NewElement.this, "Data inserted Successfully", Toast.LENGTH_LONG).show();
-            }
-        });*/
+        });
     }
 }

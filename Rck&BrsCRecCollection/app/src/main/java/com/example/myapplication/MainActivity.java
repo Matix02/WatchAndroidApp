@@ -75,6 +75,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             /* Ważne - filtrowana lista jest pusta, dlatego, ze wystepuje tylko w tym wywolaniu nizej- mozna rozdzielic ta metode setConfig na pół że napierw jest konstr
                konstrukcja adaptera z lista elements i keys a nastepie metoda z tej metody daje nam setAdapter, lub sprobowac zrobic metode getList czy cos i stąd WYCIAGANAC
                  tą listę*/
+
+            localList.clear();
+            ///////////////////////////////////
+                /*
+                Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
+                Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś
+                albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
+                 */
                 localList.addAll(roomDatabaseHelper.getElementDao().getElements());
                 lastIndex = (int) localList.get(localList.size()-1).getId();
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
            //     assignRightId(elements);
 
                 for (Element element : localList){
-                    Log.d("Element:", String.valueOf(element.getId()));
+                    Log.d("Element:", String.valueOf(element.isWatched()));
                 }
                 Log.v("Ostatni element", "Koniec");
                 elementsSize = elements.size();

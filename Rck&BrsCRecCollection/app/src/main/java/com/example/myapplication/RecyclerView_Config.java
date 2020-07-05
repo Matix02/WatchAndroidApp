@@ -98,9 +98,6 @@ public class RecyclerView_Config {
             isWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                  //  int clickePosition = (int) v.getTag();
-
-
                     /////////////////
                     //Coś zrobić z tą pozycją, jak to przesłać ?!??!
                     ///////////////////
@@ -108,14 +105,16 @@ public class RecyclerView_Config {
                     Element element = new Element();
                     //boolean isOrNot =   element.isWatched();
                    // element.setId(getItemId());
+                    element.setId(Integer.parseInt(key));
                     element.setWatched(isWatched.isChecked());
                     element.setTitle(title.getText().toString());
                     element.setCategory(category.getText().toString());
 
                   //  MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
 
+                    MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
 
-                    new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+                  /*  new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
                         @Override
                         public void DataIsLoaded(List<Element> elements, List<String> keys) {
                         }
@@ -132,7 +131,7 @@ public class RecyclerView_Config {
                         public void DataIsSelected(String randomElement) {
 
                         }
-                    });
+                    }); */
                 }
             });
         }
