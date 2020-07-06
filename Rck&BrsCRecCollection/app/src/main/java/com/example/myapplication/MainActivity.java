@@ -13,11 +13,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import androidx.appcompat.widget.SearchView;
 import androidx.room.Room;
 
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
@@ -56,14 +62,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
          */
        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
-       // Element r0 =  localList.get(0);
-       // deleteElement(localList.get(0), 0);
 
      //  deleteEveryElements(localList);
         for (Element element : localList){
             Log.d("Element:", element.getTitle());
         }
-
 
         /*
         Teraz należy poprawić ten system co juz zostało oglądniete a co nie!
@@ -123,7 +126,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 startActivity(intent);
             }
         });
+        //Pisać poniżej
+
+
     }
+
     @Override
     public boolean onQueryTextChange(final String newText) {
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
@@ -174,24 +181,56 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
         return elementAdapter;
     }
-
+/*
+Dalej nie działa. Sprawdzić gdzie to się aktywuje, by zmienić opcję do wyszukiwania.
+ */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_bar_items, menu);
         MenuItem menuItem = menu.findItem(R.id.search_item1);
         SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setOnQueryTextListener(this);
+       // searchView.setIconifiedByDefault(false);
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                Toast.makeText(getApplicationContext(), "TextSubmit", Toast.LENGTH_LONG).show();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Toast.makeText(getApplicationContext(), "TextChange", Toast.LENGTH_LONG).show();
+
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
 
+    public void showSmth(MenuItem v){
+        Toast.makeText(getApplicationContext(), "cos", Toast.LENGTH_LONG).show();
+    }
+
+
+    //Metoda, wywoływana gdy naciska się Itemy z Dodatkowych Opcji(trzech kropek)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.item1) {
-           Intent intent = new Intent(getApplicationContext(), PopActivity.class);
-            startActivity(intent);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.item1:
+                Intent intent = new Intent(getApplicationContext(), PopActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.search_item1:
+                Toast.makeText(getApplicationContext(), "cos", Toast.LENGTH_LONG).show();
+                return  true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -203,11 +242,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+       // AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         switch (item.getItemId()){
-            case 121:
-                return true;
+            case R.id.search_item1:
+                Toast.makeText(getApplicationContext(), "cos", Toast.LENGTH_LONG).show();
+                return  true;
             case 122:
                 return true;
             default:
@@ -231,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             //tutaj powinien być jeszcze adapter, ale chyba nie musi
         }
     }
+
     private void assignRightId(List<Element> idList){
         for (int i=0; i<localList.size(); i++){
             int rightId = (int) idList.get(i).getId();
@@ -238,9 +279,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             localList.get(i).setId(rightId);
         }
     }
+
     private void deleteEveryElements(ArrayList<Element> element){
         roomDatabaseHelper.getElementDao().deleteAllElements();
         ArrayList<Element> sampleList = new ArrayList<>();
         sampleList.removeAll(element);
     }
+
+
 }

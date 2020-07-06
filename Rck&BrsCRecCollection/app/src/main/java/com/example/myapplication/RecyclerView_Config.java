@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.database.DatabaseReference;
@@ -34,8 +37,6 @@ public class RecyclerView_Config {
     private DatabaseReference reff;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
-   // private RoomDatabaseHelper roomDatabaseHelper;
-
 
     //ten prawdziwy setConfig - setAdapter
 //    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
@@ -66,19 +67,30 @@ public class RecyclerView_Config {
         private TextView category;
         private CheckBox isWatched;
         private String key;
-        private CardView cardView;
-        SearchView sv;
         AdapterView.OnItemClickListener mListener;
-        MenuItem searchItem;
 
         ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
             title = itemView.findViewById(R.id.titleTextView);
             category =  itemView.findViewById(R.id.categoryTextView);
             isWatched =  itemView.findViewById(R.id.checkBox);
-            cardView = itemView.findViewById(R.id.cardLayout);
+            CardView cardView = itemView.findViewById(R.id.cardLayout);
 
-           // roomDatabaseHelper = Room.databaseBuilder(mContext.getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
+          /*
+           Zawsze mozna sprobowac zrobić coś z tym SearchView niby,
+           bo CardView działa i ma się dobre.
+
+                  MenuItem menuItem = menu.findItem(R.id.search_item1);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+          SearchView searchView = itemView.findViewById(R.id.search_item1);
+
+            searchView.setOnCreateContextMenuListener(this);
+            searchView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }); */
 
             cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +103,9 @@ public class RecyclerView_Config {
                     mContext.startActivity(intent);
                 }
             });
+
+
+
             /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    * *********************************
             * !!!!!!!!!!!!!!!!*/
@@ -98,46 +113,20 @@ public class RecyclerView_Config {
             isWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /////////////////
-                    //Coś zrobić z tą pozycją, jak to przesłać ?!??!
-                    ///////////////////
 
                     Element element = new Element();
-                    //boolean isOrNot =   element.isWatched();
-                   // element.setId(getItemId());
                     element.setId(Integer.parseInt(key));
                     element.setWatched(isWatched.isChecked());
                     element.setTitle(title.getText().toString());
                     element.setCategory(category.getText().toString());
 
-                  //  MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
-
                     MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
-
-                  /*  new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
-                        @Override
-                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                        }
-                        @Override
-                        public void DataIsInserted() {
-                        }
-                        @Override
-                        public void DataIsUpdated() {
-                        }
-                        @Override
-                        public void DataIsDeleted() {
-                        }
-                        @Override
-                        public void DataIsSelected(String randomElement) {
-
-                        }
-                    }); */
                 }
             });
         }
 
         //łączenie elementów z listy do wyswietlenia na ekranie
-        public void bind(Element element, String key, Element roomE) {
+        void bind(Element element, String key, Element roomE) {
             //  title.setText(element.getTitle());
             String e = element.getTitle();
             title.setText(e);
@@ -158,15 +147,16 @@ public class RecyclerView_Config {
     public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable{
         private List<Element> elementList;
         private List<String> keysList;
-        public List<Element> filterElementList;
+        List<Element> filterElementList;
 
+        /*pierwotny konstruktor
         public ElementAdapter(List<Element> elementList, List<String> keysList) {
             this.elementList = elementList;
             this.keysList = keysList;
-        }
+        } */
 
         //Konstruktor do filtracji
-        public ElementAdapter(List<Element> elementList, List<String> keysList, List<Element> filterElementList) {
+        ElementAdapter(List<Element> elementList, List<String> keysList, List<Element> filterElementList) {
             this.elementList = elementList;
             this.keysList = keysList;
             this.filterElementList = filterElementList;
@@ -183,7 +173,6 @@ public class RecyclerView_Config {
         @NonNull
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mylist, parent, false);
             return new ElementItemView(parent);
             //  return new ElementItemView((ViewGroup) view);
         }
@@ -233,7 +222,7 @@ public class RecyclerView_Config {
             }
         };
 
-        public void updateList(List<Element> newList){
+        void updateList(List<Element> newList){
             elementList = new ArrayList<>();
             elementList.addAll(newList);
             notifyDataSetChanged();
