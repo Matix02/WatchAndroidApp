@@ -19,7 +19,7 @@
         android:focusable="auto"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fab_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,8 +27,13 @@
         android:layout_margin="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_add"
-        tools:ignore="RelativeOverlap" />
+        app:menu_showShadow="true"
+        app:menu_fab_label=""
+        app:menu_openDirection="up"
+        tools:ignore="RelativeOverlap"
+        >
+
+    </com.github.clans.fab.FloatingActionMenu>
 
     <ProgressBar
         android:id="@+id/loading_elements"

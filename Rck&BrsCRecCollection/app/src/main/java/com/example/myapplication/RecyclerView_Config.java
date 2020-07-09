@@ -62,7 +62,7 @@ public class RecyclerView_Config {
         return this.elementAdapter;
     }
 
-    class ElementItemView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    class ElementItemView extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView category;
         private CheckBox isWatched;
@@ -92,7 +92,7 @@ public class RecyclerView_Config {
                 }
             }); */
 
-            cardView.setOnCreateContextMenuListener(this);
+          //  cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,7 +103,6 @@ public class RecyclerView_Config {
                     mContext.startActivity(intent);
                 }
             });
-
 
 
             /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -136,11 +135,11 @@ public class RecyclerView_Config {
             this.key = key;
         }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.add(this.getAdapterPosition(), 121, 0, "Delete this item");
-            menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
-        }
+//        @Override
+//        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//            menu.add(this.getAdapterPosition(), 121, 0, "Delete this item");
+//            menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
+//        }
     }
 
 

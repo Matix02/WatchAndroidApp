@@ -6,9 +6,7 @@
         android:id="@+id/search_item1"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Search"
-        android:onClick="showSmth"
-        app:showAsAction="ifRoom"
-
+        app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item android:id="@+id/item1"

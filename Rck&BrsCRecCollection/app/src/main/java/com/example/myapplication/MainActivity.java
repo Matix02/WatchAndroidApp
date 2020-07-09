@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,10 +35,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
-    private RecyclerView_Config adapter;
-    private CheckBox isWatched;
+
     private RecyclerView recyclerView;
-    private DatabaseReference databaseReference;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
     private RecyclerView_Config.ElementAdapter elementAdapter;
@@ -44,9 +44,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private String key;
     private List<String> keys;
     private List<Element> elements2 = new ArrayList<>();
+    private Toolbar mToolbar;
+    /* O matko za dużo tych static arghhh*/
     public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
-    /* O matko za dużo tych static arghhh*/
     static int lastIndex = 0;
 
     @Override
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
          */
        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
+
+      // setSupportActionBar(mToolbar);
      //  deleteEveryElements(localList);
         for (Element element : localList){
             Log.d("Element:", element.getTitle());
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 startActivity(intent);
             }
         });
-        //Pisać poniżej
+        //////////////Pisać poniżej
 
 
     }
@@ -184,38 +187,23 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 /*
 Dalej nie działa. Sprawdzić gdzie to się aktywuje, by zmienić opcję do wyszukiwania.
  */
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.nav_bar_items, menu);
-        MenuItem menuItem = menu.findItem(R.id.search_item1);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu);
+
+       getMenuInflater().inflate(R.menu.nav_bar_items, menu);
+   MenuItem menuItem = menu.findItem(R.id.search_item1);
+
+        //SearchView
+     SearchView searchView = (SearchView) menuItem.getActionView();
+      searchView.setOnQueryTextListener(this);
+
        // searchView.setIconifiedByDefault(false);
-
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                Toast.makeText(getApplicationContext(), "TextSubmit", Toast.LENGTH_LONG).show();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Toast.makeText(getApplicationContext(), "TextChange", Toast.LENGTH_LONG).show();
-
-                return true;
-            }
-        };
-        searchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
-
-    public void showSmth(MenuItem v){
-        Toast.makeText(getApplicationContext(), "cos", Toast.LENGTH_LONG).show();
-    }
-
 
     //Metoda, wywoływana gdy naciska się Itemy z Dodatkowych Opcji(trzech kropek)
     @Override
@@ -226,32 +214,10 @@ Dalej nie działa. Sprawdzić gdzie to się aktywuje, by zmienić opcję do wysz
                 startActivity(intent);
                 return true;
             case R.id.search_item1:
-                Toast.makeText(getApplicationContext(), "cos", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "onOptionsItemSelected", Toast.LENGTH_LONG).show();
                 return  true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.main_context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-       // AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        switch (item.getItemId()){
-            case R.id.search_item1:
-                Toast.makeText(getApplicationContext(), "cos", Toast.LENGTH_LONG).show();
-                return  true;
-            case 122:
-                return true;
-            default:
-                return  super.onContextItemSelected(item);
         }
     }
 
