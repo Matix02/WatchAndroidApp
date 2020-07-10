@@ -34,9 +34,6 @@ import androidx.room.Room;
 public class RecyclerView_Config {
     private Context mContext;
     private ElementAdapter elementAdapter;
-    private DatabaseReference reff;
-    private List<Element> elements = new ArrayList<>();
-    private List<Element> elementsFilter = new ArrayList<>();
 
     //ten prawdziwy setConfig - setAdapter
 //    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
@@ -54,7 +51,7 @@ public class RecyclerView_Config {
     }
     //przeciążona metoda wersji wyżej - tej prawdziwej
     //gównianie zdefiniowana metoda do usieniecia lub poprawienia
-    public RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter, ElementAdapter elementAdapter) {
+    RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter, ElementAdapter elementAdapter) {
         mContext = context;
         this.elementAdapter = new ElementAdapter(elements, keys, elementsFilter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
