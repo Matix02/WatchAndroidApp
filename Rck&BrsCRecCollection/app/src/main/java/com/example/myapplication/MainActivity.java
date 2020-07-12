@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
         //////////////Pisać poniżej
 
-
     }
 
     @Override
@@ -214,6 +213,4 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         ArrayList<Element> sampleList = new ArrayList<>();
         sampleList.removeAll(element);
     }
-
-
 }
