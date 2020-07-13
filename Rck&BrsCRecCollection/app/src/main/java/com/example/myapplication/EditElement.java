@@ -17,17 +17,10 @@ public class EditElement extends AppCompatActivity {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private Element element;
     private EditText editText;
 
-    private Button mUpdate_btn;
-    private Button mDelete_btn;
-    private Button mBack_btn;
-    long maxId = 0;
-
+  //  long maxId = 0;
     private String key;
-    private String title;
-    private String category;
 
 
     @Override
@@ -36,21 +29,21 @@ public class EditElement extends AppCompatActivity {
         setContentView(R.layout.activity_edit_element);
 
         key = getIntent().getStringExtra("key");
-        title = getIntent().getStringExtra("title");
-        category = getIntent().getStringExtra("category");
+        String title = getIntent().getStringExtra("title");
+        String category = getIntent().getStringExtra("category");
 
         //radioButton = findViewById(radioId);
-        editText = (EditText) findViewById(R.id.nameET);
+        editText = findViewById(R.id.nameET);
         editText.setText(title);
-        radioGroup = (RadioGroup) findViewById(R.id.categoryRG);
-        mUpdate_btn = (Button) findViewById(R.id.updateButton);
-        mDelete_btn = (Button) findViewById(R.id.deleteButton);
-        mBack_btn = (Button) findViewById(R.id.backButton);
+        radioGroup =  findViewById(R.id.categoryRG);
+        Button mUpdate_btn = findViewById(R.id.updateButton);
+        Button mDelete_btn = findViewById(R.id.deleteButton);
+        Button mBack_btn = findViewById(R.id.backButton);
         //poniżej linijka może być niepotrzebna redudant
-        radioGroup.check(getIndex(radioGroup, category));
+        int idRadio = getIndex(category);
+        radioGroup.check(idRadio);
 
         mUpdate_btn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Element element = new Element();
@@ -110,7 +103,6 @@ public class EditElement extends AppCompatActivity {
                     public void DataIsDeleted() {
                         Toast.makeText(EditElement.this, "Element has been deleted", Toast.LENGTH_LONG).show();
                         finish();
-
                     }
 
                     @Override
@@ -126,59 +118,28 @@ public class EditElement extends AppCompatActivity {
                 finish();
             }
         });
-
-
-    //    reff = FirebaseDatabase.getInstance().getReference().child("Element");
-
-
-        //ID listener
-//        reff.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if(dataSnapshot.exists()){
-//                    maxId = (dataSnapshot.getChildrenCount());}
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {}
-//        });
-//
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                int radioId = radioGroup.getCheckedRadioButtonId();
-//                radioButton = findViewById(radioId);
-//                element.setTitle(editText.getText().toString());
-//                element.setCategory(radioButton.getText().toString());
-//               /* element.setWatched(false); */ //może dodać do layoutu opcję wybory, przy dodawaniu ...
-//                //reff.push().setValue(element);
-//                reff.child(String.valueOf(maxId)).setValue(element);
-//
-//                Toast.makeText(EditElement.this, "Data updated Successfully", Toast.LENGTH_LONG).show();
-//            }
-//        });
     }
-    private int getIndex(RadioGroup radioGroup, String item){
+    private int getIndex(String item){
         int index = 0;
         switch (item) {
             case "Film":
-                index = 2131230861;
+                index = 2131230862;
                 break;
             case "Serial":
                 index = 2131230728;
                 break;
             case "Książka":
-                index = 2131230885;
+                index = 2131230887;
                 break;
             case "Gra":
-                index = 2131230869;
+                index = 2131230870;
                 break;
         }
 
 //        for (int i=0; i<radioGroup.getChildCount();i++ ){
 //            if(i==index){
               //  index = i;
-                radioButton = findViewById(index);
+              //  radioButton = findViewById(index);
 //                break;
 //            }
 //        }

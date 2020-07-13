@@ -2,34 +2,22 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
-import com.google.firebase.database.DatabaseReference;
-
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 public class RecyclerView_Config {
     private Context mContext;
@@ -73,23 +61,6 @@ public class RecyclerView_Config {
             isWatched =  itemView.findViewById(R.id.checkBox);
             CardView cardView = itemView.findViewById(R.id.cardLayout);
 
-          /*
-           Zawsze mozna sprobowac zrobić coś z tym SearchView niby,
-           bo CardView działa i ma się dobre.
-
-                  MenuItem menuItem = menu.findItem(R.id.search_item1);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-          SearchView searchView = itemView.findViewById(R.id.search_item1);
-
-            searchView.setOnCreateContextMenuListener(this);
-            searchView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            }); */
-
-          //  cardView.setOnCreateContextMenuListener(this);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -101,10 +72,6 @@ public class RecyclerView_Config {
                 }
             });
 
-
-            /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   * *********************************
-            * !!!!!!!!!!!!!!!!*/
             //Tu się dzieje, gdy klika się oglądane lub też nie
             isWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,12 +98,6 @@ public class RecyclerView_Config {
             isWatched.setChecked(roomE.isWatched());
             this.key = key;
         }
-
-//        @Override
-//        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//            menu.add(this.getAdapterPosition(), 121, 0, "Delete this item");
-//            menu.add(this.getAdapterPosition(), 122, 1, "Update this item");
-//        }
     }
 
 
@@ -172,7 +133,6 @@ public class RecyclerView_Config {
             return new ElementItemView(parent);
             //  return new ElementItemView((ViewGroup) view);
         }
-
 
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {

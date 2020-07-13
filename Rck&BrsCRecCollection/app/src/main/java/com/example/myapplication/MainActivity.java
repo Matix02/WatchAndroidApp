@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.room.Room;
@@ -20,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
-
+/*
+zaprojektować. Mam pewien pomysł, by dodawanie kolejnych filtrów obfitowało w pokazywanie wybranych ChipButtonów na pasku pod searchView/toolbarem wraz z
+możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/nowych/edycja itd. to tylko w formie popup bazowo
+ */
 
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Potwierdz"
+        tools:layout_editor_absoluteX="116dp"
+        tools:layout_editor_absoluteY="550dp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kategorie"
+        tools:layout_editor_absoluteX="137dp"
+        tools:layout_editor_absoluteY="316dp" />
+
+    <Switch
+        android:id="@+id/switch4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gry"
+        tools:layout_editor_absoluteX="112dp"
+        tools:layout_editor_absoluteY="335dp" />
+
+    <Switch
+        android:id="@+id/switch5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filmy"
+        tools:layout_editor_absoluteX="112dp"
+        tools:layout_editor_absoluteY="370dp" />
+
+    <Switch
+        android:id="@+id/switch6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seriale"
+        tools:layout_editor_absoluteX="116dp"
+        tools:layout_editor_absoluteY="396dp" />
+
+    <Switch
+        android:id="@+id/switch7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Książki"
+        tools:layout_editor_absoluteX="116dp"
+        tools:layout_editor_absoluteY="439dp" />
+
+    <Switch
+        android:id="@+id/switch9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wszystko"
+        tools:layout_editor_absoluteX="116dp"
+        tools:layout_editor_absoluteY="486dp" />
+
+    <RadioButton
+        android:id="@+id/radioButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rock&Borys"
+        tools:layout_editor_absoluteX="76dp"
+        tools:layout_editor_absoluteY="106dp" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="51dp"
+        tools:layout_editor_absoluteY="34dp"
+        tools:visibility="visible">
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Borys" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rock" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="34dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Polecane przez:"
+        tools:layout_editor_absoluteX="84dp"
+        tools:layout_editor_absoluteY="63dp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="153dp"
+        tools:layout_editor_absoluteY="186dp" />
+
+    <Switch
+        android:id="@+id/switch10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ukończone"
+        tools:layout_editor_absoluteX="141dp"
+        tools:layout_editor_absoluteY="216dp" />
+
+    <Switch
+        android:id="@+id/switch11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nieukończone"
+        tools:layout_editor_absoluteX="140dp"
+        tools:layout_editor_absoluteY="258dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
