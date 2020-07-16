@@ -182,6 +182,11 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
             startActivity(intent);
             return true;
         }
+        else if(item.getItemId() == R.id.filter){
+            Intent intent = new Intent(getApplicationContext(), PopActivityFilter.class);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
