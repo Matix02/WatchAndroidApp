@@ -42,22 +42,22 @@ class FirebaseDatabaseHelper {
                 elements.clear();
                 List<String> keys = new ArrayList<>();
                 for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    keys.add(keyNode.getKey());
-                    Element element = keyNode.getValue(Element.class);
-                    elements.add(element);
+                    //Jakaś metoda, która pobiera argumenty filtra
+                   // if(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory().equals("Gra")){
+                        keys.add(keyNode.getKey());
+                        Element element = keyNode.getValue(Element.class);
+                        elements.add(element);
+                  //  }
                 }
                 dataStatus.DataIsLoaded(elements, keys);
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
     void addElement(Element element, long id, final DataStatus dataStatus) {
         // String key = mReferenceBooks.push().getKey();
-
         mReferenceBooks.child(String.valueOf((id + 1))).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -67,13 +67,10 @@ class FirebaseDatabaseHelper {
                 });
         element.setId(id+1);
         MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
-
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {
 //        roomDatabaseHelper.getElementDao().updateElemet(element);
-
-
         mReferenceBooks.child(key).setValue(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -81,7 +78,7 @@ class FirebaseDatabaseHelper {
                         dataStatus.DataIsUpdated();
                     }
                 });
-}
+    }
 
     void deleteElement(String key, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(null)
@@ -93,89 +90,28 @@ class FirebaseDatabaseHelper {
                 });
 
         MainActivity.roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
-
     }
 
-    /*można powstawiać break'y w tych pętlach, by nie wykonywały się tak do końca zawsze
+    /*
+    #1. można powstawiać break'y w tych pętlach, by nie wykonywały się tak do końca zawsze
     bo to może ograniczyć wydajność aplikacji
-     */
-    /*
-    inny pomsysł, bo też można zebrać wszystkie informacje do tablicy, jak już pętla ją
+
+    #2. inny pomsysł, bo też można zebrać wszystkie informacje do tablicy, jak już pętla ją
     z'for'uje i wtedy wylosować, może to być wydajniejsze
-     */
-    /*
-    Raz działa a raz nie, znaczy działa za drugim razem (!!!), i jeszcze trzeba popatrzeć na filtrację, bo trzeba
+
+    #3. Raz działa a raz nie, znaczy działa za drugim razem (!!!), i jeszcze trzeba popatrzeć na filtrację, bo trzeba
     zrobić odejmowanie oglądniętych i tych samych z tego RadioGroupa ... ta dam
-     */
-    void randomElement(final int sizeOfList, final DataStatus dataStatus) {
-        mReferenceBooks.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-             //   double randomIndex = Math.floor(Math.random() * sizeOfList);
-                mReferenceBooks.orderByChild("index").startAt(sizeOfList).endAt(sizeOfList + 1);
-                elements.clear();
-                List<String> keys = new ArrayList<>();
-                int i=1;
-                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    if (i == sizeOfList) {
-                        keys.add(keyNode.getKey());
-                        Element element = keyNode.getValue(Element.class);
-                        elements.add(element);
-                        break;
-                    }
-                    i++;
-                }
-                dataStatus.DataIsLoaded(elements, keys);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-    //Wersja liczeniowa ile elementó znajduje się w danej kategorii
-    void countCategory(){
-        mReferenceBooks.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                elements.clear();
-                List<String> keys = new ArrayList<>();
-                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    switch (Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory()){
-                        case "Film":
 
-                            break;
-                        case "Serial":
-
-                            break;
-                        case "Książka":
-
-                            break;
-                        case "Gra":
-
-                            break;
-                    }
-                    keys.add(keyNode.getKey());
-                    Element element = keyNode.getValue(Element.class);
-                    elements.add(element);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-    //Wersja w której argument odrazu podaje wynik z danej kategorii
-
-    /*
-    Update#1
+    #.4 - Update#1
         Poprawić wyświetlanie pustej listy, gdy w danej kategorii nie ma ani jednego elementu.
         Można przyjrzeć się blokowi try/catch, lub sprawdzać czy w danej liście znajduje się cokolwiek, jeśli nie RadioButton jest wyłączany
         przy rzeczonej kategorii.
-    Update#2
+    #.4 - Update#2
         Po co szukać czegoś co już zostało oglądnięte :(
         Czyli dodać kolejną filtrację ...
-     */
-    //Trzeba innaczej to nazwać, jest mylące
+
+    #5. - Trzeba innaczej to nazwać, jest mylące*/
+
     void countCategory(final String category, final DataStatus dataStatus){
         mReferenceBooks.addValueEventListener(new ValueEventListener() {
             @Override
@@ -193,7 +129,7 @@ class FirebaseDatabaseHelper {
                         }
                     }
                 }
-                //gdy kategoria bedzie pusta
+                //gdy kategoria bedzie pusta - no chyba jednak nie ...
                 try{
                     int pop = new PopActivity().generateRandomIndex(keys.size());
                     resultTitle = keys.get(pop-1);
@@ -207,8 +143,4 @@ class FirebaseDatabaseHelper {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
-    /*
-    No nie działa zasięg zmiennych, bo niby jest dobrze, ale po skończeniu metody, dane te wygasją.
-    Poczytać o zasięgu w książce. I spróbować zmienić może argumenty przy wywoływaniu DataIsLoaded
-     */
 }

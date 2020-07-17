@@ -16,22 +16,18 @@ public class PopActivityFilter extends Activity {
 
     String zazWszt;
     String odzWszt;
-
     Switch finishSwitch;
     Switch unFinishSwitch;
-
     CheckBox filmsCheckBox;
     CheckBox gamesCheckBox;
     CheckBox booksCheckBox;
     CheckBox seriesCheckBox;
     CheckBox allCheckBox;
-
     Switch rockSwitch;
     Switch borysSwitch;
     Switch rckAndBorysSwitch;
     Switch otherSwitch;
     Switch allSwitch;
-
     Button saveButton;
     Button defaultButton;
 
@@ -64,7 +60,6 @@ public class PopActivityFilter extends Activity {
 
         saveButton = findViewById(R.id.saveFilterButton);
         defaultButton = findViewById(R.id.defaultFilterButton);
-
 
         allSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -120,36 +115,24 @@ public class PopActivityFilter extends Activity {
         getWindow().setAttributes(params);
 
     }
+
     public void selectAllRecom(boolean statusButton){
-        if(!statusButton){
-            rockSwitch.setChecked(true);
-            borysSwitch.setChecked(true);
-            rckAndBorysSwitch.setChecked(true);
-            otherSwitch.setChecked(true);
-            //allSwitch.setChecked(true);
-        } else {
-            rockSwitch.setChecked(false);
-            borysSwitch.setChecked(false);
-            rckAndBorysSwitch.setChecked(false);
-            otherSwitch.setChecked(false);
-          //  allSwitch.setChecked(false);
-        }
+        boolean realStatus = !statusButton;
+
+        rockSwitch.setChecked(realStatus);
+        borysSwitch.setChecked(realStatus);
+        rckAndBorysSwitch.setChecked(realStatus);
+        otherSwitch.setChecked(realStatus);
     }
+
     public void selectAllCategory(boolean statusCheckBox){
-        if(!statusCheckBox){
-            filmsCheckBox.setChecked(true);
-            gamesCheckBox.setChecked(true);
-            seriesCheckBox.setChecked(true);
-            booksCheckBox.setChecked(true);
-            allCheckBox.setChecked(true);
-        }
-        else {
-            filmsCheckBox.setChecked(false);
-            gamesCheckBox.setChecked(false);
-            seriesCheckBox.setChecked(false);
-            booksCheckBox.setChecked(false);
-            allCheckBox.setChecked(false);
-        }
+        boolean realStatus = !statusCheckBox;
+
+        filmsCheckBox.setChecked(realStatus);
+        gamesCheckBox.setChecked(realStatus);
+        seriesCheckBox.setChecked(realStatus);
+        booksCheckBox.setChecked(realStatus);
+        allCheckBox.setChecked(realStatus);
     }
 }
 //Postarać się o funkcjonlaność o zgrozo

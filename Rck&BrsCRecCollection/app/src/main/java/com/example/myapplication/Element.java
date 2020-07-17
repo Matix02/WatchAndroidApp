@@ -11,7 +11,7 @@ public class Element {
 
     public String title;
     public String category;
-    public boolean isWatched;
+    boolean isWatched;
 
     Element() { }
 
@@ -31,6 +31,7 @@ public class Element {
     public long getId() { return id; }
 
     public void setId(long id) { this.id = id; }
+
     String getTitle() {
         return title;
     }

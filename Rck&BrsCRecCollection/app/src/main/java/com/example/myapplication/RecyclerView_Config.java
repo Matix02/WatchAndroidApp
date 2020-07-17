@@ -61,6 +61,7 @@ public class RecyclerView_Config {
             isWatched =  itemView.findViewById(R.id.checkBox);
             CardView cardView = itemView.findViewById(R.id.cardLayout);
 
+            //ListView - informacje o naciśniętym elemencie
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -72,7 +73,7 @@ public class RecyclerView_Config {
                 }
             });
 
-            //Tu się dzieje, gdy klika się oglądane lub też nie
+            //CheckBox - Oglądane lub Nieoglądane
             isWatched.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -91,17 +92,18 @@ public class RecyclerView_Config {
         //łączenie elementów z listy do wyswietlenia na ekranie
         void bind(Element element, String key, Element roomE) {
             //  title.setText(element.getTitle());
+
             String e = element.getTitle();
             title.setText(e);
             category.setText(element.getCategory());
+
             //Local isWatched
             isWatched.setChecked(roomE.isWatched());
             this.key = key;
         }
     }
 
-
-    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable{
+    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
         private List<Element> elementList;
         private List<String> keysList;
         List<Element> filterElementList;
@@ -119,19 +121,10 @@ public class RecyclerView_Config {
             this.filterElementList = filterElementList;
         }
 
-        private void updateLocalElement(String title, String category, boolean isWatched, int position){
-            Element element = filterElementList.get(position);
-
-            element.setTitle(title);
-            element.setCategory(category);
-            element.setWatched(isWatched);
-
-        }
         @NonNull
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new ElementItemView(parent);
-            //  return new ElementItemView((ViewGroup) view);
         }
 
         @Override
@@ -144,45 +137,12 @@ public class RecyclerView_Config {
             return elementList.size();
         }
 
-        @Override
-        public Filter getFilter() {
-            return (Filter) exampleFilter;
-        }
-
-        private Filter exampleFilter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                List<Element> elementList = new ArrayList<>();
-
-                if (constraint == null || constraint.length() == 0){
-                    filterElementList.addAll(elementList);
-                } else {
-                    String filterPattern = constraint.toString().toLowerCase().trim();
-
-                    for (Element e : elementList){
-                        if (e.getTitle().toLowerCase().contains(filterPattern))
-                            filterElementList.add(e);
-                    }
-                }
-
-                FilterResults results = new FilterResults();
-                results.values = filterElementList;
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                elementList.clear();
-                elementList.addAll((List) results.values);
-                notifyDataSetChanged();
-            }
-        };
-
         void updateList(List<Element> newList){
             elementList = new ArrayList<>();
+            filterElementList = new ArrayList<>();
+            filterElementList.addAll(newList);
             elementList.addAll(newList);
             notifyDataSetChanged();
         }
     }
-
 }

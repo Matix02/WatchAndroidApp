@@ -24,6 +24,11 @@ zaprojektować. Mam pewien pomysł, by dodawanie kolejnych filtrów obfitowało 
 możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/nowych/edycja itd. to tylko w formie popup bazowo
  */
 
+/*
+Sprobowac poprawic zrozmieszczenie tych polaczen miedzy baza firebase a baza lokalna, bo kolejnosc isWatech
+jest bledna i wczytane zostaly tylko elementy od 1-end i pozostaja stale az do konca
+ */
+
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
@@ -50,9 +55,9 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
      //  deleteEveryElements(localList);
-        for (Element element : localList){
+       /* for (Element element : localList){
             Log.d("Element:", element.getTitle());
-        }
+        }*/
 
         /*
         Teraz należy poprawić ten system co juz zostało oglądniete a co nie!
@@ -63,20 +68,21 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
 
                 localList.clear();
-            ///////////////////////////////////
                 /*
                 Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
                 Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś
                 albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
                  */
                 localList.addAll(roomDatabaseHelper.getElementDao().getElements());
+
+                //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
                 lastIndex = (int) localList.get(localList.size()-1).getId();
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                /* for(Element e : elements){
                     createElement(e.getTitle(), e.getCategory(), e.isWatched);
                 }*/
-           //     assignRightId(elements);
+           //    assignRightId(elements);
 
                 elementsSize = elements.size();
             }
@@ -105,8 +111,20 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
                 startActivity(intent);
             }
         });
-        //////////////Pisać poniżej
+        //////////////Pisać poniżej/////////////////////
 
+    }
+    private void setUpRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(elementAdapter);
+    }
+
+    private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter  elementAdapter){
+        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
+        return elementAdapter;
     }
 
     @Override
@@ -146,18 +164,9 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
         });
         return true;
     }
-
-    private void setUpRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setHasFixedSize(true);
-        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(elementAdapter);
-    }
-
-    private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter  elementAdapter){
-        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
-        return elementAdapter;
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
     @Override
@@ -190,11 +199,7 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
+    ///////////Interfejs Zarządzania Bazą Lokalną//////////////////////
     private void createElement(String title, String category, boolean isWatched){
         int lastIdElement = Integer.parseInt(keys.get(keys.size() - 1));
 
