@@ -24,11 +24,6 @@ zaprojektować. Mam pewien pomysł, by dodawanie kolejnych filtrów obfitowało 
 możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/nowych/edycja itd. to tylko w formie popup bazowo
  */
 
-/*
-Sprobowac poprawic zrozmieszczenie tych polaczen miedzy baza firebase a baza lokalna, bo kolejnosc isWatech
-jest bledna i wczytane zostaly tylko elementy od 1-end i pozostaja stale az do konca
- */
-
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
@@ -54,19 +49,18 @@ jest bledna i wczytane zostaly tylko elementy od 1-end i pozostaja stale az do k
          */
        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
-     //  deleteEveryElements(localList);
-       /* for (Element element : localList){
+     /*   deleteEveryElements(localList);
+       for (Element element : localList){
             Log.d("Element:", element.getTitle());
-        }*/
+        }
 
-        /*
+
         Teraz należy poprawić ten system co juz zostało oglądniete a co nie!
          */
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
-
                 localList.clear();
                 /*
                 Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
@@ -74,34 +68,24 @@ jest bledna i wczytane zostaly tylko elementy od 1-end i pozostaja stale az do k
                 albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
                  */
                 localList.addAll(roomDatabaseHelper.getElementDao().getElements());
-
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
                 lastIndex = (int) localList.get(localList.size()-1).getId();
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
-                //new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
-               /* for(Element e : elements){
+                /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
+                for(Element e : elements){
                     createElement(e.getTitle(), e.getCategory(), e.isWatched);
-                }*/
-           //    assignRightId(elements);
-
+                }
+               assignRightId(elements);*/
                 elementsSize = elements.size();
             }
             @Override
-            public void DataIsInserted() {
-            }
-
+            public void DataIsInserted() { }
             @Override
-            public void DataIsUpdated() {
-            }
-
+            public void DataIsUpdated() { }
             @Override
-            public void DataIsDeleted() {
-            }
-
+            public void DataIsDeleted() { }
             @Override
-            public void DataIsSelected(String randomElement) {
-
-            }
+            public void DataIsSelected(String randomElement) { }
         });
         FloatingActionButton fab = findViewById(R.id.fab_btn);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -134,40 +118,28 @@ jest bledna i wczytane zostaly tylko elementy od 1-end i pozostaja stale az do k
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 String userInput = newText.toLowerCase();
                 List<Element> newList = new ArrayList<>();
-
-                for (Element name : elements){
+            //  localList.clear();
+                for (Element name : localList){
                     if(name.getTitle().contains(userInput)){
                         newList.add(name);
                     }
                 }
+               // localList.addAll(newList);
                 elementAdapter.updateList(newList);
             }
             @Override
-            public void DataIsInserted() {
-
-            }
-
+            public void DataIsInserted() { }
             @Override
-            public void DataIsUpdated() {
-
-            }
-
+            public void DataIsUpdated() { }
             @Override
-            public void DataIsDeleted() {
-
-            }
-
+            public void DataIsDeleted() { }
             @Override
-            public void DataIsSelected(String randomElement) {
-
-            }
+            public void DataIsSelected(String randomElement) { }
         });
         return true;
     }
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
+    public boolean onQueryTextSubmit(String query) { return false; }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

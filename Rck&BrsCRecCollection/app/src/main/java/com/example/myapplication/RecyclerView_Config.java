@@ -52,7 +52,6 @@ public class RecyclerView_Config {
         private TextView category;
         private CheckBox isWatched;
         private String key;
-        AdapterView.OnItemClickListener mListener;
 
         ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
@@ -96,10 +95,10 @@ public class RecyclerView_Config {
             String e = element.getTitle();
             title.setText(e);
             category.setText(element.getCategory());
+            this.key = key;
 
             //Local isWatched
             isWatched.setChecked(roomE.isWatched());
-            this.key = key;
         }
     }
 
@@ -113,7 +112,6 @@ public class RecyclerView_Config {
             this.elementList = elementList;
             this.keysList = keysList;
         } */
-
         //Konstruktor do filtracji
         ElementAdapter(List<Element> elementList, List<String> keysList, List<Element> filterElementList) {
             this.elementList = elementList;
@@ -139,6 +137,7 @@ public class RecyclerView_Config {
 
         void updateList(List<Element> newList){
             elementList = new ArrayList<>();
+            //filterElementList.clear();
             filterElementList = new ArrayList<>();
             filterElementList.addAll(newList);
             elementList.addAll(newList);
