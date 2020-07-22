@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.view.View;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,6 +26,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 zaprojektować. Mam pewien pomysł, by dodawanie kolejnych filtrów obfitowało w pokazywanie wybranych ChipButtonów na pasku pod searchView/toolbarem wraz z
 możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/nowych/edycja itd. to tylko w formie popup bazowo
  */
+/*
+Bug Founded.
+Jak się wybierze opcję zaznacz, że oglądane podczas wyników wyszukiwania to sie nie zaznacza.
+ */
+/*
+Last Update, spróbować zmienić, tą funkcję z updateList i dodać edycję wraz z NewList i dodatkwoym argumentem, który bedzie tez aktualizowac listę KeyList
+ */
 
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
@@ -30,11 +40,16 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
     private RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys;
+    private List<ElementFilter> filterList = new ArrayList<>();
     /* O matko za dużo tych static arghhh*/
     public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
     static int lastIndex = 0;
 
+    /*
+    Zrobiono migrację bazy i bedzie potrzebna tez druga. Teraz przetestowac
+    trzeba naprawić eto buga, który wywala listę do poprzedniej formy, czyli bez zaznaczonego IsWatched
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +77,9 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
                 localList.clear();
+                filterList.clear();
+
+               filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
                 /*
                 Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
                 Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś
@@ -70,6 +88,7 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
                 localList.addAll(roomDatabaseHelper.getElementDao().getElements());
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
                 lastIndex = (int) localList.get(localList.size()-1).getId();
+               // lastIndex = 1;
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                 for(Element e : elements){
@@ -118,14 +137,16 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 String userInput = newText.toLowerCase();
                 List<Element> newList = new ArrayList<>();
-            //  localList.clear();
+                List<String> newKeyList = new ArrayList<>();
+                localList.clear();
+                localList.addAll(roomDatabaseHelper.getElementDao().getElements());
                 for (Element name : localList){
-                    if(name.getTitle().contains(userInput)){
+                    if(name.getTitle().toLowerCase().contains(userInput)){
                         newList.add(name);
+                        newKeyList.add(Long.toString(name.getId()));
                     }
                 }
-               // localList.addAll(newList);
-                elementAdapter.updateList(newList);
+                elementAdapter.updateList(newList, newKeyList);
             }
             @Override
             public void DataIsInserted() { }
@@ -172,10 +193,10 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
     }
 
     ///////////Interfejs Zarządzania Bazą Lokalną//////////////////////
-    private void createElement(String title, String category, boolean isWatched){
+    private void createElement(String title, String category, boolean isWatched, String recom){
         int lastIdElement = Integer.parseInt(keys.get(keys.size() - 1));
 
-        long id = roomDatabaseHelper.getElementDao().addElement(new Element(lastIdElement, title, category, isWatched));
+        long id = roomDatabaseHelper.getElementDao().addElement(new Element(lastIdElement, title, category, isWatched, recom));
 
         Element roomElement = (Element) roomDatabaseHelper.getElementDao().getElement(id);
         if (roomElement != null){
@@ -196,5 +217,9 @@ możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/no
         roomDatabaseHelper.getElementDao().deleteAllElements();
         ArrayList<Element> sampleList = new ArrayList<>();
         sampleList.removeAll(element);
+    }
+    private void Table (){
+
+       // roomDatabaseHelper.getElementDao().addFilter(new ElementFilter(()));
     }
 }

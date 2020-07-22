@@ -11,12 +11,11 @@ import androidx.room.Update;
 @Dao
 public interface ElementDao {
 
-    //Pierwsze trzy to jako argument były RoomElementy
     @Insert
     long addElement(Element element);
 
     @Update
-    void updateElemet(Element element);
+    void updateElement(Element element);
 
     @Delete
     void deleteElement(Element element);
@@ -49,4 +48,16 @@ public interface ElementDao {
             "WHERE ID =:oldId ")
     void updateID(int actualID, int oldId);
 
+  //  Interfejst do filtracji
+    @Insert
+    long addFilter(ElementFilter elementFilter);
+
+    @Update
+    void updateFilter(ElementFilter elementFilter);
+
+    @Delete
+    void deleteFilter(Element element);
+
+    @Query("select * from ElementFilter")
+    List<ElementFilter> getFilters();
 }

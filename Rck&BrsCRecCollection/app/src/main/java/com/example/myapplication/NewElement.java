@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +28,8 @@ public class NewElement extends Activity {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private DatabaseReference reff;
+    private RadioGroup radioRecomGroup;
+    private RadioButton radioRecomButton;
     long maxId = 0;
 
     public NewElement() {
@@ -43,9 +43,12 @@ public class NewElement extends Activity {
 
         final EditText editText = findViewById(R.id.nameET);
         radioGroup = findViewById(R.id.categoryRG);
+        radioRecomGroup = findViewById(R.id.recomemndationRG);
+
         final Button saveButton = findViewById(R.id.saveButton);
         Button mBackButton = findViewById(R.id.backButton);
-        reff = FirebaseDatabase.getInstance().getReference().child("Element");
+
+        DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Element");
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -77,38 +80,31 @@ public class NewElement extends Activity {
                         public void onClick(View v) {
 
                             Element element = new Element();
+
                             int radioId = radioGroup.getCheckedRadioButtonId();
+                            int radioRecomId = radioRecomGroup.getCheckedRadioButtonId();
 
                             radioButton = findViewById(radioId);
+                            radioRecomButton = findViewById(radioRecomId);
+
                             element.setTitle(editText.getText().toString());
                             element.setCategory(radioButton.getText().toString());
+                            element.setRecom(radioRecomButton.getText().toString());
                             //String mGroupID = reff.push().getKey();
                             element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
                             //Tu jest ten static arghhhh !!!!
                             new FirebaseDatabaseHelper().addElement(element, MainActivity.lastIndex, new FirebaseDatabaseHelper.DataStatus() {
                                 @Override
-                                public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                                }
-
+                                public void DataIsLoaded(List<Element> elements, List<String> keys) { }
                                 @Override
                                 public void DataIsInserted() {
-                                    Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show();
-                                }
-
+                                    Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show(); }
                                 @Override
-                                public void DataIsUpdated() {
-
-                                }
-
+                                public void DataIsUpdated() { }
                                 @Override
-                                public void DataIsDeleted() {
-
-                                }
-
+                                public void DataIsDeleted() { }
                                 @Override
-                                public void DataIsSelected(String randomElement) {
-
-                                }
+                                public void DataIsSelected(String randomElement) { }
                             });
                         }
                     });

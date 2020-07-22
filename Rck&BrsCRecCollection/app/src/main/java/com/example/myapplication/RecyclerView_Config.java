@@ -31,6 +31,10 @@ public class RecyclerView_Config {
 //        recyclerView.setAdapter(elementAdapter);
 //    }
 
+
+    /*
+    Napisać kwerendę do migracji i zmienić nazwę na 2_3. Create Table itd. i spróbować RIP
+     */
     public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter) {
         mContext = context;
         elementAdapter = new ElementAdapter(elements, keys, elementsFilter);
@@ -48,16 +52,18 @@ public class RecyclerView_Config {
     }
 
     class ElementItemView extends RecyclerView.ViewHolder {
+        private String key;
         private TextView title;
         private TextView category;
         private CheckBox isWatched;
-        private String key;
+        private TextView recommendation;
 
         ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
             title = itemView.findViewById(R.id.titleTextView);
             category =  itemView.findViewById(R.id.categoryTextView);
             isWatched =  itemView.findViewById(R.id.checkBox);
+            recommendation = itemView.findViewById(R.id.recomemndation);
             CardView cardView = itemView.findViewById(R.id.cardLayout);
 
             //ListView - informacje o naciśniętym elemencie
@@ -82,21 +88,21 @@ public class RecyclerView_Config {
                     element.setWatched(isWatched.isChecked());
                     element.setTitle(title.getText().toString());
                     element.setCategory(category.getText().toString());
+                    element.setRecom(recommendation.getText().toString());
 
-                    MainActivity.roomDatabaseHelper.getElementDao().updateElemet(element);
+                    MainActivity.roomDatabaseHelper.getElementDao().updateElement(element);
                 }
             });
         }
-
         //łączenie elementów z listy do wyswietlenia na ekranie
         void bind(Element element, String key, Element roomE) {
             //  title.setText(element.getTitle());
-
             String e = element.getTitle();
             title.setText(e);
             category.setText(element.getCategory());
             this.key = key;
-
+            //Recomendacje pochodzą z bazy Online, ale nie sprawdzają się dokładnie
+            recommendation.setText(element.getRecom());
             //Local isWatched
             isWatched.setChecked(roomE.isWatched());
         }
@@ -135,10 +141,12 @@ public class RecyclerView_Config {
             return elementList.size();
         }
 
-        void updateList(List<Element> newList){
+        void updateList(List<Element> newList, List<String> newkeyList){
             elementList = new ArrayList<>();
+            keysList = new ArrayList<>();
             //filterElementList.clear();
             filterElementList = new ArrayList<>();
+            keysList.addAll(newkeyList);
             filterElementList.addAll(newList);
             elementList.addAll(newList);
             notifyDataSetChanged();

@@ -7,7 +7,6 @@
     android:layout_margin="5dp"
     android:orientation="vertical">
 
-
     <EditText
         android:id="@+id/nameET"
         android:layout_width="match_parent"
@@ -16,7 +15,7 @@
         android:ems="10"
         android:imeActionLabel="@string/enter_title"
         android:inputType="textPersonName"
-        android:hint="Enter Title" />
+        android:hint="@string/enter_title" />
 
     <RadioGroup
         android:id="@+id/categoryRG"
@@ -49,17 +48,53 @@
             android:text="@string/gra" />
     </RadioGroup>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black"/>
+
+        <RadioGroup
+            android:id="@+id/recomemndationRG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+        <RadioButton
+            android:id="@+id/rockNewSW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rock" />
+
+        <RadioButton
+            android:id="@+id/borysNewSW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/borys" />
+
+        <RadioButton
+            android:id="@+id/rckBrsNewSW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rck_brs" />
+
+        <RadioButton
+            android:id="@+id/otherNewSW"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="true"
+            android:text="@string/inne" />
+        </RadioGroup>
+
     <Button
-    android:id="@+id/saveButton"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-    android:text="@string/save" />
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:text="@string/save" />
+
     <Button
         android:id="@+id/backButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/back" />
-
 
 </LinearLayout>

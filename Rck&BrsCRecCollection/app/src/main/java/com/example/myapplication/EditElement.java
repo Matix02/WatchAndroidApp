@@ -14,14 +14,10 @@ import java.util.List;
 
 public class EditElement extends AppCompatActivity {
 
-
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private EditText editText;
-
-  //  long maxId = 0;
     private String key;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +36,9 @@ public class EditElement extends AppCompatActivity {
         Button mDelete_btn = findViewById(R.id.deleteButton);
         Button mBack_btn = findViewById(R.id.backButton);
         //poniżej linijka może być niepotrzebna redudant
-        int idRadio = getIndex(category);
-        radioGroup.check(idRadio);
+
+        int radioId = getIndex(category);
+        radioGroup.check(radioId);
 
         mUpdate_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,29 +51,16 @@ public class EditElement extends AppCompatActivity {
 
                 new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
                     @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
-                    }
-
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) { }
                     @Override
-                    public void DataIsInserted() {
-
-                    }
-
+                    public void DataIsInserted() { }
                     @Override
                     public void DataIsUpdated() {
-                        Toast.makeText(EditElement.this, "Element has been updated", Toast.LENGTH_LONG).show();
-                    }
-
+                        Toast.makeText(EditElement.this, "Element has been updated", Toast.LENGTH_LONG).show(); }
                     @Override
-                    public void DataIsDeleted() {
-
-                    }
-
+                    public void DataIsDeleted() { }
                     @Override
-                    public void DataIsSelected(String randomElement) {
-
-                    }
+                    public void DataIsSelected(String randomElement) { }
                 });
             }
         });
@@ -85,30 +69,17 @@ public class EditElement extends AppCompatActivity {
             public void onClick(View v) {
                 new FirebaseDatabaseHelper().deleteElement(key, new FirebaseDatabaseHelper.DataStatus() {
                     @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
-                    }
-
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) { }
                     @Override
-                    public void DataIsInserted() {
-
-                    }
-
+                    public void DataIsInserted() { }
                     @Override
-                    public void DataIsUpdated() {
-
-                    }
-
+                    public void DataIsUpdated() { }
                     @Override
                     public void DataIsDeleted() {
                         Toast.makeText(EditElement.this, "Element has been deleted", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-
+                        finish(); }
                     @Override
-                    public void DataIsSelected(String randomElement) {
-
-                    }
+                    public void DataIsSelected(String randomElement) { }
                 });
             }
         });
@@ -135,7 +106,6 @@ public class EditElement extends AppCompatActivity {
                 index = 2131230870;
                 break;
         }
-
 //        for (int i=0; i<radioGroup.getChildCount();i++ ){
 //            if(i==index){
               //  index = i;
