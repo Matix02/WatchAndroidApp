@@ -7,7 +7,7 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 
-@Database(entities = {Element.class}, version = 3)
+@Database(entities = {Element.class, ElementFilter.class}, version = 3)
 public abstract class RoomDatabaseHelper extends RoomDatabase {
 
     public abstract ElementDao getElementDao();

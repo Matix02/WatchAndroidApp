@@ -79,15 +79,15 @@ Last Update, spróbować zmienić, tą funkcję z updateList i dodać edycję wr
                 localList.clear();
                 filterList.clear();
 
-               filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
+                filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
                 /*
                 Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
                 Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś
                 albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
                  */
-                localList.addAll(roomDatabaseHelper.getElementDao().getElements());
+              localList.addAll(roomDatabaseHelper.getElementDao().getElements());
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
-                lastIndex = (int) localList.get(localList.size()-1).getId();
+               lastIndex = (int) localList.get(localList.size()-1).getId();
                // lastIndex = 1;
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
