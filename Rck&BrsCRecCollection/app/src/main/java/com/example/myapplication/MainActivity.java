@@ -38,6 +38,9 @@ Last Update, spróbować zmienić, tą funkcję z updateList i dodać edycję wr
 Naprawić pojawianie się, a raczej brak aktualizacji w przypadku listy. Element jest aktualizowany, ale powrót na
 stronę główną jest już przezd tą zmianą, bo baza danych lokalna nie jest wtedy aktualizowana!!!
  */
+/*
+Github test
+ */
 
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
