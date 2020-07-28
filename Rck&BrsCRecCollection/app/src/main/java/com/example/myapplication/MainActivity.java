@@ -34,6 +34,11 @@ Jak się wybierze opcję zaznacz, że oglądane podczas wyników wyszukiwania to
 Last Update, spróbować zmienić, tą funkcję z updateList i dodać edycję wraz z NewList i dodatkwoym argumentem, który bedzie tez aktualizowac listę KeyList
  */
 
+/*
+Naprawić pojawianie się, a raczej brak aktualizacji w przypadku listy. Element jest aktualizowany, ale powrót na
+stronę główną jest już przezd tą zmianą, bo baza danych lokalna nie jest wtedy aktualizowana!!!
+ */
+
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
