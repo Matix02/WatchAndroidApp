@@ -23,13 +23,21 @@ public interface ElementDao {
     @Query("delete from Element")
     void deleteAllElements();
 
+    @Query("UPDATE Element\n" +
+            "SET " +
+            "title =:title,\n" +
+            "recom =:recommendation,\n" +
+            "category =:cat\n" +
+            "WHERE id =:Id")
+    void updateElementById(long Id, String title, String recommendation, String cat);
+
     @Query("select * from Element")
     List<Element> getElements();
 
     @Query("UPDATE Element\n" +
             "SET isWatched =:resultWatch\n" +
             "WHERE id =:Id")
-    void updateElementById(long Id, boolean resultWatch);
+    void updateWatchElementById(long Id, boolean resultWatch);
     //Przydałoby się zmienić na z tym id, bo nie występuje w samej klasie Element
     //Poprawić to Query, by dalej wyszukiwało informacje
    // @Query("select * from Element where id ==:elementId")

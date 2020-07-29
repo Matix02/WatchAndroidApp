@@ -78,6 +78,7 @@ class FirebaseDatabaseHelper {
                         dataStatus.DataIsUpdated();
                     }
                 });
+        MainActivity.roomDatabaseHelper.getElementDao().updateElementById(Long.parseLong(key), element.getTitle(), element.getRecom(), element.getCategory());
     }
 
     void deleteElement(String key, final DataStatus dataStatus) {

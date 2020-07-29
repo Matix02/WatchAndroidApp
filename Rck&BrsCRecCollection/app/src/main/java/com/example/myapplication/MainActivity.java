@@ -39,7 +39,7 @@ Naprawić pojawianie się, a raczej brak aktualizacji w przypadku listy. Element
 stronę główną jest już przezd tą zmianą, bo baza danych lokalna nie jest wtedy aktualizowana!!!
  */
 /*
-Github test
+Github test 2
  */
 
     private RecyclerView recyclerView;

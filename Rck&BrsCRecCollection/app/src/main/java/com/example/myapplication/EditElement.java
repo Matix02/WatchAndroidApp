@@ -18,6 +18,8 @@ public class EditElement extends AppCompatActivity {
     private RadioButton radioButton;
     private EditText editText;
     private String key;
+    private RadioGroup radioRecomGroup;
+    private RadioButton radioRecomButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,9 @@ public class EditElement extends AppCompatActivity {
         //radioButton = findViewById(radioId);
         editText = findViewById(R.id.nameET);
         editText.setText(title);
-        radioGroup =  findViewById(R.id.categoryRG);
+        radioGroup = findViewById(R.id.categoryRG);
+        radioRecomGroup = findViewById(R.id.recomemndationEditRG);
+
         Button mUpdate_btn = findViewById(R.id.updateButton);
         Button mDelete_btn = findViewById(R.id.deleteButton);
         Button mBack_btn = findViewById(R.id.backButton);
@@ -45,18 +49,29 @@ public class EditElement extends AppCompatActivity {
             public void onClick(View v) {
                 Element element = new Element();
                 element.setTitle(editText.getText().toString());
+
                 int radioId = radioGroup.getCheckedRadioButtonId();
                 radioButton = findViewById(radioId);
                 element.setCategory(radioButton.getText().toString());
 
+                int radioRecomId = radioRecomGroup.getCheckedRadioButtonId();
+                radioRecomButton = findViewById(radioRecomId);
+                element.setRecom(radioRecomButton.getText().toString());
+
                 new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
                     @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) { }
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                    }
+
                     @Override
-                    public void DataIsInserted() { }
+                    public void DataIsInserted() {
+                    }
+
                     @Override
                     public void DataIsUpdated() {
-                        Toast.makeText(EditElement.this, "Element has been updated", Toast.LENGTH_LONG).show(); }
+                        Toast.makeText(EditElement.this, "Element has been updated", Toast.LENGTH_LONG).show();
+                    }
+
                     @Override
                     public void DataIsDeleted() { }
                     @Override

@@ -47,6 +47,42 @@
             android:text="@string/gra" />
     </RadioGroup>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <RadioGroup
+        android:id="@+id/recomemndationEditRG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <RadioButton
+            android:id="@+id/rockEditSW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rock" />
+
+        <RadioButton
+            android:id="@+id/borysEditSW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/borys" />
+
+        <RadioButton
+            android:id="@+id/rckBrsEditSW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rck_brs" />
+
+        <RadioButton
+            android:id="@+id/otherEditSW"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="true"
+            android:text="@string/inne" />
+    </RadioGroup>
     <Button
         android:id="@+id/updateButton"
         android:layout_width="match_parent"
