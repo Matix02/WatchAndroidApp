@@ -58,13 +58,22 @@ Github test 2
     Zrobiono migrację bazy i bedzie potrzebna tez druga. Teraz przetestowac
     trzeba naprawić eto buga, który wywala listę do poprzedniej formy, czyli bez zaznaczonego IsWatched
      */
+    /*
+    Było napisane, że apliacja robi za dużo onMainThread.
+    Ogólnie przyjrzeć się tym wszystkim wiadomością, które są wyświetlane na bieżąco w zakładce RUN,
+    Debug, Logcat - na czerwono.
+     */
+    /*
+    Może stworzyć własny pakiet, jak w książce dotyczący tego, aby zaimpelemntować w innych projektach
+    bazę Firebase i Room'a.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /*Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
         mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie */
-        recyclerView =  findViewById(R.id.ele_listView);
+        recyclerView = findViewById(R.id.ele_listView);
       /* recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ////////////
         Złą praktyką jest gdy wywołujemy w taki spsoób bazę, lepiej zbudować coś w rodzaju tego modelu z Firebase'a, który występuje dotychczas lub
@@ -87,7 +96,7 @@ Github test 2
                 localList.clear();
                 filterList.clear();
 
-                filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
+                // filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
                 /*
                 Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
                 Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś

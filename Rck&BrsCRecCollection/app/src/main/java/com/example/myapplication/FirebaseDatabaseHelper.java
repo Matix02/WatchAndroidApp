@@ -136,12 +136,19 @@ class FirebaseDatabaseHelper {
                     resultTitle = keys.get(pop-1);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     dataStatus.DataIsSelected(resultTitle);
                 }
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
+
+    public void updateFilter(ElementFilter elementFilter) {
+        MainActivity.roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
+    }
+
 }

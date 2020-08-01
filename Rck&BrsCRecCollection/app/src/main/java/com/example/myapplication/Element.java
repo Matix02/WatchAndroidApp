@@ -100,6 +100,9 @@ class ElementFilter {
     @ColumnInfo(defaultValue = "true")
     private boolean otherRecommedation;
 
+    ElementFilter() {
+    }
+
     ElementFilter(boolean finished, boolean unFinished, boolean filmCategory, boolean seriesCategory,
                   boolean bookCategory, boolean gamesCategory, boolean rockRecommedation, boolean borysRecommedation,
                   boolean rockBorysRecommedation, boolean otherRecommedation) {

@@ -12,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import java.util.ArrayList;
+
 public class PopActivityFilter extends Activity {
 
     String zazWszt;
@@ -30,15 +32,22 @@ public class PopActivityFilter extends Activity {
     Switch allSwitch;
     Button saveButton;
     Button defaultButton;
+    ArrayList<ElementFilter> elementFilters = new ArrayList<>();
 
     /*
     Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
-    klawiatura wirtualna
+    klawiatura wirtualna. Coś pokombinować.
+     */
+    /*
+    Tego jest tak dużo, że chyba przydałoby się zrobienie jakiegoś Reccycler_view
+    coś jak to, gdzie ma się te wszystkie połączenia findView... itd.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_filter2);
+
+        elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
 
         zazWszt = "Zaznacz Wszystko";
         odzWszt = "Odznacz Wszystko";
@@ -60,14 +69,42 @@ public class PopActivityFilter extends Activity {
 
         saveButton = findViewById(R.id.saveFilterButton);
         defaultButton = findViewById(R.id.defaultFilterButton);
+        /* Część graficzna */
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
 
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        getWindow().setLayout((int) (width * .8), (int) (height * .7));
+
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.gravity = Gravity.CENTER;
+        params.x = 0;
+        params.y = -20;
+        getWindow().setAttributes(params);
+        /*
+        Część Przypisywania Wartości z Bazy
+         */
+        finishSwitch.setChecked(elementFilters.get(0).isFinished());
+        unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());
+        filmsCheckBox.setChecked(elementFilters.get(0).isFilmCategory());
+        gamesCheckBox.setChecked(elementFilters.get(0).isGamesCategory());
+        seriesCheckBox.setChecked(elementFilters.get(0).isSeriesCategory());
+        booksCheckBox.setChecked(elementFilters.get(0).isBookCategory());
+        rockSwitch.setChecked(elementFilters.get(0).isRockRecommedation());
+        borysSwitch.setChecked(elementFilters.get(0).isBorysRecommedation());
+        rckAndBorysSwitch.setChecked(elementFilters.get(0).isRockBorysRecommedation());
+        otherSwitch.setChecked(elementFilters.get(0).isOtherRecommedation());
+
+        /* Część Aktywacji Przycisków */
         allSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     allSwitch.setText(odzWszt);
                     selectAllRecom(false);
-                } else{
+                } else {
                     allSwitch.setText(zazWszt);
                     selectAllRecom(true);
                 }
@@ -86,11 +123,11 @@ public class PopActivityFilter extends Activity {
                 teog aby to zaznaczać, np jesli zaznaAll to wszystko idzie,
                 jako metoda
                 */
-                if(!allSwitch.isChecked()) {
+                if (!allSwitch.isChecked()) {
                     selectAllRecom(allSwitch.isChecked());
                     allSwitch.setChecked(true);
                 }
-                if(!allCheckBox.isChecked()) {
+                if (!allCheckBox.isChecked()) {
                     selectAllCategory(allCheckBox.isChecked());
                     allCheckBox.setChecked(true);
                 }
@@ -99,21 +136,25 @@ public class PopActivityFilter extends Activity {
             }
         });
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ElementFilter elementFilter = new ElementFilter();
+                elementFilter.setId(1);
+                elementFilter.setFinished(finishSwitch.isChecked());
+                elementFilter.setUnFinished(unFinishSwitch.isChecked());
+                elementFilter.setBookCategory(booksCheckBox.isChecked());
+                elementFilter.setFilmCategory(filmsCheckBox.isChecked());
+                elementFilter.setGamesCategory(gamesCheckBox.isChecked());
+                elementFilter.setSeriesCategory(seriesCheckBox.isChecked());
+                elementFilter.setRockRecommedation(rockSwitch.isChecked());
+                elementFilter.setBorysRecommedation(borysSwitch.isChecked());
+                elementFilter.setRockBorysRecommedation(rckAndBorysSwitch.isChecked());
+                elementFilter.setOtherRecommedation(otherSwitch.isChecked());
 
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-
-        getWindow().setLayout((int)(width*.8), (int)(height*.7));
-
-        WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.gravity = Gravity.CENTER;
-        params.x = 0;
-        params.y = -20;
-
-        getWindow().setAttributes(params);
-
+                new FirebaseDatabaseHelper().updateFilter(elementFilter);
+            }
+        });
     }
 
     public void selectAllRecom(boolean statusButton){

@@ -105,6 +105,8 @@ public class EditElement extends AppCompatActivity {
             }
         });
     }
+
+    //Alternatywne rozwiązanie do tego, ze względu na ciągle zmieniające się indexy
     private int getIndex(String item){
         int index = 0;
         switch (item) {
@@ -121,13 +123,6 @@ public class EditElement extends AppCompatActivity {
                 index = 2131230870;
                 break;
         }
-//        for (int i=0; i<radioGroup.getChildCount();i++ ){
-//            if(i==index){
-              //  index = i;
-              //  radioButton = findViewById(index);
-//                break;
-//            }
-//        }
         return  index;
     }
 }
