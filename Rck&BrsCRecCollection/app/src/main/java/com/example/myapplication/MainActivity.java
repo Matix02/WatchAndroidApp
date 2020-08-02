@@ -49,6 +49,7 @@ Github test 2
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys;
     private List<ElementFilter> filterList = new ArrayList<>();
+    private List<Element> testRoomList = new ArrayList<>();
     /* O matko za dużo tych static arghhh*/
     public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
@@ -95,6 +96,11 @@ Github test 2
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
                 localList.clear();
                 filterList.clear();
+                testRoomList.clear();
+
+                //  testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+
+                // localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
                 // filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
                 /*
@@ -102,10 +108,12 @@ Github test 2
                 Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś
                 albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
                  */
-              localList.addAll(roomDatabaseHelper.getElementDao().getElements());
+
+                localList.addAll(roomDatabaseHelper.getElementDao().getElements());
+
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
-               lastIndex = (int) localList.get(localList.size()-1).getId();
-               // lastIndex = 1;
+                lastIndex = (int) localList.get(localList.size() - 1).getId();
+                // lastIndex = 1;
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                 for(Element e : elements){

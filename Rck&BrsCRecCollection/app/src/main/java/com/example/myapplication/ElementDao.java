@@ -68,4 +68,6 @@ public interface ElementDao {
 
     @Query("select * from ElementFilter")
     List<ElementFilter> getFilters();
+
+
 }

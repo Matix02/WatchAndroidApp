@@ -10,11 +10,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Observable;
+import java.util.stream.Collectors;
+
 import androidx.annotation.NonNull;
 
 class FirebaseDatabaseHelper {
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
+    private List<Element> testFirebaseList = new ArrayList<>();
     private static String resultTitle;
     //private RoomDatabaseHelper roomDatabaseHelper;
 
@@ -41,14 +45,23 @@ class FirebaseDatabaseHelper {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 elements.clear();
                 List<String> keys = new ArrayList<>();
+
                 for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
                     //Jakaś metoda, która pobiera argumenty filtra
-                   // if(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory().equals("Gra")){
-                        keys.add(keyNode.getKey());
-                        Element element = keyNode.getValue(Element.class);
-                        elements.add(element);
-                  //  }
+                    // if(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory().equals("Gra")){
+
+                    keys.add(keyNode.getKey());
+                    Element element = keyNode.getValue(Element.class);
+                    testFirebaseList.add(element);
+
                 }
+
+
+             /*   List<Element> bb = elements.stream()
+                        .filter(p -> p.isWatched() == elementFilters.get(0).isFinished())
+                        .collect(Collectors.toList());*/
+
+                elements = complementationList(testFirebaseList);
                 dataStatus.DataIsLoaded(elements, keys);
             }
             @Override
@@ -151,4 +164,77 @@ class FirebaseDatabaseHelper {
         MainActivity.roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
     }
 
+    public List<Element> complementationList(List<Element> elements) {
+
+        List<ElementFilter> elementFilters = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
+        List<Element> completeList;
+
+        boolean finished = elementFilters.get(0).isFinished();
+        boolean unFinished = elementFilters.get(0).isUnFinished();
+
+        boolean books = elementFilters.get(0).isBookCategory();
+        boolean games = elementFilters.get(0).isGamesCategory();
+        boolean series = elementFilters.get(0).isSeriesCategory();
+        boolean films = elementFilters.get(0).isFilmCategory();
+
+        boolean rock = elementFilters.get(0).isRockRecommedation();
+        boolean borys = elementFilters.get(0).isBorysRecommedation();
+        boolean rockBorys = elementFilters.get(0).isRockBorysRecommedation();
+        boolean others = elementFilters.get(0).isOtherRecommedation();
+
+       /* if ogladane == true && nieogladane == true
+                then
+                        wszystko z tego
+                if ogladane == true
+                    list z tylko Oglądanymi
+                if nieogladane == true
+                    lista tylko z Nieoglądanymi
+
+                elementFilters.get(0)*/
+        //#1 Oglądane i Nieoglądane
+        if (!finished && unFinished)
+            completeList = elements.stream().filter(p -> !p.isWatched()).collect(Collectors.toList());
+        else if (finished && !unFinished)
+            completeList = elements.stream().filter(Element::isWatched).collect(Collectors.toList());
+        else
+            completeList = new ArrayList<>(elements);
+
+        //#2 Kategorie
+        if (!books || !games || !series || !films) {
+            elements.clear();
+            if (!books)
+                elements = completeList.stream().filter(p -> !p.category.equals("Książka")).collect(Collectors.toList());
+            if (!games)
+                elements = completeList.stream().filter(p -> !p.category.equals("Gra")).collect(Collectors.toList());
+            if (!series)
+                elements = completeList.stream().filter(p -> !p.category.equals("Serial")).collect(Collectors.toList());
+            if (!films)
+                elements = completeList.stream().filter(p -> !p.category.equals("Film")).collect(Collectors.toList());
+        }
+
+        //#3 Polecane
+        if (!rock || !borys || !rockBorys || !others) {
+            completeList.clear();
+            if (rock)
+                completeList = elements.stream().filter(p -> !p.recom.equals("Rock")).collect(Collectors.toList());
+            if (borys)
+                completeList = elements.stream().filter(p -> !p.recom.equals("Borys")).collect(Collectors.toList());
+            if (rockBorys)
+                completeList = elements.stream().filter(p -> !p.recom.equals("Rck&Brs")).collect(Collectors.toList());
+            if (others)
+                completeList = elements.stream().filter(p -> !p.recom.equals("Inne")).collect(Collectors.toList());
+        }
+
+        return completeList;
+    }
+    /*
+     *!*!*!**!*!*!*!*!* Najnowszy update.
+     * -Brak całkowitej selekcji
+     * Lista jest przypisywana bez względu na rekord, jeśli jest true wtedy wchodzi i dodaje całą kolekcję z tego.
+     * Chocdzi o "equals".
+     *
+     * -Nie działający filtr finished/unfinished.
+     * Problem z listą, bo internetowa posiada tylko false i false na to czy ktoś oglądał i wpierw jest ładowanai (chyba) lista
+     * z firebase'a, co też utrudnia to jeśli chodzi o bazowanie na niej od początku.
+     */
 }
