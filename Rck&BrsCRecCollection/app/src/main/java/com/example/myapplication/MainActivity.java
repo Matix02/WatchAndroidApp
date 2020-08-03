@@ -98,9 +98,9 @@ Github test 2
                 filterList.clear();
                 testRoomList.clear();
 
-                //  testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                 testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
 
-                // localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+                localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
                 // filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
                 /*
@@ -109,7 +109,7 @@ Github test 2
                 albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
                  */
 
-                localList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                // localList.addAll(roomDatabaseHelper.getElementDao().getElements());
 
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
                 lastIndex = (int) localList.get(localList.size() - 1).getId();

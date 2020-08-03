@@ -33,6 +33,7 @@ public class PopActivityFilter extends Activity {
     Button saveButton;
     Button defaultButton;
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
+    ArrayList<Element> mainElements = new ArrayList<>();
 
     /*
     Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
@@ -48,6 +49,7 @@ public class PopActivityFilter extends Activity {
         setContentView(R.layout.activity_pop_filter2);
 
         elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
+        mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
 
         zazWszt = "Zaznacz Wszystko";
         odzWszt = "Odznacz Wszystko";
@@ -153,6 +155,7 @@ public class PopActivityFilter extends Activity {
                 elementFilter.setOtherRecommedation(otherSwitch.isChecked());
 
                 new FirebaseDatabaseHelper().updateFilter(elementFilter);
+
             }
         });
     }

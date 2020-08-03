@@ -45,7 +45,7 @@ public class RecyclerView_Config {
     //gównianie zdefiniowana metoda do usieniecia lub poprawienia
     RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter, ElementAdapter elementAdapter) {
         mContext = context;
-        this.elementAdapter = new ElementAdapter(elements, keys, elementsFilter);
+        this.elementAdapter = new ElementAdapter(elementsFilter, keys, elementsFilter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(this.elementAdapter);
         return this.elementAdapter;
@@ -97,12 +97,12 @@ public class RecyclerView_Config {
         //łączenie elementów z listy do wyswietlenia na ekranie
         void bind(Element element, String key, Element roomE) {
             //  title.setText(element.getTitle());
-            String e = element.getTitle();
+            String e = roomE.getTitle();
             title.setText(e);
-            category.setText(element.getCategory());
+            category.setText(roomE.getCategory());
             this.key = key;
             //Recomendacje pochodzą z bazy Online, ale nie sprawdzają się dokładnie
-            recommendation.setText(element.getRecom());
+            recommendation.setText(roomE.getRecom());
             //Local isWatched
             isWatched.setChecked(roomE.isWatched());
         }

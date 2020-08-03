@@ -193,9 +193,9 @@ class FirebaseDatabaseHelper {
                 elementFilters.get(0)*/
         //#1 Oglądane i Nieoglądane
         if (!finished && unFinished)
-            completeList = elements.stream().filter(p -> !p.isWatched()).collect(Collectors.toList());
-        else if (finished && !unFinished)
             completeList = elements.stream().filter(Element::isWatched).collect(Collectors.toList());
+        else if (finished && !unFinished)
+            completeList = elements.stream().filter(p -> !p.isWatched()).collect(Collectors.toList());
         else
             completeList = new ArrayList<>(elements);
 
@@ -212,6 +212,7 @@ class FirebaseDatabaseHelper {
                 elements = completeList.stream().filter(p -> !p.category.equals("Film")).collect(Collectors.toList());
         }
 
+
         //#3 Polecane
         if (!rock || !borys || !rockBorys || !others) {
             completeList.clear();
@@ -224,7 +225,6 @@ class FirebaseDatabaseHelper {
             if (others)
                 completeList = elements.stream().filter(p -> !p.recom.equals("Inne")).collect(Collectors.toList());
         }
-
         return completeList;
     }
     /*
@@ -233,8 +233,17 @@ class FirebaseDatabaseHelper {
      * Lista jest przypisywana bez względu na rekord, jeśli jest true wtedy wchodzi i dodaje całą kolekcję z tego.
      * Chocdzi o "equals".
      *
+     *
      * -Nie działający filtr finished/unfinished.
      * Problem z listą, bo internetowa posiada tylko false i false na to czy ktoś oglądał i wpierw jest ładowanai (chyba) lista
      * z firebase'a, co też utrudnia to jeśli chodzi o bazowanie na niej od początku.
+     *
+     * -/ Możliwe rozwiązanie:
+     * Całkowita lista jest pobierana z LocalLiście. Problem bedzie jesli coś zostanie dodane poprzez
+     * Firebase'a. == Dodać coś do weryfikacji listy (jeśli jest różnica to dodawane są te elementy brakujące,
+     *  ale jeśli tak będzie to nie zostaną dodane
+     *
+     * -Udało się zrobić tą pierwszą filtrację. Należy teraz zmusić do działania Adapter wraz z notifyDataCHenged.
+     *
      */
 }
