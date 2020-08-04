@@ -125,6 +125,10 @@ public class RecyclerView_Config {
             this.filterElementList = filterElementList;
         }
 
+        public void onActivityResult(int requestCode, int resultCode) {
+            this.notifyDataSetChanged();
+        }
+
         @NonNull
         @Override
         public ElementItemView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

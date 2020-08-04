@@ -54,8 +54,10 @@ public class NewElement extends Activity {
                     maxId = (dataSnapshot.getChildrenCount());
                 }
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,16 +65,18 @@ public class NewElement extends Activity {
                 finish();
             }
         });
+        /*
+        Czy Data w Roomie jest kasowana przez usuwanie cache'u jak sprzątacz czy coś ???
+         */
         /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Poprawić !!! Validation - walidacja
         //przemyslec jak to powinno dzialac, bo tak srednio
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (radioGroup.getCheckedRadioButtonId() == -1){
+                if (radioGroup.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(NewElement.this, "Fill empty fields", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     saveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

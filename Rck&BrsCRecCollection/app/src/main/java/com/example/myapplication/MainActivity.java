@@ -1,9 +1,13 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,7 +49,7 @@ Github test 2
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
-    private RecyclerView_Config.ElementAdapter elementAdapter;
+    RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys;
     private List<ElementFilter> filterList = new ArrayList<>();
@@ -55,10 +59,16 @@ Github test 2
     static int elementsSize;
     static int lastIndex = 0;
 
+    //Tak resetuje się Activity, działa jeśli chodzi o tą metodę, umieszczając tu newFierbaseDataHelper ...
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     /*
-    Zrobiono migrację bazy i bedzie potrzebna tez druga. Teraz przetestowac
-    trzeba naprawić eto buga, który wywala listę do poprzedniej formy, czyli bez zaznaczonego IsWatched
-     */
+        Zrobiono migrację bazy i bedzie potrzebna tez druga. Teraz przetestowac
+        trzeba naprawić eto buga, który wywala listę do poprzedniej formy, czyli bez zaznaczonego IsWatched
+         */
     /*
     Było napisane, że apliacja robi za dużo onMainThread.
     Ogólnie przyjrzeć się tym wszystkim wiadomością, które są wyświetlane na bieżąco w zakładce RUN,
@@ -98,7 +108,7 @@ Github test 2
                 filterList.clear();
                 testRoomList.clear();
 
-                 testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
 
                 localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
@@ -142,6 +152,15 @@ Github test 2
         //////////////Pisać poniżej/////////////////////
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1)
+            elementAdapter.onActivityResult(requestCode, 1);
+    }
+
     private void setUpRecyclerView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
@@ -150,7 +169,7 @@ Github test 2
         recyclerView.setAdapter(elementAdapter);
     }
 
-    private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter  elementAdapter){
+    private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter elementAdapter) {
         elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
         return elementAdapter;
     }
@@ -209,9 +228,18 @@ Github test 2
             startActivity(intent);
             return true;
         }
-        else if(item.getItemId() == R.id.filter){
+        else if(item.getItemId() == R.id.filter) {
+            Context context = getApplicationContext();
             Intent intent = new Intent(getApplicationContext(), PopActivityFilter.class);
-            startActivity(intent);
+            //  startActivity(intent);
+            intent.putExtra("id", 1);
+            startActivityForResult(intent, 1);
+            /*Wersja bazowa to jest z startActivity oraz bez put extra
+            /*
+            /*!!! this.finish() jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
+            a następnie jego część w filtrze otwiera go na nowo. Słabo rowiązanie ...
+             */
+            //   this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

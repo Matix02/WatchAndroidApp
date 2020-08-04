@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -35,10 +36,17 @@ public class PopActivityFilter extends Activity {
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
     ArrayList<Element> mainElements = new ArrayList<>();
 
+    //To jest jak naciśniesz back-powrót na telefonie
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+
     /*
-    Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
-    klawiatura wirtualna. Coś pokombinować.
-     */
+            Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
+            klawiatura wirtualna. Coś pokombinować.
+             */
     /*
     Tego jest tak dużo, że chyba przydałoby się zrobienie jakiegoś Reccycler_view
     coś jak to, gdzie ma się te wszystkie połączenia findView... itd.
@@ -113,6 +121,7 @@ public class PopActivityFilter extends Activity {
             }
         });
 
+
         /*
         Wymyślec sposób na to, zaznacz/odznacz były zależne od tego czy
         która kontrolka nie została odkliknięta.
@@ -153,9 +162,27 @@ public class PopActivityFilter extends Activity {
                 elementFilter.setBorysRecommedation(borysSwitch.isChecked());
                 elementFilter.setRockBorysRecommedation(rckAndBorysSwitch.isChecked());
                 elementFilter.setOtherRecommedation(otherSwitch.isChecked());
-
                 new FirebaseDatabaseHelper().updateFilter(elementFilter);
 
+                /*!!! finish(), refresh itd. jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
+                    a następnie jego część w filtrze otwiera go na nowo. Słabe rowiązanie ...*/
+                // Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
+                // startActivity(refresh);
+
+                /*!!!
+                onResume() jest drugą metodą do aktualizacji, ale wciąż wydaje się 2/10
+                 */
+                // onResume();
+
+                /*!!!
+                Jednak notifyDataChenged jest tą włąściwą opcją, jeśli chodzi o aktualizacje daty/listy
+                 */
+
+
+                Intent intent = new Intent();
+                intent.putExtra("id", 1);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }
