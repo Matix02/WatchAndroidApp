@@ -157,8 +157,14 @@ Github test 2
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1)
-            elementAdapter.onActivityResult(requestCode, 1);
+        if (requestCode == 1) {
+            ArrayList<Element> elements = new ArrayList<>();
+            List<String> keyList = new ArrayList<>();
+
+            elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+            keyList = keysAssign(elements);
+            elementAdapter.updateList(elements, keyList);
+        }
     }
 
     private void setUpRecyclerView() {
@@ -245,14 +251,23 @@ Github test 2
         return super.onOptionsItemSelected(item);
     }
 
+    public List<String> keysAssign(ArrayList<Element> s) {
+        List<String> keyList = new ArrayList<>();
+        for (Element e : s) {
+            String keyStr = String.valueOf(e.getId());
+            keyList.add(keyStr);
+        }
+        return keyList;
+    }
+
     ///////////Interfejs Zarządzania Bazą Lokalną//////////////////////
-    private void createElement(String title, String category, boolean isWatched, String recom){
+    private void createElement(String title, String category, boolean isWatched, String recom) {
         int lastIdElement = Integer.parseInt(keys.get(keys.size() - 1));
 
         long id = roomDatabaseHelper.getElementDao().addElement(new Element(lastIdElement, title, category, isWatched, recom));
 
         Element roomElement = (Element) roomDatabaseHelper.getElementDao().getElement(id);
-        if (roomElement != null){
+        if (roomElement != null) {
             localList.add(lastIdElement, roomElement);
             //tutaj powinien być jeszcze adapter, ale chyba nie musi
         }
