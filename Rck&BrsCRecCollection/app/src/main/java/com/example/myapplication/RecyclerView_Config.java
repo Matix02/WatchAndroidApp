@@ -126,7 +126,6 @@ public class RecyclerView_Config {
         }
 
         public void onActivityResult(int requestCode, int resultCode) {
-
             notifyDataSetChanged();
         }
 
@@ -152,16 +151,6 @@ public class RecyclerView_Config {
             //filterElementList.clear();
             filterElementList = new ArrayList<>();
             keysList.addAll(newKeyList);
-            filterElementList.addAll(newList);
-            elementList.addAll(newList);
-            notifyDataSetChanged();
-        }
-
-        void updateList(List<Element> newList) {
-            elementList = new ArrayList<>();
-            keysList = new ArrayList<>();
-            //filterElementList.clear();
-            filterElementList = new ArrayList<>();
             filterElementList.addAll(newList);
             elementList.addAll(newList);
             notifyDataSetChanged();

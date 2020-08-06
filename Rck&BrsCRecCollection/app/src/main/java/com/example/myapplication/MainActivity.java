@@ -189,9 +189,13 @@ Github test 2
                 List<Element> newList = new ArrayList<>();
                 List<String> newKeyList = new ArrayList<>();
                 localList.clear();
-                localList.addAll(roomDatabaseHelper.getElementDao().getElements());
-                for (Element name : localList){
-                    if(name.getTitle().toLowerCase().contains(userInput)){
+                testRoomList.clear();
+                //trochę mało wydajne
+                testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+
+                for (Element name : localList) {
+                    if (name.getTitle().toLowerCase().contains(userInput)) {
                         newList.add(name);
                         newKeyList.add(Long.toString(name.getId()));
                     }

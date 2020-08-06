@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,7 +9,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Observable;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -20,7 +18,6 @@ class FirebaseDatabaseHelper {
     private List<Element> elements = new ArrayList<>();
     private List<Element> testFirebaseList = new ArrayList<>();
     private static String resultTitle;
-    //private RoomDatabaseHelper roomDatabaseHelper;
 
     public interface DataStatus {
         void DataIsLoaded(List<Element> elements, List<String> keys);
@@ -53,14 +50,7 @@ class FirebaseDatabaseHelper {
                     keys.add(keyNode.getKey());
                     Element element = keyNode.getValue(Element.class);
                     testFirebaseList.add(element);
-
                 }
-
-
-             /*   List<Element> bb = elements.stream()
-                        .filter(p -> p.isWatched() == elementFilters.get(0).isFinished())
-                        .collect(Collectors.toList());*/
-
                 elements = complementationList(testFirebaseList);
                 dataStatus.DataIsLoaded(elements, keys);
             }
@@ -72,36 +62,21 @@ class FirebaseDatabaseHelper {
     void addElement(Element element, long id, final DataStatus dataStatus) {
         // String key = mReferenceBooks.push().getKey();
         mReferenceBooks.child(String.valueOf((id + 1))).setValue(element)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        dataStatus.DataIsInserted();
-                    }
-                });
-        element.setId(id+1);
+                .addOnSuccessListener(aVoid -> dataStatus.DataIsInserted());
+        element.setId(id + 1);
         MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {
 //        roomDatabaseHelper.getElementDao().updateElemet(element);
         mReferenceBooks.child(key).setValue(element)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        dataStatus.DataIsUpdated();
-                    }
-                });
+                .addOnSuccessListener(aVoid -> dataStatus.DataIsUpdated());
         MainActivity.roomDatabaseHelper.getElementDao().updateElementById(Long.parseLong(key), element.getTitle(), element.getRecom(), element.getCategory());
     }
 
     void deleteElement(String key, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(null)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        dataStatus.DataIsDeleted();
-                    }
-                });
+                .addOnSuccessListener(aVoid -> dataStatus.DataIsDeleted());
 
         MainActivity.roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
     }
@@ -126,6 +101,7 @@ class FirebaseDatabaseHelper {
 
     #5. - Trzeba innaczej to nazwać, jest mylące*/
 
+    //Losowanie elementów
     void countCategory(final String category, final DataStatus dataStatus){
         mReferenceBooks.addValueEventListener(new ValueEventListener() {
             @Override
@@ -135,8 +111,7 @@ class FirebaseDatabaseHelper {
                     for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
                         keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
                     }
-                }
-                else{
+                } else{
                     for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
                         if (category.equals(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory())){
                             keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
@@ -144,9 +119,9 @@ class FirebaseDatabaseHelper {
                     }
                 }
                 //gdy kategoria bedzie pusta - no chyba jednak nie ...
-                try{
+                try {
                     int pop = new PopActivity().generateRandomIndex(keys.size());
-                    resultTitle = keys.get(pop-1);
+                    resultTitle = keys.get(pop - 1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -158,6 +133,23 @@ class FirebaseDatabaseHelper {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    String countCategory(final String category) {
+        List<Element> buforList;
+        List<Element> newList = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getElements());
+        buforList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(newList);
+
+        List<String> keys = new ArrayList<>();
+        for (Element e : buforList) {
+            if (!e.isWatched && e.category.equals(category))
+                keys.add(e.getTitle());
+            else if (!e.isWatched)
+                keys.add(e.getTitle());
+        }
+        int pop = new PopActivity().generateRandomIndex(keys.size());
+
+        return resultTitle = keys.get(pop - 1);
     }
 
     public void updateFilter(ElementFilter elementFilter) {

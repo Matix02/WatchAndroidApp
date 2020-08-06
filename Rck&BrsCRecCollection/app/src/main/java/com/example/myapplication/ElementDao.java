@@ -38,12 +38,18 @@ public interface ElementDao {
             "SET isWatched =:resultWatch\n" +
             "WHERE id =:Id")
     void updateWatchElementById(long Id, boolean resultWatch);
+
+    @Query("SELECT *\n" +
+            "FROM Element\n" +
+            "WHERE category =:lookCategory\n")
+    List<Element> randomListElement(String lookCategory);
+
     //Przydałoby się zmienić na z tym id, bo nie występuje w samej klasie Element
     //Poprawić to Query, by dalej wyszukiwało informacje
-   // @Query("select * from Element where id ==:elementId")
+    // @Query("select * from Element where id ==:elementId")
 
     //Jeden z możliwych pomysłów - below
-   // @Query("select * from Element where title ==:elementId AND category ==:")
+    // @Query("select * from Element where title ==:elementId AND category ==:")
 
     @Query("delete from Element where id ==:elementId")
     void deleteIdElement(int elementId);

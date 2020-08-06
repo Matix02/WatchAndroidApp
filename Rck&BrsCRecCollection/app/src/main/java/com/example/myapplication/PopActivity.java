@@ -22,7 +22,6 @@ public class PopActivity extends Activity {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private Button btnSearch;
     private TextView tvResult;
 
     @Override
@@ -30,77 +29,77 @@ public class PopActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop);
 
-        btnSearch = (Button) findViewById(R.id.popBtnSearch);
+        Button btnSearch = (Button) findViewById(R.id.popBtnSearch);
         radioGroup = (RadioGroup) findViewById(R.id.popCategoryRG);
         tvResult = (TextView) findViewById(R.id.popResult);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int radioId = radioGroup.getCheckedRadioButtonId();
-                radioButton = findViewById(radioId);
-                String category = radioButton.getText().toString();
-                int sizeOfList = MainActivity.elementsSize;
-                String rozmiarConv = Integer.toString(sizeOfList);
-              //  int randomNumber = generateRandomIndex(sizeOfList);
-                String categoryName = radioButton.getText().toString();
+        btnSearch.setOnClickListener(v -> {
+            int radioId = radioGroup.getCheckedRadioButtonId();
+            radioButton = findViewById(radioId);
+            String category = radioButton.getText().toString();
+            int sizeOfList = MainActivity.elementsSize;
+            String rozmiarConv = Integer.toString(sizeOfList);
+            //  int randomNumber = generateRandomIndex(sizeOfList);
+            String categoryName = radioButton.getText().toString();
 
-                new FirebaseDatabaseHelper().countCategory(categoryName, new FirebaseDatabaseHelper.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+            String finalRandomTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
+            tvResult.setText("");
+            tvResult.setText(finalRandomTitle);
 
-                    }
+      /*      new FirebaseDatabaseHelper().countCategory(categoryName, new FirebaseDatabaseHelper.DataStatus() {
+                @Override
+                public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                }
 
-                    @Override
-                    public void DataIsInserted() {
+                @Override
+                public void DataIsInserted() {
 
-                    }
+                }
 
-                    @Override
-                    public void DataIsUpdated() {
+                @Override
+                public void DataIsUpdated() {
 
-                    }
+                }
 
-                    @Override
-                    public void DataIsDeleted() {
+                @Override
+                public void DataIsDeleted() {
 
-                    }
+                }
 
-                    @Override
-                    public void DataIsSelected(String randomElement) {
-                        tvResult.setText("");
-                        tvResult.setText(randomElement);
-                    }
-                });
-              //  String resultTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
-             //   Log.i("Wybrana kategoria to:", categoryName);
-         /*       new FirebaseDatabaseHelper().randomElement(randomNumber, new FirebaseDatabaseHelper.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                        tvResult.setText(elements.get(0).getTitle());
-                       // Toast.makeText(PopActivity.this,  "Wyszukano", Toast.LENGTH_LONG).show();
-                    }
+                @Override
+                public void DataIsSelected(String randomElement) {
+                    tvResult.setText("");
+                    tvResult.setText(randomElement);
+                }
+            });*/
+       /*   //  String resultTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
+         //   Log.i("Wybrana kategoria to:", categoryName);
+            new FirebaseDatabaseHelper().randomElement(randomNumber, new FirebaseDatabaseHelper.DataStatus() {
+                @Override
+                public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                    tvResult.setText(elements.get(0).getTitle());
+                   // Toast.makeText(PopActivity.this,  "Wyszukano", Toast.LENGTH_LONG).show();
+                }
 
-                    @Override
-                    public void DataIsInserted() {
+                @Override
+                public void DataIsInserted() {
 
-                    }
+                }
 
-                    @Override
-                    public void DataIsUpdated() {
+                @Override
+                public void DataIsUpdated() {
 
-                    }
+                }
 
-                    @Override
-                    public void DataIsDeleted() {
+                @Override
+                public void DataIsDeleted() {
 
-                    }
-                });*/
-               // Log.i("Rozmiar tablicy", rozmiarConv);
-                /*Może być tak, że Id, które wylosowano nie występuje w bazie (tak ja wtedy), czyli jest 6 elementów, ale brakuje nr.3
-                można sprawdzić jak już zostanei zwrócony dany element, przy pomocy getTitle nie jest null, jeśli jest losuj dalej itd.
-                 */
-            }
-    });
+                }
+            });*/
+            // Log.i("Rozmiar tablicy", rozmiarConv);
+            /*Może być tak, że Id, które wylosowano nie występuje w bazie (tak ja wtedy), czyli jest 6 elementów, ale brakuje nr.3
+            można sprawdzić jak już zostanei zwrócony dany element, przy pomocy getTitle nie jest null, jeśli jest losuj dalej itd.
+             */
+        });
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 

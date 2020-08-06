@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import java.util.ArrayList;
@@ -108,16 +106,13 @@ public class PopActivityFilter extends Activity {
         otherSwitch.setChecked(elementFilters.get(0).isOtherRecommedation());
 
         /* Część Aktywacji Przycisków */
-        allSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    allSwitch.setText(odzWszt);
-                    selectAllRecom(false);
-                } else {
-                    allSwitch.setText(zazWszt);
-                    selectAllRecom(true);
-                }
+        allSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                allSwitch.setText(odzWszt);
+                selectAllRecom(false);
+            } else {
+                allSwitch.setText(zazWszt);
+                selectAllRecom(true);
             }
         });
 
@@ -126,64 +121,58 @@ public class PopActivityFilter extends Activity {
         Wymyślec sposób na to, zaznacz/odznacz były zależne od tego czy
         która kontrolka nie została odkliknięta.
          */
-        defaultButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*
-                tutaj mozna by było jakąs metodę zastowoswać, do
-                teog aby to zaznaczać, np jesli zaznaAll to wszystko idzie,
-                jako metoda
-                */
-                if (!allSwitch.isChecked()) {
-                    selectAllRecom(allSwitch.isChecked());
-                    allSwitch.setChecked(true);
-                }
-                if (!allCheckBox.isChecked()) {
-                    selectAllCategory(allCheckBox.isChecked());
-                    allCheckBox.setChecked(true);
-                }
-                finishSwitch.setChecked(true);
-                unFinishSwitch.setChecked(true);
+        defaultButton.setOnClickListener(v -> {
+            /*
+            tutaj mozna by było jakąs metodę zastowoswać, do
+            teog aby to zaznaczać, np jesli zaznaAll to wszystko idzie,
+            jako metoda
+            */
+            if (!allSwitch.isChecked()) {
+                selectAllRecom(allSwitch.isChecked());
+                allSwitch.setChecked(true);
             }
+            if (!allCheckBox.isChecked()) {
+                selectAllCategory(allCheckBox.isChecked());
+                allCheckBox.setChecked(true);
+            }
+            finishSwitch.setChecked(true);
+            unFinishSwitch.setChecked(true);
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ElementFilter elementFilter = new ElementFilter();
-                elementFilter.setId(1);
-                elementFilter.setFinished(finishSwitch.isChecked());
-                elementFilter.setUnFinished(unFinishSwitch.isChecked());
-                elementFilter.setBookCategory(booksCheckBox.isChecked());
-                elementFilter.setFilmCategory(filmsCheckBox.isChecked());
-                elementFilter.setGamesCategory(gamesCheckBox.isChecked());
-                elementFilter.setSeriesCategory(seriesCheckBox.isChecked());
-                elementFilter.setRockRecommedation(rockSwitch.isChecked());
-                elementFilter.setBorysRecommedation(borysSwitch.isChecked());
-                elementFilter.setRockBorysRecommedation(rckAndBorysSwitch.isChecked());
-                elementFilter.setOtherRecommedation(otherSwitch.isChecked());
-                new FirebaseDatabaseHelper().updateFilter(elementFilter);
+        saveButton.setOnClickListener(v -> {
+            ElementFilter elementFilter = new ElementFilter();
+            elementFilter.setId(1);
+            elementFilter.setFinished(finishSwitch.isChecked());
+            elementFilter.setUnFinished(unFinishSwitch.isChecked());
+            elementFilter.setBookCategory(booksCheckBox.isChecked());
+            elementFilter.setFilmCategory(filmsCheckBox.isChecked());
+            elementFilter.setGamesCategory(gamesCheckBox.isChecked());
+            elementFilter.setSeriesCategory(seriesCheckBox.isChecked());
+            elementFilter.setRockRecommedation(rockSwitch.isChecked());
+            elementFilter.setBorysRecommedation(borysSwitch.isChecked());
+            elementFilter.setRockBorysRecommedation(rckAndBorysSwitch.isChecked());
+            elementFilter.setOtherRecommedation(otherSwitch.isChecked());
+            new FirebaseDatabaseHelper().updateFilter(elementFilter);
 
-                /*!!! finish(), refresh itd. jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
-                    a następnie jego część w filtrze otwiera go na nowo. Słabe rowiązanie ...*/
-                // Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
-                // startActivity(refresh);
+            /*!!! finish(), refresh itd. jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
+                a następnie jego część w filtrze otwiera go na nowo. Słabe rowiązanie ...*/
+            // Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
+            // startActivity(refresh);
 
-                /*!!!
-                onResume() jest drugą metodą do aktualizacji, ale wciąż wydaje się 2/10
-                 */
-                // onResume();
+            /*!!!
+            onResume() jest drugą metodą do aktualizacji, ale wciąż wydaje się 2/10
+             */
+            // onResume();
 
-                /*!!!
-                Jednak notifyDataChenged jest tą włąściwą opcją, jeśli chodzi o aktualizacje daty/listy
-                 */
+            /*!!!
+            Jednak notifyDataChenged jest tą włąściwą opcją, jeśli chodzi o aktualizacje daty/listy
+             */
 
 
-                Intent intent = new Intent();
-                intent.putExtra("id", 1);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
+            Intent intent = new Intent();
+            intent.putExtra("id", 1);
+            setResult(RESULT_OK, intent);
+            finish();
         });
     }
 
