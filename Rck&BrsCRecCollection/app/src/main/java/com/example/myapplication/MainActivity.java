@@ -132,22 +132,27 @@ Github test 2
                assignRightId(elements);*/
                 elementsSize = elements.size();
             }
+
             @Override
-            public void DataIsInserted() { }
+            public void DataIsInserted() {
+            }
+
             @Override
-            public void DataIsUpdated() { }
+            public void DataIsUpdated() {
+            }
+
             @Override
-            public void DataIsDeleted() { }
+            public void DataIsDeleted() {
+            }
+
             @Override
-            public void DataIsSelected(String randomElement) { }
+            public void DataIsSelected(String randomElement) {
+            }
         });
         FloatingActionButton fab = findViewById(R.id.fab_btn);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NewElement.class);
-                startActivity(intent);
-            }
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, NewElement.class);
+            startActivity(intent);
         });
         //////////////Pisać poniżej/////////////////////
 
@@ -161,6 +166,7 @@ Github test 2
             ArrayList<Element> elements = new ArrayList<>();
             List<String> keyList = new ArrayList<>();
 
+            testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
             elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
             keyList = keysAssign(elements);
             elementAdapter.updateList(elements, keyList);

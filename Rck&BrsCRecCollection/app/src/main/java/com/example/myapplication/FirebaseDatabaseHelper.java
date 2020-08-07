@@ -68,7 +68,6 @@ class FirebaseDatabaseHelper {
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {
-//        roomDatabaseHelper.getElementDao().updateElemet(element);
         mReferenceBooks.child(key).setValue(element)
                 .addOnSuccessListener(aVoid -> dataStatus.DataIsUpdated());
         MainActivity.roomDatabaseHelper.getElementDao().updateElementById(Long.parseLong(key), element.getTitle(), element.getRecom(), element.getCategory());
@@ -174,26 +173,21 @@ class FirebaseDatabaseHelper {
         boolean rockBorys = elementFilters.get(0).isRockBorysRecommedation();
         boolean others = elementFilters.get(0).isOtherRecommedation();
 
-       /* if ogladane == true && nieogladane == true
-                then
-                        wszystko z tego
-                if ogladane == true
-                    list z tylko Oglądanymi
-                if nieogladane == true
-                    lista tylko z Nieoglądanymi
 
-                elementFilters.get(0)*/
         //#1 Oglądane i Nieoglądane
-        if (!finished && unFinished)
+        if (finished && !unFinished)
             completeList = elements.stream().filter(Element::isWatched).collect(Collectors.toList());
-        else if (finished && !unFinished)
+        else if (!finished && unFinished)
             completeList = elements.stream().filter(p -> !p.isWatched()).collect(Collectors.toList());
         else
             completeList = new ArrayList<>(elements);
 
         //#2 Kategorie
-        if (!books || !games || !series || !films) {
+        if (!games || !books || !series || !films) {
             elements.clear();
+            elements = categoryFilter(games, films, series, books, completeList);
+
+           /* elements.clear();
             if (!books)
                 elements = completeList.stream().filter(p -> !p.category.equals("Książka")).collect(Collectors.toList());
             if (!games)
@@ -201,22 +195,30 @@ class FirebaseDatabaseHelper {
             if (!series)
                 elements = completeList.stream().filter(p -> !p.category.equals("Serial")).collect(Collectors.toList());
             if (!films)
-                elements = completeList.stream().filter(p -> !p.category.equals("Film")).collect(Collectors.toList());
+                elements = completeList.stream().filter(p -> !p.category.equals("Film")).collect(Collectors.toList());*/
+        } else {
+            elements.clear();
+            elements = new ArrayList<>(completeList);
         }
-
 
         //#3 Polecane
         if (!rock || !borys || !rockBorys || !others) {
             completeList.clear();
+            completeList = promFilter(rock, borys, rockBorys, others, elements);
+          /*  completeList.clear();
             if (rock)
-                completeList = elements.stream().filter(p -> !p.recom.equals("Rock")).collect(Collectors.toList());
+                completeList = elements.stream().filter(p -> p.recom.equals("Rock")).collect(Collectors.toList());
             if (borys)
-                completeList = elements.stream().filter(p -> !p.recom.equals("Borys")).collect(Collectors.toList());
+                completeList = elements.stream().filter(p -> p.recom.equals("Borys")).collect(Collectors.toList());
             if (rockBorys)
-                completeList = elements.stream().filter(p -> !p.recom.equals("Rck&Brs")).collect(Collectors.toList());
+                completeList = elements.stream().filter(p -> p.recom.equals("Rck&Brs")).collect(Collectors.toList());
             if (others)
-                completeList = elements.stream().filter(p -> !p.recom.equals("Inne")).collect(Collectors.toList());
+                completeList = elements.stream().filter(p -> p.recom.equals("Inne")).collect(Collectors.toList());*/
+        } else {
+            completeList.clear();
+            completeList = new ArrayList<>(elements);
         }
+
         return completeList;
     }
     /*
@@ -238,4 +240,37 @@ class FirebaseDatabaseHelper {
      * -Udało się zrobić tą pierwszą filtrację. Należy teraz zmusić do działania Adapter wraz z notifyDataCHenged.
      *
      */
+    List<Element> promFilter(boolean promRock, boolean promBorys, boolean promRockBorys, boolean others, List<Element> elements) {
+
+        List<Element> completePromList = new ArrayList<>();
+        if (promRock)
+            completePromList = elements.stream().filter(p -> p.recom.equals("Rock")).collect(Collectors.toList());
+        if (promBorys)
+            completePromList = elements.stream().filter(p -> p.recom.equals("Borys")).collect(Collectors.toList());
+        if (promRockBorys)
+            completePromList = elements.stream().filter(p -> p.recom.equals("Rck&Brs")).collect(Collectors.toList());
+        if (others)
+            completePromList = elements.stream().filter(p -> p.recom.equals("Inne")).collect(Collectors.toList());
+
+        return completePromList;
+    }
+
+    List<Element> categoryFilter(boolean catGames, boolean catFilms, boolean catSeries, boolean catBooks, List<Element> elements) {
+
+        List<Element> completePromList = new ArrayList<>();
+        if (catBooks)
+            completePromList = elements.stream().filter(p -> p.category.equals("Książka")).collect(Collectors.toList());
+        if (catGames)
+            completePromList = elements.stream().filter(p -> p.category.equals("Gra")).collect(Collectors.toList());
+        if (catSeries)
+            completePromList = elements.stream().filter(p -> p.category.equals("Serial")).collect(Collectors.toList());
+        if (catFilms)
+            completePromList = elements.stream().filter(p -> p.category.equals("Film")).collect(Collectors.toList());
+
+        return completePromList;
+    }
+
+
 }
+
+
