@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -173,7 +174,6 @@ class FirebaseDatabaseHelper {
         boolean rockBorys = elementFilters.get(0).isRockBorysRecommedation();
         boolean others = elementFilters.get(0).isOtherRecommedation();
 
-
         //#1 Oglądane i Nieoglądane
         if (finished && !unFinished)
             completeList = elements.stream().filter(Element::isWatched).collect(Collectors.toList());
@@ -181,44 +181,22 @@ class FirebaseDatabaseHelper {
             completeList = elements.stream().filter(p -> !p.isWatched()).collect(Collectors.toList());
         else
             completeList = new ArrayList<>(elements);
-
         //#2 Kategorie
         if (!games || !books || !series || !films) {
             elements.clear();
             elements = categoryFilter(games, films, series, books, completeList);
-
-           /* elements.clear();
-            if (!books)
-                elements = completeList.stream().filter(p -> !p.category.equals("Książka")).collect(Collectors.toList());
-            if (!games)
-                elements = completeList.stream().filter(p -> !p.category.equals("Gra")).collect(Collectors.toList());
-            if (!series)
-                elements = completeList.stream().filter(p -> !p.category.equals("Serial")).collect(Collectors.toList());
-            if (!films)
-                elements = completeList.stream().filter(p -> !p.category.equals("Film")).collect(Collectors.toList());*/
         } else {
             elements.clear();
             elements = new ArrayList<>(completeList);
         }
-
         //#3 Polecane
         if (!rock || !borys || !rockBorys || !others) {
             completeList.clear();
             completeList = promFilter(rock, borys, rockBorys, others, elements);
-          /*  completeList.clear();
-            if (rock)
-                completeList = elements.stream().filter(p -> p.recom.equals("Rock")).collect(Collectors.toList());
-            if (borys)
-                completeList = elements.stream().filter(p -> p.recom.equals("Borys")).collect(Collectors.toList());
-            if (rockBorys)
-                completeList = elements.stream().filter(p -> p.recom.equals("Rck&Brs")).collect(Collectors.toList());
-            if (others)
-                completeList = elements.stream().filter(p -> p.recom.equals("Inne")).collect(Collectors.toList());*/
         } else {
             completeList.clear();
             completeList = new ArrayList<>(elements);
         }
-
         return completeList;
     }
     /*
@@ -243,34 +221,51 @@ class FirebaseDatabaseHelper {
     List<Element> promFilter(boolean promRock, boolean promBorys, boolean promRockBorys, boolean others, List<Element> elements) {
 
         List<Element> completePromList = new ArrayList<>();
-        if (promRock)
-            completePromList = elements.stream().filter(p -> p.recom.equals("Rock")).collect(Collectors.toList());
-        if (promBorys)
-            completePromList = elements.stream().filter(p -> p.recom.equals("Borys")).collect(Collectors.toList());
-        if (promRockBorys)
-            completePromList = elements.stream().filter(p -> p.recom.equals("Rck&Brs")).collect(Collectors.toList());
-        if (others)
-            completePromList = elements.stream().filter(p -> p.recom.equals("Inne")).collect(Collectors.toList());
-
+        //średnio wydajne pewnie
+        for (Element e : elements) {
+            if (e.getRecom().equals("Rock") & promRock)
+                completePromList.add(e);
+            else if (e.getRecom().equals("Borys") & promBorys)
+                completePromList.add(e);
+            else if (e.getRecom().equals("Rck&Brs") & promRockBorys)
+                completePromList.add(e);
+            else if (e.getRecom().equals("Inne") & others)
+                completePromList.add(e);
+        }
+//        if (promRock)
+//            completePromList = elements.stream().filter(p -> p.recom.equals("Rock")).collect(Collectors.toList());
+//        if (promBorys)
+//            completePromList = elements.stream().filter(p -> p.recom.equals("Borys")).collect(Collectors.toList());
+//        if (promRockBorys)
+//            completePromList = elements.stream().filter(p -> p.recom.equals("Rck&Brs")).collect(Collectors.toList());
+//        if (others)
+//            completePromList = elements.stream().filter(p -> p.recom.equals("Inne")).collect(Collectors.toList());
         return completePromList;
     }
 
     List<Element> categoryFilter(boolean catGames, boolean catFilms, boolean catSeries, boolean catBooks, List<Element> elements) {
 
         List<Element> completePromList = new ArrayList<>();
-        if (catBooks)
+        for (Element e : elements) {
+            if (e.getCategory().equals("Książka") & catBooks)
+                completePromList.add(e);
+            else if (e.getCategory().equals("Film") & catFilms)
+                completePromList.add(e);
+            else if (e.getCategory().equals("Gra") & catGames)
+                completePromList.add(e);
+            else if (e.getCategory().equals("Serial") & catSeries)
+                completePromList.add(e);
+        }
+     /*   if (catBooks)
             completePromList = elements.stream().filter(p -> p.category.equals("Książka")).collect(Collectors.toList());
         if (catGames)
             completePromList = elements.stream().filter(p -> p.category.equals("Gra")).collect(Collectors.toList());
         if (catSeries)
             completePromList = elements.stream().filter(p -> p.category.equals("Serial")).collect(Collectors.toList());
         if (catFilms)
-            completePromList = elements.stream().filter(p -> p.category.equals("Film")).collect(Collectors.toList());
-
+            completePromList = elements.stream().filter(p -> p.category.equals("Film")).collect(Collectors.toList());*/
         return completePromList;
     }
-
-
 }
 
 

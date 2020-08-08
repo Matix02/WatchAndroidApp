@@ -1,24 +1,17 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.room.Room;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -108,7 +101,9 @@ Github test 2
                 filterList.clear();
                 testRoomList.clear();
 
+                //roomDatabaseHelper.getElementDao().deleteAllElements();
                 testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                lastIndex = (int) testRoomList.get(testRoomList.size() - 1).getId();
 
                 localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
@@ -122,8 +117,7 @@ Github test 2
                 // localList.addAll(roomDatabaseHelper.getElementDao().getElements());
 
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
-                lastIndex = (int) localList.get(localList.size() - 1).getId();
-                // lastIndex = 1;
+                //lastIndex = 1;
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                 for(Element e : elements){
@@ -163,28 +157,24 @@ Github test 2
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
-            ArrayList<Element> elements = new ArrayList<>();
-            List<String> keyList = new ArrayList<>();
-
             testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
-            elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
-            keyList = keysAssign(elements);
+            ArrayList<Element> elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+            List<String> keyList = keysAssign(elements);
             elementAdapter.updateList(elements, keyList);
         }
     }
 
-    private void setUpRecyclerView() {
+   /* private void setUpRecyclerView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
         elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(elementAdapter);
-    }
+    }*/
 
-    private RecyclerView_Config.ElementAdapter setUpRecyclerView(RecyclerView_Config.ElementAdapter elementAdapter) {
-        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
-        return elementAdapter;
-    }
+   /* private RecyclerView_Config.ElementAdapter setUpRecyclerView() {
+        return new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
+    }*/
 
     @Override
     public boolean onQueryTextChange(final String newText) {
@@ -245,7 +235,7 @@ Github test 2
             return true;
         }
         else if(item.getItemId() == R.id.filter) {
-            Context context = getApplicationContext();
+            // Context context = getApplicationContext();
             Intent intent = new Intent(getApplicationContext(), PopActivityFilter.class);
             //  startActivity(intent);
             intent.putExtra("id", 1);
@@ -295,9 +285,5 @@ Github test 2
         roomDatabaseHelper.getElementDao().deleteAllElements();
         ArrayList<Element> sampleList = new ArrayList<>();
         sampleList.removeAll(element);
-    }
-    private void Table (){
-
-       // roomDatabaseHelper.getElementDao().addFilter(new ElementFilter(()));
     }
 }

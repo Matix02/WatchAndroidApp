@@ -50,7 +50,7 @@ public class NewElement extends Activity {
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     maxId = (dataSnapshot.getChildrenCount());
                 }
             }
@@ -59,58 +59,57 @@ public class NewElement extends Activity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mBackButton.setOnClickListener(v -> finish());
         /*
         Czy Data w Roomie jest kasowana przez usuwanie cache'u jak sprzątacz czy coś ???
          */
         /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Poprawić !!! Validation - walidacja
         //przemyslec jak to powinno dzialac, bo tak srednio
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (radioGroup.getCheckedRadioButtonId() == -1) {
-                    Toast.makeText(NewElement.this, "Fill empty fields", Toast.LENGTH_LONG).show();
-                } else {
-                    saveButton.setOnClickListener(new View.OnClickListener() {
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (radioGroup.getCheckedRadioButtonId() == -1) {
+                Toast.makeText(NewElement.this, "Fill empty fields", Toast.LENGTH_LONG).show();
+            } else {
+                saveButton.setOnClickListener(v -> {
+
+                    Element element = new Element();
+
+                    int radioId = radioGroup.getCheckedRadioButtonId();
+                    int radioRecomId = radioRecomGroup.getCheckedRadioButtonId();
+
+                    radioButton = findViewById(radioId);
+                    radioRecomButton = findViewById(radioRecomId);
+
+                    element.setTitle(editText.getText().toString());
+                    element.setCategory(radioButton.getText().toString());
+                    element.setRecom(radioRecomButton.getText().toString());
+                    //String mGroupID = reff.push().getKey();
+                    element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
+                    //Tu jest ten static arghhhh !!!!
+                    new FirebaseDatabaseHelper().addElement(element, MainActivity.lastIndex, new FirebaseDatabaseHelper.DataStatus() {
                         @Override
-                        public void onClick(View v) {
+                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                        }
 
-                            Element element = new Element();
+                        @Override
+                        public void DataIsInserted() {
+                            Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show();
+                        }
 
-                            int radioId = radioGroup.getCheckedRadioButtonId();
-                            int radioRecomId = radioRecomGroup.getCheckedRadioButtonId();
+                        @Override
+                        public void DataIsUpdated() {
+                        }
 
-                            radioButton = findViewById(radioId);
-                            radioRecomButton = findViewById(radioRecomId);
+                        @Override
+                        public void DataIsDeleted() {
+                        }
 
-                            element.setTitle(editText.getText().toString());
-                            element.setCategory(radioButton.getText().toString());
-                            element.setRecom(radioRecomButton.getText().toString());
-                            //String mGroupID = reff.push().getKey();
-                            element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
-                            //Tu jest ten static arghhhh !!!!
-                            new FirebaseDatabaseHelper().addElement(element, MainActivity.lastIndex, new FirebaseDatabaseHelper.DataStatus() {
-                                @Override
-                                public void DataIsLoaded(List<Element> elements, List<String> keys) { }
-                                @Override
-                                public void DataIsInserted() {
-                                    Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show(); }
-                                @Override
-                                public void DataIsUpdated() { }
-                                @Override
-                                public void DataIsDeleted() { }
-                                @Override
-                                public void DataIsSelected(String randomElement) { }
-                            });
+                        @Override
+                        public void DataIsSelected(String randomElement) {
                         }
                     });
-                }
+                    finish();
+                });
             }
         });
     }
