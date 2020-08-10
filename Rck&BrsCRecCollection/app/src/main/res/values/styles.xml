@@ -9,8 +9,26 @@
     </style>
 
     <style name="AppTheme.PopMe">
-    <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
+
+    <style name="ConstraitLayoutControls">
+
+    </style>
+
+    <style name="MainTextPopUp" parent="ConstraitLayoutControls">
+        <item name="android:textSize">25sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/whiteText</item>
+    </style>
+
+    <style name="SecondTextPopUp" parent="ConstraitLayoutControls">
+        <item name="android:textColor">@color/whiteText</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:layout_margin">60sp</item>
+    </style>
+
 
 </resources>

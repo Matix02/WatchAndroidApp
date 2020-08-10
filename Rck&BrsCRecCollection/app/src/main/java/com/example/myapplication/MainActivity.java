@@ -38,6 +38,10 @@ stronę główną jest już przezd tą zmianą, bo baza danych lokalna nie jest 
 /*
 Github test 2
  */
+/*
+Trzeba stworzyć jakiś mechanizm, który każdemu użytkownikowi tworzy domyślną wersję FIlttów, bo nie zostało to stworzone,
+a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element jako default.
+ */
 
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();

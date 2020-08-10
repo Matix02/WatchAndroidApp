@@ -14,7 +14,8 @@
         android:ems="10"
         android:imeActionLabel="@string/enter_title"
         android:inputType="textPersonName"
-        android:text="@string/enter_title" />
+        android:text="@string/enter_title"
+        tools:ignore="LabelFor" />
 
     <RadioGroup
         android:id="@+id/categoryRG"

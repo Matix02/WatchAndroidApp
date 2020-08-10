@@ -34,7 +34,9 @@ public class PopActivityFilter extends Activity {
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
     ArrayList<Element> mainElements = new ArrayList<>();
 
-    //To jest jak naciśniesz back-powrót na telefonie
+    /*To jest jak naciśniesz back-powrót na telefonie
+    Może tutaj dodać też zapisywanie tego, że nie bedzie potrzebny przycisk SAVE
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -91,9 +93,7 @@ public class PopActivityFilter extends Activity {
         params.x = 0;
         params.y = -20;
         getWindow().setAttributes(params);
-        /*
-        Część Przypisywania Wartości z Bazy
-         */
+        /* Część Przypisywania Wartości z Bazy */
         finishSwitch.setChecked(elementFilters.get(0).isFinished());
         unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());
         filmsCheckBox.setChecked(elementFilters.get(0).isFilmCategory());
