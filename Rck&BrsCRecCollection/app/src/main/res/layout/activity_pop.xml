@@ -7,120 +7,93 @@
     android:background="@drawable/pop_bg"
     tools:context=".PopActivity">
 
-
-    <Button
-        android:id="@+id/popBtnSearch"
+    <!--
+     Dopracować layout i poprawić losowanie, bo losuje ze wszystkiego-->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Wyszukaj"
-        android:background="@drawable/btn_bg"
-        android:layout_marginTop="320sp"
-        android:layout_marginHorizontal="5dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="10sp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kategorie:"
-        android:textColor="@color/whiteText"
-        android:textSize="18sp"
-        android:layout_marginTop="125sp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        <TextView
+            android:id="@+id/titelTextView"
+            style="@style/MainTextPopUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Random Shot" />
 
-    <RadioGroup
-        android:id="@+id/popCategoryRG"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/whiteText"
-        android:layout_marginTop="151sp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/SecondTextPopUp"
+            android:text="Nie możesz się zdecydować? \nWybierz kategorię i naciśnij losuj!" />
 
-        <RadioButton
-            android:id="@+id/popFilm"
-            android:textColor="@color/whiteText"
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/InsideText"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Kategorie:"
+            android:paddingTop="8dp" />
+
+        <RadioGroup
+            android:id="@+id/popCategoryRG"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/film" />
+            android:layout_gravity="center"
+            android:padding="8dp">
 
-        <RadioButton
-            android:id="@+id/popSerial"
-            android:textColor="@color/whiteText"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/popFilm"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/whiteText"
+                android:text="@string/film" />
+
+            <RadioButton
+                android:id="@+id/popSerial"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/serial"
+                android:textColor="@color/whiteText" />
+
+            <RadioButton
+                android:id="@+id/popKsiazka"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/whiteText"
+                android:text="@string/ksi_ka" />
+
+            <RadioButton
+                android:id="@+id/popGra"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/whiteText"
+                android:text="@string/gra" />
+
+            <RadioButton
+                android:id="@+id/popAll"
+                android:textColor="@color/whiteText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Wszystko"
+                android:checked="true" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/popBtnSearch"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/serial" />
+            android:background="@drawable/btn_bg"
+            android:text="Let's Rock" />
 
-        <RadioButton
-            android:id="@+id/popKsiazka"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/popResult"
+            style="@style/ResultDesign"
             android:layout_height="wrap_content"
-            android:textColor="@color/whiteText"
-            android:text="@string/ksi_ka" />
+            android:layout_width="match_parent"
+            android:text="asldkasldkalsd " />
+    </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/popGra"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/whiteText"
-            android:text="@string/gra" />
-
-        <RadioButton
-            android:id="@+id/popAll"
-            android:textColor="@color/whiteText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wszystko"
-            android:checked="true" />
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/popResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="388sp"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/titelTextView"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="Random Shot"
-        style="@style/MainTextPopUp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/whiteText"
-        style="@style/SecondTextPopUp"
-        android:text="Nie możesz się zdecydować? \nWybierz kategorię i naciśnij losuj!"
-        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,21 +13,28 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-    <style name="ConstraitLayoutControls">
-
+    <style name="MainDesignControls">
+        <item name="android:textColor">@color/whiteText</item>
+        <item name="android:gravity">center</item>
     </style>
 
-    <style name="MainTextPopUp" parent="ConstraitLayoutControls">
+    <style name="MainTextPopUp" parent="MainDesignControls">
         <item name="android:textSize">25sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/whiteText</item>
     </style>
 
-    <style name="SecondTextPopUp" parent="ConstraitLayoutControls">
-        <item name="android:textColor">@color/whiteText</item>
-        <item name="android:gravity">center</item>
+    <style name="SecondTextPopUp" parent="MainDesignControls">
+        <item name="android:layout_margin">18sp</item>
         <item name="android:textStyle">italic</item>
-        <item name="android:layout_margin">60sp</item>
+    </style>
+
+    <style name="InsideText" parent="MainDesignControls">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ResultDesign" parent="MainTextPopUp">
+        <item name="android:textColor">@color/pureDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">15dp</item>
     </style>
 
 
