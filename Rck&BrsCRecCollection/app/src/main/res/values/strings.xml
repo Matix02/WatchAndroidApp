@@ -4,7 +4,6 @@
     <string name="nav_Watched">Oglądane</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="checkbox">CheckBox</string>
     <string name="enter_title">Enter title</string>
     <string name="save">Save</string>
@@ -21,4 +20,13 @@
     <string name="rock">Rock</string>
     <string name="borys">Borys</string>
     <string name="inne">Inne</string>
+    <string name="kategorie">Kategorie:</string>
+    <string name="SecondPopUpRandomText">Nie możesz się zdecydować? \nWybierz kategorię i naciśnij losuj!</string>
+    <string name="MainPopUpRandomText">Random Shot</string>
+    <string name="wszystko">Wszystko</string>
+    <string name="ksiazki">Książki</string>
+    <string name="gry">Gry</string>
+    <string name="zaznacz_wszystko">Zaznacz Wszystko</string>
+    <string name="domy_lne">Default</string>
+    <string name="polecane">Polecane:</string>
 </resources>

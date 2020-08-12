@@ -20,21 +20,21 @@
             style="@style/MainTextPopUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Random Shot" />
+            android:text="@string/MainPopUpRandomText" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/SecondTextPopUp"
-            android:text="Nie możesz się zdecydować? \nWybierz kategorię i naciśnij losuj!" />
+            android:text="@string/SecondPopUpRandomText" />
 
         <TextView
             android:id="@+id/textView2"
             style="@style/InsideText"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Kategorie:"
+            android:text="@string/kategorie"
             android:paddingTop="8dp" />
 
         <RadioGroup
@@ -74,10 +74,10 @@
 
             <RadioButton
                 android:id="@+id/popAll"
-                android:textColor="@color/whiteText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Wszystko"
+                android:text="@string/wszystko"
+                android:textColor="@color/whiteText"
                 android:checked="true" />
         </RadioGroup>
 
@@ -92,8 +92,7 @@
             android:id="@+id/popResult"
             style="@style/ResultDesign"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="asldkasldkalsd " />
+            android:layout_width="match_parent" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

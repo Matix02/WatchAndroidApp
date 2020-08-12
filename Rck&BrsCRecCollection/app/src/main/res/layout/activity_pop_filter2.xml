@@ -13,13 +13,15 @@
         android:layout_margin="10sp"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/finishTV"
             style="@style/MainTextPopUp"
             android:layout_height="wrap_content"
-            android:text="Spersonalizuj Listę"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:text="Spersonalizuj Listę" />
 
+        <!--Poprawić ten tekst -->
         <TextView
             style="@style/SecondTextPopUp"
             android:layout_height="wrap_content"
@@ -27,183 +29,154 @@
             android:text="Poniższe elementy pozwolą Ci dopasować listę do swoich własnych potrzeb, by móc być na bieżaco z czymkolwiek chcesz" />
 
         <Switch
-            android:id="@+id/unfinishSW"
-            style="@style/MainDesignControls"
+            android:id="@+id/finishSW"
+            style="@style/SwitchControls"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="Nieukończonone" />
+            android:layout_width="160dp"
+            android:text="Ukończone" />
 
         <Switch
-            android:id="@+id/finishSW"
-            style="@style/MainDesignControls"
+            android:id="@+id/unfinishSW"
             android:layout_height="wrap_content"
-            android:text="Ukończone"
-            android:layout_width="match_parent" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kategorie"
-        android:layout_marginTop="115dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
-
-    <CheckBox
-        android:id="@+id/filmsCB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Filmy"
-        android:checked="true"
-        android:layout_marginTop="135dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
-
-    <CheckBox
-        android:id="@+id/seriesCB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seriale"
-        android:checked="true"
-        android:layout_marginTop="170dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <CheckBox
-        android:id="@+id/booksCB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Książki"
-        android:checked="true"
-        android:layout_marginTop="135dp"
-        android:layout_marginStart="50dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
-
-    <CheckBox
-        android:id="@+id/gamesCB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gry"
-        android:checked="true"
-        android:layout_marginTop="170dp"
-        android:layout_marginStart="50dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
-
-    <CheckBox
-        android:id="@+id/allCB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="170dp"
-        android:text="Zaznacz Wszystko"
-        android:checked="true"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+            style="@style/SwitchControls"
+            android:layout_width="160dp"
+            android:text="Nieukończonone" />
 
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Polecane"
-        android:layout_marginTop="200dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/InsideText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/kategorie"
+            android:textColor="@color/pureDark" />
 
-    <Switch
-        android:id="@+id/rockSW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rock"
-        android:checked="true"
-        android:layout_marginTop="230dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <Switch
-        android:id="@+id/borysSW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Borys"
-        android:checked="true"
-        android:layout_marginTop="250dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="50dp">
 
-    <Switch
-        android:id="@+id/rockBorysSW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rock i Borys"
-        android:checked="true"
-        android:layout_marginTop="280dp"
-        android:layout_marginHorizontal="5dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <Switch
-        android:id="@+id/otherSW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Inne"
-        android:checked="true"
-        android:layout_marginTop="310dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
-    <Switch
-        android:id="@+id/allSW"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Zaznacz Wszystko"
-        android:checked="true"
-        android:layout_marginTop="340dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+                <CheckBox
+                    android:id="@+id/filmsCB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Filmy"
+                    android:checked="true"
+                    style="@style/MainDesignControls" />
 
-    <Button
-        android:id="@+id/saveFilterButton"
-        android:layout_width="195dp"
-        android:layout_height="45dp"
-        android:text="Zapisz"
-        android:layout_marginTop="375dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+                <CheckBox
+                    android:id="@+id/seriesCB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seriale"
+                    android:checked="true"
+                    style="@style/MainDesignControls" />
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/defaultFilterButton"
-        android:layout_width="152dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="80dp"
-        android:text="Domyślne"
-        android:layout_marginTop="405dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="50dp"
+                android:paddingEnd="20dp">
+
+                <CheckBox
+                    android:id="@+id/booksCB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/MainDesignControls"
+                    android:checked="true"
+                    android:text="@string/ksiazki" />
+
+                <CheckBox
+                    android:id="@+id/gamesCB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/MainDesignControls"
+                    android:checked="true"
+                    android:text="@string/gry" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/allCB"
+            style="@style/SwitchControls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/zaznacz_wszystko" />
+
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/InsideText"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:text="@string/polecane"
+            android:textColor="@color/pureDark" />
+
+        <Switch
+            android:id="@+id/rockSW"
+            style="@style/SwitchControls"
+            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:checked="true"
+            android:text="@string/rock" />
+
+        <Switch
+            android:id="@+id/borysSW"
+            style="@style/SwitchControls"
+            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:checked="true"
+            android:text="@string/borys" />
+
+        <Switch
+            android:id="@+id/rockBorysSW"
+            style="@style/SwitchControls"
+            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:checked="true"
+            android:text="@string/rck_brs" />
+
+        <Switch
+            android:id="@+id/otherSW"
+            style="@style/SwitchControls"
+            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:checked="true"
+            android:text="@string/inne" />
+
+        <Switch
+            android:id="@+id/allSW"
+            style="@style/SwitchControls"
+            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:checked="true"
+            android:text="@string/zaznacz_wszystko"
+
+            />
+
+        <Button
+            android:id="@+id/saveFilterButton"
+            android:layout_width="195dp"
+            android:layout_height="45dp"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/defaultFilterButton"
+            android:layout_width="152dp"
+            android:layout_height="34dp"
+            android:text="@string/domy_lne" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

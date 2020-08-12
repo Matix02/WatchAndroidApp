@@ -138,14 +138,16 @@ class FirebaseDatabaseHelper {
     String countCategory(final String category) {
         List<Element> buforList;
         List<Element> newList = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getElements());
-        buforList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(newList);
+        buforList = new FirebaseDatabaseHelper().complementationList(newList);
 
         List<String> keys = new ArrayList<>();
         for (Element e : buforList) {
-            if (!e.isWatched && e.category.equals(category))
-                keys.add(e.getTitle());
-            else if (!e.isWatched)
-                keys.add(e.getTitle());
+            if (!e.isWatched) {
+                if (e.category.equals(category))
+                    keys.add(e.getTitle());
+                else if (category.equals("Wszystko"))
+                    keys.add(e.getTitle());
+            }
         }
         int pop = new PopActivity().generateRandomIndex(keys.size());
 

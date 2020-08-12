@@ -3,7 +3,6 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -44,66 +43,65 @@ public class EditElement extends AppCompatActivity {
         int radioId = getIndex(category);
         radioGroup.check(radioId);
 
-        mUpdate_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Element element = new Element();
-                element.setTitle(editText.getText().toString());
+        mUpdate_btn.setOnClickListener(v -> {
+            Element element = new Element();
+            element.setTitle(editText.getText().toString());
 
-                int radioId = radioGroup.getCheckedRadioButtonId();
-                radioButton = findViewById(radioId);
-                element.setCategory(radioButton.getText().toString());
+            int radioId1 = radioGroup.getCheckedRadioButtonId();
+            radioButton = findViewById(radioId1);
+            element.setCategory(radioButton.getText().toString());
 
-                int radioRecomId = radioRecomGroup.getCheckedRadioButtonId();
-                radioRecomButton = findViewById(radioRecomId);
-                element.setRecom(radioRecomButton.getText().toString());
+            int radioRecomId = radioRecomGroup.getCheckedRadioButtonId();
+            radioRecomButton = findViewById(radioRecomId);
+            element.setRecom(radioRecomButton.getText().toString());
 
-                new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                    }
+            new FirebaseDatabaseHelper().updateElement(key, element, new FirebaseDatabaseHelper.DataStatus() {
+                @Override
+                public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                }
 
-                    @Override
-                    public void DataIsInserted() {
-                    }
+                @Override
+                public void DataIsInserted() {
+                }
 
-                    @Override
-                    public void DataIsUpdated() {
-                        Toast.makeText(EditElement.this, "Element has been updated", Toast.LENGTH_LONG).show();
-                    }
+                @Override
+                public void DataIsUpdated() {
+                    Toast.makeText(EditElement.this, "Element has been updated", Toast.LENGTH_LONG).show();
+                }
 
-                    @Override
-                    public void DataIsDeleted() { }
-                    @Override
-                    public void DataIsSelected(String randomElement) { }
-                });
-            }
+                @Override
+                public void DataIsDeleted() {
+                }
+
+                @Override
+                public void DataIsSelected(String randomElement) {
+                }
+            });
         });
-        mDelete_btn.setOnClickListener(new View.OnClickListener() {
+        mDelete_btn.setOnClickListener(v -> new FirebaseDatabaseHelper().deleteElement(key, new FirebaseDatabaseHelper.DataStatus() {
             @Override
-            public void onClick(View v) {
-                new FirebaseDatabaseHelper().deleteElement(key, new FirebaseDatabaseHelper.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Element> elements, List<String> keys) { }
-                    @Override
-                    public void DataIsInserted() { }
-                    @Override
-                    public void DataIsUpdated() { }
-                    @Override
-                    public void DataIsDeleted() {
-                        Toast.makeText(EditElement.this, "Element has been deleted", Toast.LENGTH_LONG).show();
-                        finish(); }
-                    @Override
-                    public void DataIsSelected(String randomElement) { }
-                });
+            public void DataIsLoaded(List<Element> elements, List<String> keys) {
             }
-        });
-        mBack_btn.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public void DataIsInserted() {
+            }
+
+            @Override
+            public void DataIsUpdated() {
+            }
+
+            @Override
+            public void DataIsDeleted() {
+                Toast.makeText(EditElement.this, "Element has been deleted", Toast.LENGTH_LONG).show();
                 finish();
             }
-        });
+
+            @Override
+            public void DataIsSelected(String randomElement) {
+            }
+        }));
+        mBack_btn.setOnClickListener(v -> finish());
     }
 
     //Alternatywne rozwiązanie do tego, ze względu na ciągle zmieniające się indexy
