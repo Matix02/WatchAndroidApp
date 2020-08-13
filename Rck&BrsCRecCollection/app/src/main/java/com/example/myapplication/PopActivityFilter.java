@@ -3,6 +3,8 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -10,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Switch;
+
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 
@@ -41,7 +45,6 @@ public class PopActivityFilter extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
     }
-
 
     /*
             Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
@@ -86,13 +89,17 @@ public class PopActivityFilter extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * .8), (int) (height * .7));
+        getWindow().setLayout((int) (width * .8), (int) (height * .8));
 
+
+        //getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
         params.y = -20;
+
         getWindow().setAttributes(params);
+
         /* Część Przypisywania Wartości z Bazy */
         finishSwitch.setChecked(elementFilters.get(0).isFinished());
         unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());

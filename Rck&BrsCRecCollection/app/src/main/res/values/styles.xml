@@ -10,7 +10,10 @@
 
     <style name="AppTheme.PopMe">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
     </style>
 
     <style name="MainDesignControls">
@@ -23,12 +26,13 @@
     </style>
 
     <style name="SecondTextPopUp" parent="MainDesignControls">
-        <item name="android:layout_margin">18sp</item>
+        <item name="android:layout_margin">1sp</item>
         <item name="android:textStyle">italic</item>
     </style>
 
     <style name="InsideText" parent="MainDesignControls">
         <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginTop">15sp</item>
     </style>
 
     <style name="ResultDesign" parent="MainTextPopUp">
@@ -39,6 +43,11 @@
 
     <style name="SwitchControls" parent="MainDesignControls">
         <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">160dp</item>
+    </style>
+
+    <style name="ButtonFinalDesign">
+        <item name="android:layout_marginTop">8sp</item>
     </style>
 
 </resources>
