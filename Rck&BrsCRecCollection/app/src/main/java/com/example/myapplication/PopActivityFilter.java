@@ -4,14 +4,19 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -91,14 +96,32 @@ public class PopActivityFilter extends Activity {
 
         getWindow().setLayout((int) (width * .8), (int) (height * .8));
 
-
-        //getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
         params.y = -20;
 
         getWindow().setAttributes(params);
+
+        //Kolory
+        float[] positions = {0.0f, 0.33f, 0.66f, 1.0f};
+        int[] colors = {
+                0xFFb1b1b1, // white
+                0xFF414141, // grey - light
+                0xFF8e8e8e, //grey - hard
+                0xFF000000 // black
+        };
+        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 150, colors, positions, Shader.TileMode.CLAMP);
+
+        int[] colors2 = {
+                0xFFFFFF88, // yellow
+                0xFF0088FF, // blue
+                0xFF000000, // black
+                0xFFFFFF88  // yellow
+        };
+
+        allSwitch.getPaint().setShader(linearGradient);
 
         /* Część Przypisywania Wartości z Bazy */
         finishSwitch.setChecked(elementFilters.get(0).isFinished());

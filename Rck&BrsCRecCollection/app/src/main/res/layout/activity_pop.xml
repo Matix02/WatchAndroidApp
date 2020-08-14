@@ -93,7 +93,8 @@
             android:id="@+id/popResult"
             style="@style/ResultDesign"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:hint="@string/random_title" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

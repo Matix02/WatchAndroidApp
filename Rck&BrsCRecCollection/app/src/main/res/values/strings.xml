@@ -29,4 +29,11 @@
     <string name="zaznacz_wszystko">Zaznacz Wszystko</string>
     <string name="domy_lne">Default</string>
     <string name="polecane">Polecane:</string>
+    <string name="filmy">Filmy</string>
+    <string name="seriale">Seriale</string>
+    <string name="nieuko_czonone">Nieukończonone</string>
+    <string name="uko_czone">Ukończone</string>
+    <string name="spersonalizuj_list">Spersonalizuj Listę</string>
+    <string name="poni_sze_opcje_pozwol_ci_dopasowa_list_do_w_asnych_potrzeb">Poniższe opcje pozwolą Ci dopasować listę do własnych potrzeb</string>
+    <string name="random_title">Random Title</string>
 </resources>
