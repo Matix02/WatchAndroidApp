@@ -1,24 +1,19 @@
 package com.example.myapplication;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.TextView;
-
-import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 
@@ -59,6 +54,7 @@ public class PopActivityFilter extends Activity {
     Tego jest tak dużo, że chyba przydałoby się zrobienie jakiegoś Reccycler_view
     coś jak to, gdzie ma się te wszystkie połączenia findView... itd.
      */
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,23 +101,18 @@ public class PopActivityFilter extends Activity {
         getWindow().setAttributes(params);
 
         //Kolory
-        float[] positions = {0.0f, 0.33f, 0.66f, 1.0f};
+     /*  Gradient Kolor
+     float[] positions = {0.0f, 0.33f, 0.66f, 1.0f};
         int[] colors = {
-                0xFFb1b1b1, // white
-                0xFF414141, // grey - light
+                0xFF000000, // black
                 0xFF8e8e8e, //grey - hard
-                0xFF000000 // black
+
+                0xFF414141, // grey - light
+                0xFFb1b1b1 // white
         };
         LinearGradient linearGradient = new LinearGradient(0, 0, 0, 150, colors, positions, Shader.TileMode.CLAMP);
 
-        int[] colors2 = {
-                0xFFFFFF88, // yellow
-                0xFF0088FF, // blue
-                0xFF000000, // black
-                0xFFFFFF88  // yellow
-        };
-
-        allSwitch.getPaint().setShader(linearGradient);
+        allSwitch.getPaint().setShader(linearGradient);*/
 
         /* Część Przypisywania Wartości z Bazy */
         finishSwitch.setChecked(elementFilters.get(0).isFinished());
@@ -135,17 +126,13 @@ public class PopActivityFilter extends Activity {
         rckAndBorysSwitch.setChecked(elementFilters.get(0).isRockBorysRecommedation());
         otherSwitch.setChecked(elementFilters.get(0).isOtherRecommedation());
 
-        /* Część Aktywacji Przycisków */
-        allSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                allSwitch.setText(odzWszt);
-                selectAllRecom(false);
-            } else {
-                allSwitch.setText(zazWszt);
-                selectAllRecom(true);
-            }
-        });
-
+        if (!seriesCheckBox.isChecked() || !filmsCheckBox.isChecked() || !gamesCheckBox.isChecked() || !booksCheckBox.isChecked()) {
+            allCheckBox.setChecked(false);
+            allCheckBox.setText("Zaznacz Wszystko");
+        } else {
+            allCheckBox.setChecked(true);
+            allCheckBox.setText("Odznacz Wszystko");
+        }
 
         /*
         Wymyślec sposób na to, zaznacz/odznacz były zależne od tego czy
@@ -168,6 +155,78 @@ public class PopActivityFilter extends Activity {
             finishSwitch.setChecked(true);
             unFinishSwitch.setChecked(true);
         });
+
+        filmsCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allCheckBox.setChecked(false);
+                allCheckBox.setText("Zaznacz Wszystko");
+            }
+
+        }));
+        booksCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allCheckBox.setChecked(false);
+                allCheckBox.setText("Zaznacz Wszystko");
+            }
+
+        }));
+        gamesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allCheckBox.setChecked(false);
+                allCheckBox.setText("Zaznacz Wszystko");
+            }
+        }));
+        seriesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allCheckBox.setChecked(false);
+                allCheckBox.setText("Zaznacz Wszystko");
+            }
+        }));
+       /* allCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        });
+        Up. Czy to jest potrzebne??!
+        */
+        allCheckBox.setOnClickListener(v -> selectAllCategory(!allCheckBox.isChecked()));
+
+        /* Część Aktywacji Przycisków */
+        if (!borysSwitch.isChecked() || !rockSwitch.isChecked() || !rckAndBorysSwitch.isChecked() || !otherSwitch.isChecked()) {
+            allSwitch.setChecked(false);
+            allSwitch.setText("Zaznacz Wszystko");
+        } else {
+            allSwitch.setChecked(true);
+            allSwitch.setText("Odznacz Wszystko");
+        }
+
+        borysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allSwitch.setChecked(false);
+                allSwitch.setText("Zaznacz Wszystko");
+            }
+        });
+        rockSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allSwitch.setChecked(false);
+                allSwitch.setText("Zaznacz Wszystko");
+            }
+        });
+        rckAndBorysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allSwitch.setChecked(false);
+                allSwitch.setText("Zaznacz Wszystko");
+            }
+        });
+        otherSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                allSwitch.setChecked(false);
+                allSwitch.setText("Zaznacz Wszystko");
+            }
+        });
+
+        allSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+        });
+        allSwitch.setOnClickListener(v -> selectAllRecom(!allSwitch.isChecked()));
+
 
         saveButton.setOnClickListener(v -> {
             ElementFilter elementFilter = new ElementFilter();
@@ -206,16 +265,22 @@ public class PopActivityFilter extends Activity {
         });
     }
 
-    public void selectAllRecom(boolean statusButton){
+    public void selectAllRecom(boolean statusButton) {
         boolean realStatus = !statusButton;
 
         rockSwitch.setChecked(realStatus);
         borysSwitch.setChecked(realStatus);
         rckAndBorysSwitch.setChecked(realStatus);
         otherSwitch.setChecked(realStatus);
+        //allSwitch.setChecked(realStatus);
+        if (realStatus)
+            allSwitch.setText("Odznacz Wszystko");
+        else
+            allSwitch.setText("Zaznacz Wszystko");
     }
 
-    public void selectAllCategory(boolean statusCheckBox){
+    @SuppressLint("SetTextI18n")
+    public void selectAllCategory(boolean statusCheckBox) {
         boolean realStatus = !statusCheckBox;
 
         filmsCheckBox.setChecked(realStatus);
@@ -223,6 +288,10 @@ public class PopActivityFilter extends Activity {
         seriesCheckBox.setChecked(realStatus);
         booksCheckBox.setChecked(realStatus);
         allCheckBox.setChecked(realStatus);
+        if (realStatus)
+            allCheckBox.setText("Odznacz Wszystko");
+        else
+            allCheckBox.setText("Zaznacz Wszystko");
     }
 }
 //Postarać się o funkcjonlaność o zgrozo
