@@ -38,12 +38,13 @@
     <style name="ResultDesign" parent="MainTextPopUp">
         <item name="android:textColor">@color/pureDark</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginTop">7sp</item>
     </style>
 
     <style name="SwitchControls" parent="MainDesignControls">
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_width">120sp</item>
+        <item name="android:minWidth">80sp</item>
     </style>
 
     <style name="ButtonFinalDesign">

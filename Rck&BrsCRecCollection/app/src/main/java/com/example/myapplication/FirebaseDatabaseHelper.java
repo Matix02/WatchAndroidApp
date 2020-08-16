@@ -149,9 +149,13 @@ class FirebaseDatabaseHelper {
                     keys.add(e.getTitle());
             }
         }
-        int pop = new PopActivity().generateRandomIndex(keys.size());
 
-        return resultTitle = keys.get(pop - 1);
+        if (keys.size() == 0)
+            return resultTitle = "No Results";
+        else
+            return resultTitle = keys.get(new PopActivity().generateRandomIndex(keys.size()) - 1);
+
+        // return resultTitle = keys.get(pop - 1);
     }
 
     public void updateFilter(ElementFilter elementFilter) {
@@ -159,6 +163,7 @@ class FirebaseDatabaseHelper {
     }
 
     public List<Element> complementationList(List<Element> elements) {
+
 
         List<ElementFilter> elementFilters = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
         List<Element> completeList;

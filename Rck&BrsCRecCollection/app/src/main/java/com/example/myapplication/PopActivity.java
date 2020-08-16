@@ -3,6 +3,8 @@ package com.example.myapplication;
 
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -29,9 +31,9 @@ public class PopActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop);
 
-        Button btnSearch = (Button) findViewById(R.id.popBtnSearch);
-        radioGroup = (RadioGroup) findViewById(R.id.popCategoryRG);
-        tvResult = (TextView) findViewById(R.id.popResult);
+        Button btnSearch = findViewById(R.id.popBtnSearch);
+        radioGroup = findViewById(R.id.popCategoryRG);
+        tvResult = findViewById(R.id.popResult);
         btnSearch.setOnClickListener(v -> {
             int radioId = radioGroup.getCheckedRadioButtonId();
             radioButton = findViewById(radioId);
@@ -45,56 +47,6 @@ public class PopActivity extends Activity {
             tvResult.setText("");
             tvResult.setText(finalRandomTitle);
 
-      /*      new FirebaseDatabaseHelper().countCategory(categoryName, new FirebaseDatabaseHelper.DataStatus() {
-                @Override
-                public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                }
-
-                @Override
-                public void DataIsInserted() {
-
-                }
-
-                @Override
-                public void DataIsUpdated() {
-
-                }
-
-                @Override
-                public void DataIsDeleted() {
-
-                }
-
-                @Override
-                public void DataIsSelected(String randomElement) {
-                    tvResult.setText("");
-                    tvResult.setText(randomElement);
-                }
-            });*/
-       /*   //  String resultTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
-         //   Log.i("Wybrana kategoria to:", categoryName);
-            new FirebaseDatabaseHelper().randomElement(randomNumber, new FirebaseDatabaseHelper.DataStatus() {
-                @Override
-                public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                    tvResult.setText(elements.get(0).getTitle());
-                   // Toast.makeText(PopActivity.this,  "Wyszukano", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void DataIsInserted() {
-
-                }
-
-                @Override
-                public void DataIsUpdated() {
-
-                }
-
-                @Override
-                public void DataIsDeleted() {
-
-                }
-            });*/
             // Log.i("Rozmiar tablicy", rozmiarConv);
             /*Może być tak, że Id, które wylosowano nie występuje w bazie (tak ja wtedy), czyli jest 6 elementów, ale brakuje nr.3
             można sprawdzić jak już zostanei zwrócony dany element, przy pomocy getTitle nie jest null, jeśli jest losuj dalej itd.
@@ -107,7 +59,8 @@ public class PopActivity extends Activity {
         int height = dm.heightPixels;
 
         //zmiana rozmiaru popap-u
-        getWindow().setLayout((int)(width*.8), (int)(height*.7));
+        getWindow().setLayout((int) (width * .8), (int) (height * .7));
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;

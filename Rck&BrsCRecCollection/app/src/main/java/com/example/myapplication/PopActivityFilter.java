@@ -54,11 +54,13 @@ public class PopActivityFilter extends Activity {
     Tego jest tak dużo, że chyba przydałoby się zrobienie jakiegoś Reccycler_view
     coś jak to, gdzie ma się te wszystkie połączenia findView... itd.
      */
+    /*Naprawić to SetTextI18n*/
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_filter2);
+
 
         elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
         mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
@@ -90,7 +92,7 @@ public class PopActivityFilter extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * .8), (int) (height * .8));
+        getWindow().setLayout((int) (width * .8), (int) (height * .9));
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams params = getWindow().getAttributes();
@@ -226,7 +228,6 @@ public class PopActivityFilter extends Activity {
 
         });
         allSwitch.setOnClickListener(v -> selectAllRecom(!allSwitch.isChecked()));
-
 
         saveButton.setOnClickListener(v -> {
             ElementFilter elementFilter = new ElementFilter();

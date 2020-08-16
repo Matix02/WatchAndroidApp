@@ -121,7 +121,7 @@ a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element ja
                 // localList.addAll(roomDatabaseHelper.getElementDao().getElements());
 
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
-                //lastIndex = 1;
+                // lastIndex = 1;
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                 for(Element e : elements){

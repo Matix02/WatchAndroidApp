@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10sp"
+        android:layout_margin="8sp"
         android:orientation="vertical">
 
         <TextView
@@ -20,22 +20,24 @@
             android:text="@string/spersonalizuj_list" />
 
         <!--Poprawić ten tekst -->
-        <TextView
+        <!--<TextView
             style="@style/SecondTextPopUp"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/poni_sze_opcje_pozwol_ci_dopasowa_list_do_w_asnych_potrzeb" />
-
+-->
         <Switch
             android:id="@+id/finishSW"
             style="@style/SwitchControls"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_width="160sp"
             android:text="@string/uko_czone" />
 
         <Switch
             android:id="@+id/unfinishSW"
             android:layout_height="wrap_content"
+            android:layout_width="160sp"
             style="@style/SwitchControls"
             android:text="@string/nieuko_czonone" />
 
@@ -45,33 +47,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/kategorie"
-            android:textColor="@color/pureDark" />
+            android:text="@string/kategorie" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="40dp">
+                android:layout_marginStart="25sp"
+                android:layout_weight="1"
+
+                >
 
                 <CheckBox
                     android:id="@+id/filmsCB"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/filmy"
+                    android:gravity="center_vertical"
+
                     android:checked="true"
                     style="@style/MainDesignControls" />
 
                 <CheckBox
                     android:id="@+id/seriesCB"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
                     android:layout_height="wrap_content"
                     android:text="@string/seriale"
                     android:checked="true"
@@ -82,22 +89,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="20dp">
+                android:layout_weight="1"
+                android:gravity="center_vertical">
 
                 <CheckBox
                     android:id="@+id/booksCB"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     style="@style/MainDesignControls"
                     android:checked="true"
                     android:text="@string/ksiazki" />
 
                 <CheckBox
                     android:id="@+id/gamesCB"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/MainDesignControls"
+                    android:gravity="center_vertical"
+
                     android:checked="true"
                     android:text="@string/gry" />
             </LinearLayout>
@@ -117,14 +127,14 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="10dp"
-            android:text="@string/polecane"
-            android:textColor="@color/pureDark" />
+            android:text="@string/polecane" />
 
         <!-- SwitchButton - Polecane-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -132,10 +142,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingStart="5dp"
+                android:layout_weight="1"
                 android:paddingEnd="5dp">
 
                 <Switch
                     android:id="@+id/rockSW"
+                    android:minWidth="80sp"
+
                     style="@style/SwitchControls"
                     android:layout_height="wrap_content"
                     android:text="@string/rock" />
@@ -143,11 +156,15 @@
                 <Switch
                     android:id="@+id/borysSW"
                     style="@style/SwitchControls"
+                    android:minWidth="80sp"
+
                     android:layout_height="wrap_content"
                     android:text="@string/borys" />
 
                 <Switch
                     android:id="@+id/rockBorysSW"
+                    android:minWidth="80sp"
+
                     style="@style/SwitchControls"
                     android:layout_height="wrap_content"
                     android:text="@string/rck_brs" />
@@ -157,13 +174,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_weight="1"
+
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp">
 
                 <Switch
                     android:id="@+id/otherSW"
                     style="@style/SwitchControls"
-                    android:layout_width="120sp"
+                    android:minWidth="80sp"
                     android:layout_height="wrap_content"
                     android:text="@string/inne" />
             </LinearLayout>
