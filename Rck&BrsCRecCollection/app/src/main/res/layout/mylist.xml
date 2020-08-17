@@ -3,34 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:layout_marginTop="3dp"
+    android:layout_height="wrap_content"
     android:elevation="6dp"
-    android:layout_margin="6dp"
+    android:layout_margin="6sp"
     app:cardCornerRadius="6dp"
     android:id="@+id/cardLayout">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="353dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/titleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Film"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:text="Once upon a hollywood" />
 
                 <TextView
                     android:id="@+id/recomemndation"
@@ -46,13 +43,13 @@
                 android:id="@+id/categoryTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Once upon a hollywood" />
+                android:text="Film" />
 
         </LinearLayout>
 
         <CheckBox
             android:id="@+id/checkBox"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layoutDirection="rtl" />

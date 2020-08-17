@@ -6,6 +6,11 @@
     android:background="@drawable/pop_bg"
     tools:context=".PopActivityFilter">
 
+    <!-- Po naniesieniu poprawek na start nowo zainstalowanej aplikacji
+    (dodawanie bazy przy uruchomieniu przy filtrach, kopia tablicy z firebase'a na
+    room dla każdego telefonu itd.)
+    należy nanieść poprawki a dokładnie generalizację tych stylów (czyli
+    powstawiać powtarzajace sie elementy do styles.xml. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -60,25 +66,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="25sp"
-                android:layout_weight="1"
-
-                >
+                android:layout_marginEnd="20sp"
+                android:gravity="center_vertical"
+                android:layout_weight="1">
 
                 <CheckBox
                     android:id="@+id/filmsCB"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/filmy"
-                    android:gravity="center_vertical"
-
+                    android:gravity="center"
                     android:checked="true"
                     style="@style/MainDesignControls" />
 
                 <CheckBox
                     android:id="@+id/seriesCB"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
                     android:layout_height="wrap_content"
                     android:text="@string/seriale"
                     android:checked="true"
@@ -86,27 +90,26 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
+                android:layout_weight="1">
 
                 <CheckBox
                     android:id="@+id/booksCB"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     style="@style/MainDesignControls"
                     android:checked="true"
                     android:text="@string/ksiazki" />
 
                 <CheckBox
                     android:id="@+id/gamesCB"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/MainDesignControls"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
 
                     android:checked="true"
                     android:text="@string/gry" />
