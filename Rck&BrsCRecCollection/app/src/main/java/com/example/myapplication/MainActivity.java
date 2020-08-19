@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -153,7 +154,21 @@ a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element ja
             startActivity(intent);
         });
         //////////////Pisać poniżej/////////////////////
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
 
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy < 0 && !fab.isShown())
+                    fab.show();
+                else if (dy > 0 && fab.isShown())
+                    fab.hide();
+            }
+        });
     }
 
     @Override
