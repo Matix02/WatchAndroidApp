@@ -22,13 +22,13 @@
             android:layout_height="wrap_content"
             android:text="@string/MainPopUpRandomText" />
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/SecondTextPopUp"
             android:text="@string/SecondPopUpRandomText" />
-
+-->
         <TextView
             android:id="@+id/textView2"
             style="@style/InsideText"
@@ -93,6 +93,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/random_title" />
+
+        <TextView
+            android:id="@+id/popResultCategory"
+            style="@style/SwitchControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greyGradient" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

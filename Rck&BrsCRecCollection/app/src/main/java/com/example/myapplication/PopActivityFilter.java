@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,15 +11,14 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import java.util.ArrayList;
 
 public class PopActivityFilter extends Activity {
 
-    String zazWszt;
-    String odzWszt;
+    String zazWszt = "Zaznacz Wszystko";
+    String odzWszt = "Odznacz Wszystko";
     Switch finishSwitch;
     Switch unFinishSwitch;
     CheckBox filmsCheckBox;
@@ -40,11 +38,11 @@ public class PopActivityFilter extends Activity {
 
     /*To jest jak naciśniesz back-powrót na telefonie
     Może tutaj dodać też zapisywanie tego, że nie bedzie potrzebny przycisk SAVE
-     */
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
+    } */
 
     /*
             Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
@@ -54,19 +52,13 @@ public class PopActivityFilter extends Activity {
     Tego jest tak dużo, że chyba przydałoby się zrobienie jakiegoś Reccycler_view
     coś jak to, gdzie ma się te wszystkie połączenia findView... itd.
      */
-    /*Naprawić to SetTextI18n*/
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_filter2);
 
-
         elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
         mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
-
-        zazWszt = "Zaznacz Wszystko";
-        odzWszt = "Odznacz Wszystko";
 
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
@@ -128,22 +120,28 @@ public class PopActivityFilter extends Activity {
         rckAndBorysSwitch.setChecked(elementFilters.get(0).isRockBorysRecommedation());
         otherSwitch.setChecked(elementFilters.get(0).isOtherRecommedation());
 
+        finishSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if (!unFinishSwitch.isChecked() && !isChecked)
+                unFinishSwitch.setChecked(true);
+        }));
+        unFinishSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if (!finishSwitch.isChecked() && !isChecked)
+                finishSwitch.setChecked(true);
+        }));
+
+
         if (!seriesCheckBox.isChecked() || !filmsCheckBox.isChecked() || !gamesCheckBox.isChecked() || !booksCheckBox.isChecked()) {
             allCheckBox.setChecked(false);
-            allCheckBox.setText("Zaznacz Wszystko");
+            allCheckBox.setText(zazWszt);
         } else {
             allCheckBox.setChecked(true);
-            allCheckBox.setText("Odznacz Wszystko");
+            allCheckBox.setText(odzWszt);
         }
 
-        /*
-        Wymyślec sposób na to, zaznacz/odznacz były zależne od tego czy
-        która kontrolka nie została odkliknięta.
-         */
         defaultButton.setOnClickListener(v -> {
             /*
             tutaj mozna by było jakąs metodę zastowoswać, do
-            teog aby to zaznaczać, np jesli zaznaAll to wszystko idzie,
+            tego aby to zaznaczać, np jesli zaznaAll to wszystko idzie,
             jako metoda
             */
             if (!allSwitch.isChecked()) {
@@ -161,72 +159,66 @@ public class PopActivityFilter extends Activity {
         filmsCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if (!isChecked) {
                 allCheckBox.setChecked(false);
-                allCheckBox.setText("Zaznacz Wszystko");
+                allCheckBox.setText(zazWszt);
             }
 
         }));
         booksCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if (!isChecked) {
                 allCheckBox.setChecked(false);
-                allCheckBox.setText("Zaznacz Wszystko");
+                allCheckBox.setText(zazWszt);
             }
 
         }));
         gamesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if (!isChecked) {
                 allCheckBox.setChecked(false);
-                allCheckBox.setText("Zaznacz Wszystko");
+                allCheckBox.setText(zazWszt);
             }
         }));
         seriesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if (!isChecked) {
                 allCheckBox.setChecked(false);
-                allCheckBox.setText("Zaznacz Wszystko");
+                allCheckBox.setText(zazWszt);
             }
         }));
-       /* allCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-        });
-        Up. Czy to jest potrzebne??!
-        */
+
         allCheckBox.setOnClickListener(v -> selectAllCategory(!allCheckBox.isChecked()));
 
         /* Część Aktywacji Przycisków */
         if (!borysSwitch.isChecked() || !rockSwitch.isChecked() || !rckAndBorysSwitch.isChecked() || !otherSwitch.isChecked()) {
             allSwitch.setChecked(false);
-            allSwitch.setText("Zaznacz Wszystko");
+            allSwitch.setText(zazWszt);
         } else {
             allSwitch.setChecked(true);
-            allSwitch.setText("Odznacz Wszystko");
+            allSwitch.setText(odzWszt);
         }
 
         borysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
                 allSwitch.setChecked(false);
-                allSwitch.setText("Zaznacz Wszystko");
+                allSwitch.setText(zazWszt);
             }
         });
         rockSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
                 allSwitch.setChecked(false);
-                allSwitch.setText("Zaznacz Wszystko");
+                allSwitch.setText(zazWszt);
             }
         });
         rckAndBorysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
                 allSwitch.setChecked(false);
-                allSwitch.setText("Zaznacz Wszystko");
+                allSwitch.setText(zazWszt);
             }
         });
         otherSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
                 allSwitch.setChecked(false);
-                allSwitch.setText("Zaznacz Wszystko");
+                allSwitch.setText(zazWszt);
             }
         });
 
-        allSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-        });
         allSwitch.setOnClickListener(v -> selectAllRecom(!allSwitch.isChecked()));
 
         saveButton.setOnClickListener(v -> {
@@ -246,18 +238,6 @@ public class PopActivityFilter extends Activity {
 
             /*!!! finish(), refresh itd. jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
                 a następnie jego część w filtrze otwiera go na nowo. Słabe rowiązanie ...*/
-            // Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
-            // startActivity(refresh);
-
-            /*!!!
-            onResume() jest drugą metodą do aktualizacji, ale wciąż wydaje się 2/10
-             */
-            // onResume();
-
-            /*!!!
-            Jednak notifyDataChenged jest tą włąściwą opcją, jeśli chodzi o aktualizacje daty/listy
-             */
-
 
             Intent intent = new Intent();
             intent.putExtra("id", 1);
@@ -273,14 +253,12 @@ public class PopActivityFilter extends Activity {
         borysSwitch.setChecked(realStatus);
         rckAndBorysSwitch.setChecked(realStatus);
         otherSwitch.setChecked(realStatus);
-        //allSwitch.setChecked(realStatus);
         if (realStatus)
-            allSwitch.setText("Odznacz Wszystko");
+            allSwitch.setText(odzWszt);
         else
-            allSwitch.setText("Zaznacz Wszystko");
+            allSwitch.setText(zazWszt);
     }
 
-    @SuppressLint("SetTextI18n")
     public void selectAllCategory(boolean statusCheckBox) {
         boolean realStatus = !statusCheckBox;
 
@@ -290,9 +268,9 @@ public class PopActivityFilter extends Activity {
         booksCheckBox.setChecked(realStatus);
         allCheckBox.setChecked(realStatus);
         if (realStatus)
-            allCheckBox.setText("Odznacz Wszystko");
+            allCheckBox.setText(odzWszt);
         else
-            allCheckBox.setText("Zaznacz Wszystko");
+            allCheckBox.setText(zazWszt);
     }
 }
 //Postarać się o funkcjonlaność o zgrozo

@@ -25,7 +25,7 @@ public class PopActivity extends Activity {
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private TextView tvResult;
-
+    private TextView tvResultCategory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,20 +34,25 @@ public class PopActivity extends Activity {
         Button btnSearch = findViewById(R.id.popBtnSearch);
         radioGroup = findViewById(R.id.popCategoryRG);
         tvResult = findViewById(R.id.popResult);
+        tvResultCategory = findViewById(R.id.popResultCategory);
+
         btnSearch.setOnClickListener(v -> {
             int radioId = radioGroup.getCheckedRadioButtonId();
             radioButton = findViewById(radioId);
             String category = radioButton.getText().toString();
             int sizeOfList = MainActivity.elementsSize;
             String rozmiarConv = Integer.toString(sizeOfList);
-            //  int randomNumber = generateRandomIndex(sizeOfList);
             String categoryName = radioButton.getText().toString();
 
-            String finalRandomTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
+            String[] finalRandomTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
             tvResult.setText("");
-            tvResult.setText(finalRandomTitle);
+            tvResult.setText(finalRandomTitle[0]);
+            if (category.equals("Wszystko"))
+                tvResultCategory.setText(finalRandomTitle[1]);
+            else
+                tvResultCategory.setText("");
 
-            // Log.i("Rozmiar tablicy", rozmiarConv);
+            //
             /*Może być tak, że Id, które wylosowano nie występuje w bazie (tak ja wtedy), czyli jest 6 elementów, ale brakuje nr.3
             można sprawdzić jak już zostanei zwrócony dany element, przy pomocy getTitle nie jest null, jeśli jest losuj dalej itd.
              */
@@ -70,8 +75,11 @@ public class PopActivity extends Activity {
         getWindow().setAttributes(params);
 
     }
-    public int generateRandomIndex(int sizeOfList){
+    public int generateRandomIndex(int sizeOfList) {
         Random r = new Random();
-        return r.ints(1,1, sizeOfList+1).findFirst().getAsInt();
+        // return r.nextInt(sizeOfList / 2) * 2 + 1;
+        return r.nextInt((sizeOfList) / 2) * 2;
+
+        //   return r.ints(1,1, sizeOfList+1).findFirst().getAsInt();
     }
 }

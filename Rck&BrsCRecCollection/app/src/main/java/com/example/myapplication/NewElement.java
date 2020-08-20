@@ -85,7 +85,7 @@ public class NewElement extends Activity {
                     //String mGroupID = reff.push().getKey();
                     element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
                     //Tu jest ten static arghhhh !!!!
-                    new FirebaseDatabaseHelper().addElement(element, MainActivity.lastIndex, new FirebaseDatabaseHelper.DataStatus() {
+                    new FirebaseDatabaseHelper().addElement(element, new FirebaseDatabaseHelper.DataStatus() {
                         @Override
                         public void DataIsLoaded(List<Element> elements, List<String> keys) {
                         }

@@ -62,7 +62,13 @@ public interface ElementDao {
             "WHERE ID =:oldId ")
     void updateID(int actualID, int oldId);
 
-  //  Interfejst do filtracji
+    @Query("SELECT * \n" +
+            "FROM Element\n" +
+            "ORDER BY id\n" +
+            "DESC LIMIT 1")
+    int getLastIndex();
+
+    //  Interfejst do filtracji
     @Insert
     long addFilter(ElementFilter elementFilter);
 

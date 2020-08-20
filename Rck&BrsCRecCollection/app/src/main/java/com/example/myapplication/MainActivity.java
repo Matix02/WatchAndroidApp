@@ -20,30 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
-/*
-zaprojektować. Mam pewien pomysł, by dodawanie kolejnych filtrów obfitowało w pokazywanie wybranych ChipButtonów na pasku pod searchView/toolbarem wraz z
-możliwością ich wyłączenia poprzez naciśnięcie X. A wybranie kolejnych/nowych/edycja itd. to tylko w formie popup bazowo
- */
-/*
-Bug Founded.
-Jak się wybierze opcję zaznacz, że oglądane podczas wyników wyszukiwania to sie nie zaznacza.
- */
-/*
-Last Update, spróbować zmienić, tą funkcję z updateList i dodać edycję wraz z NewList i dodatkwoym argumentem, który bedzie tez aktualizowac listę KeyList
- */
 
-/*
-Naprawić pojawianie się, a raczej brak aktualizacji w przypadku listy. Element jest aktualizowany, ale powrót na
-stronę główną jest już przezd tą zmianą, bo baza danych lokalna nie jest wtedy aktualizowana!!!
- */
-/*
-Github test 2
- */
-/*
-Trzeba stworzyć jakiś mechanizm, który każdemu użytkownikowi tworzy domyślną wersję FIlttów, bo nie zostało to stworzone,
-a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element jako default.
- */
 
+    /*Defaultowa wersja filtrów przy tworzeniu aplikacji - przy pierwszym starcie */
     private RecyclerView recyclerView;
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFilter = new ArrayList<>();
@@ -55,18 +34,7 @@ a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element ja
     /* O matko za dużo tych static arghhh*/
     public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
-    static int lastIndex = 0;
 
-    //Tak resetuje się Activity, działa jeśli chodzi o tą metodę, umieszczając tu newFierbaseDataHelper ...
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    /*
-        Zrobiono migrację bazy i bedzie potrzebna tez druga. Teraz przetestowac
-        trzeba naprawić eto buga, który wywala listę do poprzedniej formy, czyli bez zaznaczonego IsWatched
-         */
     /*
     Było napisane, że apliacja robi za dużo onMainThread.
     Ogólnie przyjrzeć się tym wszystkim wiadomością, które są wyświetlane na bieżąco w zakładce RUN,
@@ -90,14 +58,7 @@ a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element ja
          */
        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
-     /*   deleteEveryElements(localList);
-       for (Element element : localList){
-            Log.d("Element:", element.getTitle());
-        }
-
-
-        Teraz należy poprawić ten system co juz zostało oglądniete a co nie!
-         */
+        /*   deleteEveryElements(localList);*/
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -108,27 +69,16 @@ a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element ja
 
                 //roomDatabaseHelper.getElementDao().deleteAllElements();
                 testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
-                lastIndex = (int) testRoomList.get(testRoomList.size() - 1).getId();
-
+                //  lastIndex = (int) testRoomList.get(testRoomList.size() - 1).getId();
+                // lastIndex = checkIndex(testRoomList);
                 localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
-                // filterList.addAll(roomDatabaseHelper.getElementDao().getFilters());
-                /*
-                Naprawić dodawanie do listy nowej czesci elementow, bo sie nawarstwia
-                Mozna dodac tylko ten ostatni, choc gdyby nie zamykac okna do dodawania elementow to wtedy nie dodamy wszystkich a tylko ostatni z iluś
-                albo czyscic baze i dodawać ją od nowa, napierw u góry dac clear i ta linijke zostawić - może być mało wydajne.
-                 */
-
-                // localList.addAll(roomDatabaseHelper.getElementDao().getElements());
-
                 //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
-                // lastIndex = 1;
                 elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
                 /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
                 for(Element e : elements){
                     createElement(e.getTitle(), e.getCategory(), e.isWatched);
-                }
-               assignRightId(elements);*/
+                }*/
                 elementsSize = elements.size();
             }
 
@@ -254,17 +204,9 @@ a teraz ta opcja została wyłączona, chyba że zadziała ta opcja z Element ja
             return true;
         }
         else if(item.getItemId() == R.id.filter) {
-            // Context context = getApplicationContext();
             Intent intent = new Intent(getApplicationContext(), PopActivityFilter.class);
-            //  startActivity(intent);
             intent.putExtra("id", 1);
             startActivityForResult(intent, 1);
-            /*Wersja bazowa to jest z startActivity oraz bez put extra
-            /*
-            /*!!! this.finish() jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
-            a następnie jego część w filtrze otwiera go na nowo. Słabo rowiązanie ...
-             */
-            //   this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

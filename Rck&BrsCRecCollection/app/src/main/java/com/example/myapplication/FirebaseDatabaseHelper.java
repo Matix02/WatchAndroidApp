@@ -7,8 +7,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -18,7 +21,7 @@ class FirebaseDatabaseHelper {
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
     private List<Element> testFirebaseList = new ArrayList<>();
-    private static String resultTitle;
+    //zastanowić się czy aby na pewno musi to byc static
 
     public interface DataStatus {
         void DataIsLoaded(List<Element> elements, List<String> keys);
@@ -55,14 +58,18 @@ class FirebaseDatabaseHelper {
                 elements = complementationList(testFirebaseList);
                 dataStatus.DataIsLoaded(elements, keys);
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
-    void addElement(Element element, long id, final DataStatus dataStatus) {
-        // String key = mReferenceBooks.push().getKey();
-        mReferenceBooks.child(String.valueOf((id + 1))).setValue(element)
+    void addElement(Element element, final DataStatus dataStatus) {
+
+        long id = MainActivity.roomDatabaseHelper.getElementDao().getLastIndex();
+        mReferenceBooks.child(String.valueOf((id + 1)))
+                .setValue(element)
                 .addOnSuccessListener(aVoid -> dataStatus.DataIsInserted());
         element.setId(id + 1);
         MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
@@ -121,11 +128,11 @@ class FirebaseDatabaseHelper {
                 //gdy kategoria bedzie pusta - no chyba jednak nie ...
                 try {
                     int pop = new PopActivity().generateRandomIndex(keys.size());
-                    resultTitle = keys.get(pop - 1);
+                    //  resultTitle = keys.get(pop - 1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    dataStatus.DataIsSelected(resultTitle);
+                    // dataStatus.DataIsSelected(resultTitle);
                 }
             }
 
@@ -135,26 +142,47 @@ class FirebaseDatabaseHelper {
         });
     }
 
-    String countCategory(final String category) {
-        List<Element> buforList;
-        List<Element> newList = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getElements());
-        buforList = new FirebaseDatabaseHelper().complementationList(newList);
+    String[] countCategory(final String category) {
 
-        List<String> keys = new ArrayList<>();
-        for (Element e : buforList) {
-            if (!e.isWatched) {
-                if (e.category.equals(category))
-                    keys.add(e.getTitle());
-                else if (category.equals("Wszystko"))
-                    keys.add(e.getTitle());
+        //List<Element> newList = new FirebaseDatabaseHelper().complementationList(new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getElements()));
+        String[] resultTitle = new String[2];
+
+        List<Element> buforList = new FirebaseDatabaseHelper()
+                .complementationList(new ArrayList<>(MainActivity
+                        .roomDatabaseHelper.getElementDao().getElements()));
+
+        //tu chyba bedzie opcja z RxJava
+        if (buforList.isEmpty()) {
+            resultTitle[0] = "No Results";
+            return resultTitle;
+        } else {
+            List<String> keys = new ArrayList<>();
+//No dwa na 10, nie bedzie działać jesli np. element, ktory sie tam znajdzie bedzie liczba nieparzysta, bo generator Random szuka parzystych itd.
+            for (Element e : buforList) {
+                if (!e.isWatched) {
+                    if (e.category.equals(category)) {
+                        keys.add(e.getTitle());
+                        keys.add(e.getCategory());
+                    } else {
+                        keys.add(e.getTitle());
+                        keys.add(e.getCategory());
+                    }
+                }
+            }
+            if (keys.isEmpty()) {
+                resultTitle[0] = "No Results";
+                return resultTitle;
+            } else {
+                int randomIndex = new PopActivity().generateRandomIndex(keys.size());
+                resultTitle[0] = keys.get(randomIndex);
+
+                if (category.equals("Wszystko")) {
+                    resultTitle[1] = keys.get(randomIndex + 1);
+                    return resultTitle;
+                } else
+                    return resultTitle;
             }
         }
-
-        if (keys.size() == 0)
-            return resultTitle = "No Results";
-        else
-            return resultTitle = keys.get(new PopActivity().generateRandomIndex(keys.size()) - 1);
-
         // return resultTitle = keys.get(pop - 1);
     }
 
