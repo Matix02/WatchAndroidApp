@@ -62,21 +62,19 @@ public class PopActivityFilter extends Activity {
 
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
-
         filmsCheckBox = findViewById(R.id.filmsCB);
         gamesCheckBox = findViewById(R.id.gamesCB);
         booksCheckBox = findViewById(R.id.booksCB);
         seriesCheckBox = findViewById(R.id.seriesCB);
         allCheckBox = findViewById(R.id.allCB);
-
         rockSwitch = findViewById(R.id.rockSW);
         borysSwitch = findViewById(R.id.borysSW);
         rckAndBorysSwitch = findViewById(R.id.rockBorysSW);
         otherSwitch = findViewById(R.id.otherSW);
         allSwitch = findViewById(R.id.allSW);
-
         saveButton = findViewById(R.id.saveFilterButton);
         defaultButton = findViewById(R.id.defaultFilterButton);
+
         /* Część graficzna */
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -236,9 +234,6 @@ public class PopActivityFilter extends Activity {
             elementFilter.setOtherRecommedation(otherSwitch.isChecked());
             new FirebaseDatabaseHelper().updateFilter(elementFilter);
 
-            /*!!! finish(), refresh itd. jest częścią tego yyym, kijowego kodu, który zamyka i Activity,
-                a następnie jego część w filtrze otwiera go na nowo. Słabe rowiązanie ...*/
-
             Intent intent = new Intent();
             intent.putExtra("id", 1);
             setResult(RESULT_OK, intent);
@@ -273,4 +268,3 @@ public class PopActivityFilter extends Activity {
             allCheckBox.setText(zazWszt);
     }
 }
-//Postarać się o funkcjonlaność o zgrozo

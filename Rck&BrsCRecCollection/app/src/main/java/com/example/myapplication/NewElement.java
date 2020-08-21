@@ -29,10 +29,10 @@ public class NewElement extends Activity {
     private RadioButton radioRecomButton;
     long maxId = 0;
 
+    // Required empty public constructor
     public NewElement() {
-        // Required empty public constructor
     }
-//poprawić przyznawanie ID, bo zapisuje jako ostatni element co nie jest wcale dodawaniem nowego elementu, a edycją najstarszego
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +49,9 @@ public class NewElement extends Activity {
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
+                if (dataSnapshot.exists())
                     maxId = (dataSnapshot.getChildrenCount());
-                }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -65,6 +63,7 @@ public class NewElement extends Activity {
         /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Poprawić !!! Validation - walidacja
         //przemyslec jak to powinno dzialac, bo tak srednio
+
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (radioGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(NewElement.this, "Fill empty fields", Toast.LENGTH_LONG).show();
@@ -101,10 +100,6 @@ public class NewElement extends Activity {
 
                         @Override
                         public void DataIsDeleted() {
-                        }
-
-                        @Override
-                        public void DataIsSelected(String randomElement) {
                         }
                     });
                     finish();

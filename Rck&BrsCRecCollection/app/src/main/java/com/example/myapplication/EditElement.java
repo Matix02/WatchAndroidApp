@@ -73,9 +73,6 @@ public class EditElement extends AppCompatActivity {
                 public void DataIsDeleted() {
                 }
 
-                @Override
-                public void DataIsSelected(String randomElement) {
-                }
             });
         });
         mDelete_btn.setOnClickListener(v -> new FirebaseDatabaseHelper().deleteElement(key, new FirebaseDatabaseHelper.DataStatus() {
@@ -97,9 +94,6 @@ public class EditElement extends AppCompatActivity {
                 finish();
             }
 
-            @Override
-            public void DataIsSelected(String randomElement) {
-            }
         }));
         mBack_btn.setOnClickListener(v -> finish());
     }

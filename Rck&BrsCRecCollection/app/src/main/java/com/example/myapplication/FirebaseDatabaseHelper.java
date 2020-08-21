@@ -7,12 +7,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -31,8 +27,6 @@ class FirebaseDatabaseHelper {
         void DataIsUpdated();
 
         void DataIsDeleted();
-
-        void DataIsSelected(String randomElement);
     }
 
     FirebaseDatabaseHelper() {
@@ -48,9 +42,6 @@ class FirebaseDatabaseHelper {
                 List<String> keys = new ArrayList<>();
 
                 for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    //Jakaś metoda, która pobiera argumenty filtra
-                    // if(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory().equals("Gra")){
-
                     keys.add(keyNode.getKey());
                     Element element = keyNode.getValue(Element.class);
                     testFirebaseList.add(element);
@@ -58,9 +49,9 @@ class FirebaseDatabaseHelper {
                 elements = complementationList(testFirebaseList);
                 dataStatus.DataIsLoaded(elements, keys);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                //moze dodac toasta ze jakis blad wystapil
             }
         });
     }
@@ -89,62 +80,10 @@ class FirebaseDatabaseHelper {
     }
 
     /*
-    #1. można powstawiać break'y w tych pętlach, by nie wykonywały się tak do końca zawsze
-    bo to może ograniczyć wydajność aplikacji
-
-    #2. inny pomsysł, bo też można zebrać wszystkie informacje do tablicy, jak już pętla ją
-    z'for'uje i wtedy wylosować, może to być wydajniejsze
-
-    #3. Raz działa a raz nie, znaczy działa za drugim razem (!!!), i jeszcze trzeba popatrzeć na filtrację, bo trzeba
-    zrobić odejmowanie oglądniętych i tych samych z tego RadioGroupa ... ta dam
-
-    #.4 - Update#1
-        Poprawić wyświetlanie pustej listy, gdy w danej kategorii nie ma ani jednego elementu.
-        Można przyjrzeć się blokowi try/catch, lub sprawdzać czy w danej liście znajduje się cokolwiek, jeśli nie RadioButton jest wyłączany
-        przy rzeczonej kategorii.
-    #.4 - Update#2
-        Po co szukać czegoś co już zostało oglądnięte :(
-        Czyli dodać kolejną filtrację ...
-
     #5. - Trzeba innaczej to nazwać, jest mylące*/
-
-    //Losowanie elementów
-    void countCategory(final String category, final DataStatus dataStatus){
-        mReferenceBooks.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> keys = new ArrayList<>();
-                if (category.equals("Wszystko")){
-                    for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                        keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
-                    }
-                } else{
-                    for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                        if (category.equals(Objects.requireNonNull(keyNode.getValue(Element.class)).getCategory())){
-                            keys.add(Objects.requireNonNull(keyNode.getValue(Element.class)).getTitle());
-                        }
-                    }
-                }
-                //gdy kategoria bedzie pusta - no chyba jednak nie ...
-                try {
-                    int pop = new PopActivity().generateRandomIndex(keys.size());
-                    //  resultTitle = keys.get(pop - 1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    // dataStatus.DataIsSelected(resultTitle);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
 
     String[] countCategory(final String category) {
 
-        //List<Element> newList = new FirebaseDatabaseHelper().complementationList(new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getElements()));
         String[] resultTitle = new String[2];
 
         List<Element> buforList = new FirebaseDatabaseHelper()
@@ -152,38 +91,37 @@ class FirebaseDatabaseHelper {
                         .roomDatabaseHelper.getElementDao().getElements()));
 
         //tu chyba bedzie opcja z RxJava
-        if (buforList.isEmpty()) {
+        if (buforList.isEmpty())
             resultTitle[0] = "No Results";
-            return resultTitle;
-        } else {
+        else {
             List<String> keys = new ArrayList<>();
-//No dwa na 10, nie bedzie działać jesli np. element, ktory sie tam znajdzie bedzie liczba nieparzysta, bo generator Random szuka parzystych itd.
             for (Element e : buforList) {
                 if (!e.isWatched) {
                     if (e.category.equals(category)) {
                         keys.add(e.getTitle());
                         keys.add(e.getCategory());
-                    } else {
+                    } else if (category.equals("Wszystko")) {
                         keys.add(e.getTitle());
                         keys.add(e.getCategory());
                     }
                 }
             }
-            if (keys.isEmpty()) {
+            if (keys.isEmpty())
                 resultTitle[0] = "No Results";
-                return resultTitle;
-            } else {
-                int randomIndex = new PopActivity().generateRandomIndex(keys.size());
+            else {
+                int randomIndex = generateRandomIndex(keys.size());
                 resultTitle[0] = keys.get(randomIndex);
 
-                if (category.equals("Wszystko")) {
+                if (category.equals("Wszystko"))
                     resultTitle[1] = keys.get(randomIndex + 1);
-                    return resultTitle;
-                } else
-                    return resultTitle;
             }
         }
-        // return resultTitle = keys.get(pop - 1);
+        return resultTitle;
+    }
+
+    public int generateRandomIndex(int sizeOfList) {
+        Random r = new Random();
+        return r.nextInt((sizeOfList) / 2) * 2;
     }
 
     public void updateFilter(ElementFilter elementFilter) {
@@ -192,18 +130,15 @@ class FirebaseDatabaseHelper {
 
     public List<Element> complementationList(List<Element> elements) {
 
-
         List<ElementFilter> elementFilters = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
         List<Element> completeList;
 
         boolean finished = elementFilters.get(0).isFinished();
         boolean unFinished = elementFilters.get(0).isUnFinished();
-
         boolean books = elementFilters.get(0).isBookCategory();
         boolean games = elementFilters.get(0).isGamesCategory();
         boolean series = elementFilters.get(0).isSeriesCategory();
         boolean films = elementFilters.get(0).isFilmCategory();
-
         boolean rock = elementFilters.get(0).isRockRecommedation();
         boolean borys = elementFilters.get(0).isBorysRecommedation();
         boolean rockBorys = elementFilters.get(0).isRockBorysRecommedation();
@@ -217,42 +152,22 @@ class FirebaseDatabaseHelper {
         else
             completeList = new ArrayList<>(elements);
         //#2 Kategorie
+        elements.clear();
         if (!games || !books || !series || !films) {
-            elements.clear();
             elements = categoryFilter(games, films, series, books, completeList);
         } else {
-            elements.clear();
             elements = new ArrayList<>(completeList);
         }
         //#3 Polecane
+        completeList.clear();
         if (!rock || !borys || !rockBorys || !others) {
-            completeList.clear();
             completeList = promFilter(rock, borys, rockBorys, others, elements);
         } else {
-            completeList.clear();
             completeList = new ArrayList<>(elements);
         }
         return completeList;
     }
-    /*
-     *!*!*!**!*!*!*!*!* Najnowszy update.
-     * -Brak całkowitej selekcji
-     * Lista jest przypisywana bez względu na rekord, jeśli jest true wtedy wchodzi i dodaje całą kolekcję z tego.
-     * Chocdzi o "equals".
-     *
-     *
-     * -Nie działający filtr finished/unfinished.
-     * Problem z listą, bo internetowa posiada tylko false i false na to czy ktoś oglądał i wpierw jest ładowanai (chyba) lista
-     * z firebase'a, co też utrudnia to jeśli chodzi o bazowanie na niej od początku.
-     *
-     * -/ Możliwe rozwiązanie:
-     * Całkowita lista jest pobierana z LocalLiście. Problem bedzie jesli coś zostanie dodane poprzez
-     * Firebase'a. == Dodać coś do weryfikacji listy (jeśli jest różnica to dodawane są te elementy brakujące,
-     *  ale jeśli tak będzie to nie zostaną dodane
-     *
-     * -Udało się zrobić tą pierwszą filtrację. Należy teraz zmusić do działania Adapter wraz z notifyDataCHenged.
-     *
-     */
+
     List<Element> promFilter(boolean promRock, boolean promBorys, boolean promRockBorys, boolean others, List<Element> elements) {
 
         List<Element> completePromList = new ArrayList<>();
@@ -267,14 +182,6 @@ class FirebaseDatabaseHelper {
             else if (e.getRecom().equals("Inne") & others)
                 completePromList.add(e);
         }
-//        if (promRock)
-//            completePromList = elements.stream().filter(p -> p.recom.equals("Rock")).collect(Collectors.toList());
-//        if (promBorys)
-//            completePromList = elements.stream().filter(p -> p.recom.equals("Borys")).collect(Collectors.toList());
-//        if (promRockBorys)
-//            completePromList = elements.stream().filter(p -> p.recom.equals("Rck&Brs")).collect(Collectors.toList());
-//        if (others)
-//            completePromList = elements.stream().filter(p -> p.recom.equals("Inne")).collect(Collectors.toList());
         return completePromList;
     }
 
@@ -291,14 +198,6 @@ class FirebaseDatabaseHelper {
             else if (e.getCategory().equals("Serial") & catSeries)
                 completePromList.add(e);
         }
-     /*   if (catBooks)
-            completePromList = elements.stream().filter(p -> p.category.equals("Książka")).collect(Collectors.toList());
-        if (catGames)
-            completePromList = elements.stream().filter(p -> p.category.equals("Gra")).collect(Collectors.toList());
-        if (catSeries)
-            completePromList = elements.stream().filter(p -> p.category.equals("Serial")).collect(Collectors.toList());
-        if (catFilms)
-            completePromList = elements.stream().filter(p -> p.category.equals("Film")).collect(Collectors.toList());*/
         return completePromList;
     }
 }

@@ -17,21 +17,16 @@ import androidx.room.Room;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
-
-    /*Defaultowa wersja filtrów przy tworzeniu aplikacji - przy pierwszym starcie */
     private RecyclerView recyclerView;
-    private List<Element> elements = new ArrayList<>();
-    private List<Element> elementsFilter = new ArrayList<>();
     RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys;
-    private List<ElementFilter> filterList = new ArrayList<>();
     private List<Element> testRoomList = new ArrayList<>();
-    /* O matko za dużo tych static arghhh*/
     public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
 
@@ -58,27 +53,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
          */
        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
-        /*   deleteEveryElements(localList);*/
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
-                localList.clear();
-                filterList.clear();
-                testRoomList.clear();
 
-                //roomDatabaseHelper.getElementDao().deleteAllElements();
                 testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
-                //  lastIndex = (int) testRoomList.get(testRoomList.size() - 1).getId();
-                // lastIndex = checkIndex(testRoomList);
+
                 localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
-                //filtracja listy, nie poprzez query w interfejsie Room'a, a przez mechanizm for
-                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, localList, elementAdapter);
-                /*new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, elements, keys, elementsFilter);
-                for(Element e : elements){
-                    createElement(e.getTitle(), e.getCategory(), e.isWatched);
-                }*/
+                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
                 elementsSize = elements.size();
             }
 
@@ -94,16 +78,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsDeleted() {
             }
 
-            @Override
-            public void DataIsSelected(String randomElement) {
-            }
         });
+
         FloatingActionButton fab = findViewById(R.id.fab_btn);
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, NewElement.class);
             startActivity(intent);
         });
-        //////////////Pisać poniżej/////////////////////
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -133,17 +115,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-   /* private void setUpRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setHasFixedSize(true);
-        elementAdapter = new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(elementAdapter);
-    }*/
-
-   /* private RecyclerView_Config.ElementAdapter setUpRecyclerView() {
-        return new RecyclerView_Config().new ElementAdapter(elements, keys, elementsFilter);
-    }*/
 
     @Override
     public boolean onQueryTextChange(final String newText) {
@@ -173,8 +144,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsUpdated() { }
             @Override
             public void DataIsDeleted() { }
-            @Override
-            public void DataIsSelected(String randomElement) { }
         });
         return true;
     }
@@ -195,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return true;
     }
 
-    //Metoda, wywoływana gdy naciska się Itemy z Dodatkowych Opcji(trzech kropek)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item1) {
@@ -244,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void deleteEveryElements(ArrayList<Element> element){
         roomDatabaseHelper.getElementDao().deleteAllElements();
-        ArrayList<Element> sampleList = new ArrayList<>();
-        sampleList.removeAll(element);
+        element.clear();
     }
 }

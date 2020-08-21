@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,34 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerView_Config {
     private Context mContext;
-    private ElementAdapter elementAdapter;
 
-    //ten prawdziwy setConfig - setAdapter
-//    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys) {
-//        mContext = context;
-//        elementAdapter = new ElementAdapter(elements, keys);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//        recyclerView.setAdapter(elementAdapter);
-//    }
-
-
-    /*
-    Napisać kwerendę do migracji i zmienić nazwę na 2_3. Create Table itd. i spróbować RIP
-     */
-    public void setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter) {
+    RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<String> keys, List<Element> elementsFilter) {
         mContext = context;
-        elementAdapter = new ElementAdapter(elements, keys, elementsFilter);
+        ElementAdapter elementAdapter = new ElementAdapter(keys, elementsFilter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(elementAdapter);
-    }
-    //przeciążona metoda wersji wyżej - tej prawdziwej
-    //gównianie zdefiniowana metoda do usieniecia lub poprawienia
-    RecyclerView_Config.ElementAdapter setConfig(RecyclerView recyclerView, Context context, List<Element> elements, List<String> keys, List<Element> elementsFilter, ElementAdapter elementAdapter) {
-        mContext = context;
-        this.elementAdapter = new ElementAdapter(elementsFilter, keys, elementsFilter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(this.elementAdapter);
-        return this.elementAdapter;
+        return elementAdapter;
     }
 
     class ElementItemView extends RecyclerView.ViewHolder {
@@ -61,55 +37,46 @@ public class RecyclerView_Config {
         ElementItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.mylist, parent, false));
             title = itemView.findViewById(R.id.titleTextView);
-            category =  itemView.findViewById(R.id.categoryTextView);
-            isWatched =  itemView.findViewById(R.id.checkBox);
+            category = itemView.findViewById(R.id.categoryTextView);
+            isWatched = itemView.findViewById(R.id.checkBox);
             recommendation = itemView.findViewById(R.id.recomemndation);
             CardView cardView = itemView.findViewById(R.id.cardLayout);
 
             //ListView - informacje o naciśniętym elemencie
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, EditElement.class);
-                    intent.putExtra("key", key);
-                    intent.putExtra("title", title.getText().toString());
-                    intent.putExtra("category", category.getText().toString());
-                    mContext.startActivity(intent);
-                }
+            cardView.setOnClickListener(v -> {
+                Intent intent = new Intent(mContext, EditElement.class);
+                intent.putExtra("key", key);
+                intent.putExtra("title", title.getText().toString());
+                intent.putExtra("category", category.getText().toString());
+                mContext.startActivity(intent);
             });
 
             //CheckBox - Oglądane lub Nieoglądane
-            isWatched.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            isWatched.setOnClickListener(v -> {
 
-                    Element element = new Element();
-                    element.setId(Integer.parseInt(key));
-                    element.setWatched(isWatched.isChecked());
-                    element.setTitle(title.getText().toString());
-                    element.setCategory(category.getText().toString());
-                    element.setRecom(recommendation.getText().toString());
+                Element element = new Element();
+                element.setId(Integer.parseInt(key));
+                element.setWatched(isWatched.isChecked());
+                element.setTitle(title.getText().toString());
+                element.setCategory(category.getText().toString());
+                element.setRecom(recommendation.getText().toString());
 
-                    MainActivity.roomDatabaseHelper.getElementDao().updateElement(element);
-                }
+                MainActivity.roomDatabaseHelper.getElementDao().updateElement(element);
             });
         }
+
         //łączenie elementów z listy do wyswietlenia na ekranie
-        void bind(Element element, String key, Element roomE) {
-            //  title.setText(element.getTitle());
+        void bind(String key, Element roomE) {
             String e = roomE.getTitle();
+            this.key = key;
             title.setText(e);
             category.setText(roomE.getCategory());
-            this.key = key;
-            //Recomendacje pochodzą z bazy Online, ale nie sprawdzają się dokładnie
             recommendation.setText(roomE.getRecom());
-            //Local isWatched
             isWatched.setChecked(roomE.isWatched());
         }
     }
 
     public class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
-        private List<Element> elementList;
         private List<String> keysList;
         List<Element> filterElementList;
 
@@ -119,14 +86,9 @@ public class RecyclerView_Config {
             this.keysList = keysList;
         } */
         //Konstruktor do filtracji
-        ElementAdapter(List<Element> elementList, List<String> keysList, List<Element> filterElementList) {
-            this.elementList = elementList;
+        ElementAdapter(List<String> keysList, List<Element> filterElementList) {
             this.keysList = keysList;
             this.filterElementList = filterElementList;
-        }
-
-        public void onActivityResult(int requestCode, int resultCode) {
-            notifyDataSetChanged();
         }
 
         @NonNull
@@ -137,22 +99,20 @@ public class RecyclerView_Config {
 
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {
-            holder.bind(elementList.get(position), keysList.get(position), filterElementList.get(position));
+            holder.bind(keysList.get(position), filterElementList.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return elementList.size();
+            return filterElementList.size();
         }
 
         void updateList(List<Element> newList, List<String> newKeyList) {
-            elementList = new ArrayList<>();
             keysList = new ArrayList<>();
             //filterElementList.clear();
             filterElementList = new ArrayList<>();
             keysList.addAll(newKeyList);
             filterElementList.addAll(newList);
-            elementList.addAll(newList);
             notifyDataSetChanged();
         }
     }
