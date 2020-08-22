@@ -36,13 +36,6 @@ public class PopActivityFilter extends Activity {
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
     ArrayList<Element> mainElements = new ArrayList<>();
 
-    /*To jest jak naciśniesz back-powrót na telefonie
-    Może tutaj dodać też zapisywanie tego, że nie bedzie potrzebny przycisk SAVE
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    } */
 
     /*
             Doać funkcję, która po wciśnięciu lupy (na klawiaturze), zanika
