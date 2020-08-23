@@ -12,10 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_margin="5sp"
         android:focusable="auto"
         />
 
@@ -24,15 +21,14 @@
         android:id="@+id/fab_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:layout_margin="25dp"
+        android:layout_marginEnd="35sp"
+        android:layout_marginBottom="25sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         app:menu_showShadow="true"
         app:menu_fab_label=""
         app:menu_openDirection="up"
-        tools:ignore="RelativeOverlap"
-        />
+        tools:ignore="RelativeOverlap" />
 
   <!--  </com.github.clans.fab.FloatingActionMenu>-->
 
