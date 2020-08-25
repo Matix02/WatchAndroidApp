@@ -51,7 +51,9 @@ public class PopActivityFilter extends Activity {
         setContentView(R.layout.activity_pop_filter2);
 
         elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
-        mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
+     /* RxJava
+     mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
+      */
 
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
@@ -84,20 +86,6 @@ public class PopActivityFilter extends Activity {
         params.y = -20;
 
         getWindow().setAttributes(params);
-
-        //Kolory
-     /*  Gradient Kolor
-     float[] positions = {0.0f, 0.33f, 0.66f, 1.0f};
-        int[] colors = {
-                0xFF000000, // black
-                0xFF8e8e8e, //grey - hard
-
-                0xFF414141, // grey - light
-                0xFFb1b1b1 // white
-        };
-        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 150, colors, positions, Shader.TileMode.CLAMP);
-
-        allSwitch.getPaint().setShader(linearGradient);*/
 
         /* Część Przypisywania Wartości z Bazy */
         finishSwitch.setChecked(elementFilters.get(0).isFinished());

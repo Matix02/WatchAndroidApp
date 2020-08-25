@@ -84,7 +84,10 @@ class FirebaseDatabaseHelper {
 
     String[] countCategory(final String category) {
 
+       /*
+       RxJava włącznie z return
         String[] resultTitle = new String[2];
+
 
         List<Element> buforList = new FirebaseDatabaseHelper()
                 .complementationList(new ArrayList<>(MainActivity
@@ -116,7 +119,8 @@ class FirebaseDatabaseHelper {
                     resultTitle[1] = keys.get(randomIndex + 1);
             }
         }
-        return resultTitle;
+        return resultTitle;*/
+        return null;
     }
 
     public int generateRandomIndex(int sizeOfList) {

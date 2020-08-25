@@ -24,11 +24,10 @@
         android:layout_marginBottom="25sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        app:menu_showShadow="true"
-        app:menu_fab_label=""
-        app:menu_openDirection="up"
+
         tools:ignore="RelativeOverlap" />
 
+    <!-- app:menu_showShadow="true"-->
 
     <ProgressBar
         android:id="@+id/loading_elements"

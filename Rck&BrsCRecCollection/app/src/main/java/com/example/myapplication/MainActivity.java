@@ -19,15 +19,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
+
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private RecyclerView recyclerView;
     RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys;
     private List<Element> testRoomList = new ArrayList<>();
+    private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
     static int elementsSize;
+
 
     /*
     Było napisane, że apliacja robi za dużo onMainThread.
@@ -49,19 +57,43 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Złą praktyką jest gdy wywołujemy w taki spsoób bazę, lepiej zbudować coś w rodzaju tego modelu z Firebase'a, który występuje dotychczas lub
         po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
          */
-       roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
+        roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
+
+
+        //Operacja sprawdzania bazy, taka z progres barrem i procentami 0% - 100%
+
+
+        elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
+
+                /* !!!!!!!!!!!!!!!!!!!!!!
+                Coś pomyśleć z tym keys
+                 */
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
 
+                disposable.add(roomDatabaseHelper.getElementDao().getElements()
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(elements1 -> {
+                                    testRoomList.clear();
+                                    testRoomList.addAll(elements1);
+                                    localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+                                    //elementAdapter.notifyDataSetChanged(); - Not Working
+                                    elementAdapter.updateList(localList, keys);
+                                }, throwable -> {
+
+                                }
+                        ));
+              /*  RXJAVA
                 testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
 
                 localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
 
-                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
-                elementsSize = elements.size();
+                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);*/
+                //  elementsSize = elements.size();
             }
 
             @Override
@@ -106,16 +138,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
+           /* RXJAVA
             testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
             ArrayList<Element> elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
             List<String> keyList = keysAssign(elements);
-            elementAdapter.updateList(elements, keyList);
+            elementAdapter.updateList(elements, keyList);*/
         }
     }
 
 
     @Override
     public boolean onQueryTextChange(final String newText) {
+        /* RXJAVA
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -142,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsUpdated() { }
             @Override
             public void DataIsDeleted() { }
-        });
+        });*/
         return true;
     }
     @Override
@@ -186,6 +220,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             keyList.add(keyStr);
         }
         return keyList;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        disposable.dispose();
     }
 
     ///////////Interfejs Zarządzania Bazą Lokalną//////////////////////

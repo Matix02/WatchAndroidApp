@@ -80,11 +80,6 @@ public class RecyclerView_Config {
         private List<String> keysList;
         List<Element> filterElementList;
 
-        /*pierwotny konstruktor
-        public ElementAdapter(List<Element> elementList, List<String> keysList) {
-            this.elementList = elementList;
-            this.keysList = keysList;
-        } */
         //Konstruktor do filtracji
         ElementAdapter(List<String> keysList, List<Element> filterElementList) {
             this.keysList = keysList;

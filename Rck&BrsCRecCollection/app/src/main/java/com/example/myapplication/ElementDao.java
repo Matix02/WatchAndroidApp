@@ -8,6 +8,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import io.reactivex.Flowable;
+
+
 @Dao
 public interface ElementDao {
 
@@ -31,8 +34,11 @@ public interface ElementDao {
             "WHERE id =:Id")
     void updateElementById(long Id, String title, String recommendation, String cat);
 
+    /*  @Query("select * from Element")
+      List<Element> getElements();
+  */
     @Query("select * from Element")
-    List<Element> getElements();
+    Flowable<List<Element>> getElements();
 
     @Query("UPDATE Element\n" +
             "SET isWatched =:resultWatch\n" +
