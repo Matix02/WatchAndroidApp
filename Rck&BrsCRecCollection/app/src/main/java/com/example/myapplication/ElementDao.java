@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 
 @Dao
@@ -84,8 +85,15 @@ public interface ElementDao {
     @Delete
     void deleteFilter(Element element);
 
-    @Query("select * from ElementFilter")
+    @Query("select * from ElementFilter LIMIT 1")
     List<ElementFilter> getFilters();
+
+    @Query("select * from ElementFilter")
+    Flowable<List<ElementFilter>> getFiltersFlow();
+
+
+    @Query("select * from ElementFilter LIMIT 1")
+    List<ElementFilter> getOneFilter();
 
 
 }

@@ -139,10 +139,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if (requestCode == 1) {
            /* RXJAVA
+           Jakiś refresh by się przydał, albo
             testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
             ArrayList<Element> elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
             List<String> keyList = keysAssign(elements);
             elementAdapter.updateList(elements, keyList);*/
+
+            //   elementAdapter.updateList(localList, keys);
         }
     }
 
@@ -225,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         disposable.dispose();
     }
 

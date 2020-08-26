@@ -13,10 +13,24 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.example.myapplication.MainActivity.roomDatabaseHelper;
+
 class FirebaseDatabaseHelper {
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
     private List<Element> testFirebaseList = new ArrayList<>();
+
+    List<Element> buforList = new ArrayList<>();
+    List<Element> filterList = new ArrayList<>();
+    private Observable<String> myObservable;
+    private DisposableObserver<String> myObserver;
+    private CompositeDisposable disposable = new CompositeDisposable();
     //zastanowić się czy aby na pewno musi to byc static
 
     public interface DataStatus {
@@ -58,31 +72,76 @@ class FirebaseDatabaseHelper {
 
     void addElement(Element element, final DataStatus dataStatus) {
 
-        long id = MainActivity.roomDatabaseHelper.getElementDao().getLastIndex();
+        long id = roomDatabaseHelper.getElementDao().getLastIndex();
         mReferenceBooks.child(String.valueOf((id + 1)))
                 .setValue(element)
                 .addOnSuccessListener(aVoid -> dataStatus.DataIsInserted());
         element.setId(id + 1);
-        MainActivity.roomDatabaseHelper.getElementDao().addElement(element);
+        roomDatabaseHelper.getElementDao().addElement(element);
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(element)
                 .addOnSuccessListener(aVoid -> dataStatus.DataIsUpdated());
-        MainActivity.roomDatabaseHelper.getElementDao().updateElementById(Long.parseLong(key), element.getTitle(), element.getRecom(), element.getCategory());
+        roomDatabaseHelper.getElementDao().updateElementById(Long.parseLong(key), element.getTitle(), element.getRecom(), element.getCategory());
     }
 
     void deleteElement(String key, final DataStatus dataStatus) {
         mReferenceBooks.child(key).setValue(null)
                 .addOnSuccessListener(aVoid -> dataStatus.DataIsDeleted());
 
-        MainActivity.roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
+        roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
     }
 
     /*
     #5. - Trzeba innaczej to nazwać, jest mylące*/
 
-    String[] countCategory(final String category) {
+    DisposableObserver<String> countCategory(final String category) {
+
+        String[] resultTitle = new String[2];
+
+
+//Poprawić to. Sekcja 13 - film 3 - 0:56 min. Kombo
+        disposable.add(roomDatabaseHelper.getElementDao().getElements()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(elements1 -> {
+                            buforList.clear();
+                            buforList.addAll(elements1);
+                            filterList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(buforList);
+                            //elementAdapter.notifyDataSetChanged(); - Not Working
+                            if (buforList.isEmpty())
+                                resultTitle[0] = "No Results";
+                            else {
+                                List<String> keys = new ArrayList<>();
+                                for (Element e : buforList) {
+                                    if (!e.isWatched) {
+                                        if (e.category.equals(category)) {
+                                            keys.add(e.getTitle());
+                                            keys.add(e.getCategory());
+                                        } else if (category.equals("Wszystko")) {
+                                            keys.add(e.getTitle());
+                                            keys.add(e.getCategory());
+                                        }
+                                    }
+                                }
+                                if (keys.isEmpty())
+                                    resultTitle[0] = "No Results";
+                                else {
+                                    int randomIndex = generateRandomIndex(keys.size());
+                                    resultTitle[0] = keys.get(randomIndex);
+
+                                    if (category.equals("Wszystko"))
+                                        resultTitle[1] = keys.get(randomIndex + 1);
+                                }
+                            }
+                        }, throwable -> {
+                        }
+                ));
+
+
+        return myObserver;
+
 
        /*
        RxJava włącznie z return
@@ -120,7 +179,7 @@ class FirebaseDatabaseHelper {
             }
         }
         return resultTitle;*/
-        return null;
+        //return null;
     }
 
     public int generateRandomIndex(int sizeOfList) {
@@ -129,12 +188,13 @@ class FirebaseDatabaseHelper {
     }
 
     public void updateFilter(ElementFilter elementFilter) {
-        MainActivity.roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
+        roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
     }
 
     public List<Element> complementationList(List<Element> elements) {
 
-        List<ElementFilter> elementFilters = new ArrayList<>(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
+        List<ElementFilter> elementFilters = new ArrayList<>(roomDatabaseHelper.getElementDao().getFilters());
+
         List<Element> completeList;
 
         boolean finished = elementFilters.get(0).isFinished();
@@ -204,6 +264,7 @@ class FirebaseDatabaseHelper {
         }
         return completePromList;
     }
+
 }
 
 

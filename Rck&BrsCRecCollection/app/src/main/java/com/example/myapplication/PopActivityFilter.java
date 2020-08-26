@@ -15,6 +15,10 @@ import android.widget.Switch;
 
 import java.util.ArrayList;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class PopActivityFilter extends Activity {
 
     String zazWszt = "Zaznacz Wszystko";
@@ -35,6 +39,7 @@ public class PopActivityFilter extends Activity {
     Button defaultButton;
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
     ArrayList<Element> mainElements = new ArrayList<>();
+    private CompositeDisposable disposable = new CompositeDisposable();
 
 
     /*
@@ -50,11 +55,6 @@ public class PopActivityFilter extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_filter2);
 
-        elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
-     /* RxJava
-     mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
-      */
-
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
         filmsCheckBox = findViewById(R.id.filmsCB);
@@ -69,6 +69,15 @@ public class PopActivityFilter extends Activity {
         allSwitch = findViewById(R.id.allSW);
         saveButton = findViewById(R.id.saveFilterButton);
         defaultButton = findViewById(R.id.defaultFilterButton);
+
+        /* RxJava
+        elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
+
+     mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
+      */
+
+
+
 
         /* Część graficzna */
         DisplayMetrics dm = new DisplayMetrics();
@@ -88,34 +97,115 @@ public class PopActivityFilter extends Activity {
         getWindow().setAttributes(params);
 
         /* Część Przypisywania Wartości z Bazy */
-        finishSwitch.setChecked(elementFilters.get(0).isFinished());
-        unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());
-        filmsCheckBox.setChecked(elementFilters.get(0).isFilmCategory());
-        gamesCheckBox.setChecked(elementFilters.get(0).isGamesCategory());
-        seriesCheckBox.setChecked(elementFilters.get(0).isSeriesCategory());
-        booksCheckBox.setChecked(elementFilters.get(0).isBookCategory());
-        rockSwitch.setChecked(elementFilters.get(0).isRockRecommedation());
-        borysSwitch.setChecked(elementFilters.get(0).isBorysRecommedation());
-        rckAndBorysSwitch.setChecked(elementFilters.get(0).isRockBorysRecommedation());
-        otherSwitch.setChecked(elementFilters.get(0).isOtherRecommedation());
 
-        finishSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if (!unFinishSwitch.isChecked() && !isChecked)
-                unFinishSwitch.setChecked(true);
-        }));
-        unFinishSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if (!finishSwitch.isChecked() && !isChecked)
-                finishSwitch.setChecked(true);
-        }));
+        disposable.add(MainActivity.roomDatabaseHelper.getElementDao().getFiltersFlow()
+                .subscribeOn(Schedulers.io()) //nie mam pewności co do tej operacji czy compution czy io
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(elements1 -> {
+                            elementFilters.clear();
+                            elementFilters.addAll(elements1);
+                            //localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+                            //elementAdapter.notifyDataSetChanged(); - Not Working
+                            // elementAdapter.updateList(localList, keys);
+                            finishSwitch.setChecked(elementFilters.get(0).isFinished());
+                            unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());
+                            filmsCheckBox.setChecked(elementFilters.get(0).isFilmCategory());
+                            gamesCheckBox.setChecked(elementFilters.get(0).isGamesCategory());
+                            seriesCheckBox.setChecked(elementFilters.get(0).isSeriesCategory());
+                            booksCheckBox.setChecked(elementFilters.get(0).isBookCategory());
+                            rockSwitch.setChecked(elementFilters.get(0).isRockRecommedation());
+                            borysSwitch.setChecked(elementFilters.get(0).isBorysRecommedation());
+                            rckAndBorysSwitch.setChecked(elementFilters.get(0).isRockBorysRecommedation());
+                            otherSwitch.setChecked(elementFilters.get(0).isOtherRecommedation());
+
+                            finishSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                                if (!unFinishSwitch.isChecked() && !isChecked)
+                                    unFinishSwitch.setChecked(true);
+                            }));
+                            unFinishSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                                if (!finishSwitch.isChecked() && !isChecked)
+                                    finishSwitch.setChecked(true);
+                            }));
 
 
-        if (!seriesCheckBox.isChecked() || !filmsCheckBox.isChecked() || !gamesCheckBox.isChecked() || !booksCheckBox.isChecked()) {
-            allCheckBox.setChecked(false);
-            allCheckBox.setText(zazWszt);
-        } else {
-            allCheckBox.setChecked(true);
-            allCheckBox.setText(odzWszt);
-        }
+                            if (!seriesCheckBox.isChecked() || !filmsCheckBox.isChecked() || !gamesCheckBox.isChecked() || !booksCheckBox.isChecked()) {
+                                allCheckBox.setChecked(false);
+                                allCheckBox.setText(zazWszt);
+                            } else {
+                                allCheckBox.setChecked(true);
+                                allCheckBox.setText(odzWszt);
+                            }
+
+                            filmsCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allCheckBox.setChecked(false);
+                                    allCheckBox.setText(zazWszt);
+                                }
+
+                            }));
+                            booksCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allCheckBox.setChecked(false);
+                                    allCheckBox.setText(zazWszt);
+                                }
+
+                            }));
+                            gamesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allCheckBox.setChecked(false);
+                                    allCheckBox.setText(zazWszt);
+                                }
+                            }));
+                            seriesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allCheckBox.setChecked(false);
+                                    allCheckBox.setText(zazWszt);
+                                }
+                            }));
+
+                            allCheckBox.setOnClickListener(v -> selectAllCategory(!allCheckBox.isChecked()));
+
+                            /* Część Aktywacji Przycisków */
+                            if (!borysSwitch.isChecked() || !rockSwitch.isChecked() || !rckAndBorysSwitch.isChecked() || !otherSwitch.isChecked()) {
+                                allSwitch.setChecked(false);
+                                allSwitch.setText(zazWszt);
+                            } else {
+                                allSwitch.setChecked(true);
+                                allSwitch.setText(odzWszt);
+                            }
+
+                            borysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allSwitch.setChecked(false);
+                                    allSwitch.setText(zazWszt);
+                                }
+                            });
+                            rockSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allSwitch.setChecked(false);
+                                    allSwitch.setText(zazWszt);
+                                }
+                            });
+                            rckAndBorysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allSwitch.setChecked(false);
+                                    allSwitch.setText(zazWszt);
+                                }
+                            });
+                            otherSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                if (!isChecked) {
+                                    allSwitch.setChecked(false);
+                                    allSwitch.setText(zazWszt);
+                                }
+                            });
+
+                            allSwitch.setOnClickListener(v -> selectAllRecom(!allSwitch.isChecked()));
+
+                        }, throwable -> {
+
+                        }
+                ));
+
 
         defaultButton.setOnClickListener(v -> {
             /*
@@ -135,70 +225,6 @@ public class PopActivityFilter extends Activity {
             unFinishSwitch.setChecked(true);
         });
 
-        filmsCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allCheckBox.setChecked(false);
-                allCheckBox.setText(zazWszt);
-            }
-
-        }));
-        booksCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allCheckBox.setChecked(false);
-                allCheckBox.setText(zazWszt);
-            }
-
-        }));
-        gamesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allCheckBox.setChecked(false);
-                allCheckBox.setText(zazWszt);
-            }
-        }));
-        seriesCheckBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allCheckBox.setChecked(false);
-                allCheckBox.setText(zazWszt);
-            }
-        }));
-
-        allCheckBox.setOnClickListener(v -> selectAllCategory(!allCheckBox.isChecked()));
-
-        /* Część Aktywacji Przycisków */
-        if (!borysSwitch.isChecked() || !rockSwitch.isChecked() || !rckAndBorysSwitch.isChecked() || !otherSwitch.isChecked()) {
-            allSwitch.setChecked(false);
-            allSwitch.setText(zazWszt);
-        } else {
-            allSwitch.setChecked(true);
-            allSwitch.setText(odzWszt);
-        }
-
-        borysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allSwitch.setChecked(false);
-                allSwitch.setText(zazWszt);
-            }
-        });
-        rockSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allSwitch.setChecked(false);
-                allSwitch.setText(zazWszt);
-            }
-        });
-        rckAndBorysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allSwitch.setChecked(false);
-                allSwitch.setText(zazWszt);
-            }
-        });
-        otherSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked) {
-                allSwitch.setChecked(false);
-                allSwitch.setText(zazWszt);
-            }
-        });
-
-        allSwitch.setOnClickListener(v -> selectAllRecom(!allSwitch.isChecked()));
 
         saveButton.setOnClickListener(v -> {
             ElementFilter elementFilter = new ElementFilter();
@@ -248,4 +274,5 @@ public class PopActivityFilter extends Activity {
         else
             allCheckBox.setText(zazWszt);
     }
+
 }
