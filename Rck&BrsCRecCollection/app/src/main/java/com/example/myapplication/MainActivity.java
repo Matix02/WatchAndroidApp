@@ -80,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         .subscribe(elements1 -> {
                                     testRoomList.clear();
                                     testRoomList.addAll(elements1);
+
                                     localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+
                                     //elementAdapter.notifyDataSetChanged(); - Not Working
                                     elementAdapter.updateList(localList, keys);
                                 }, throwable -> {

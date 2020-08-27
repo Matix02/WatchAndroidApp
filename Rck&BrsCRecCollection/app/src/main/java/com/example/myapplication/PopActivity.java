@@ -14,12 +14,23 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 public class PopActivity extends Activity {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private TextView tvResult;
     private TextView tvResultCategory;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private Observable<String[]> myObservable;
+    private DisposableObserver<String[]> myObserver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,16 +44,21 @@ public class PopActivity extends Activity {
         btnSearch.setOnClickListener(v -> {
             int radioId = radioGroup.getCheckedRadioButtonId();
             radioButton = findViewById(radioId);
-            String category = radioButton.getText().toString();
+            //     String category = radioButton.getText().toString();
             String categoryName = radioButton.getText().toString();
 
-            String[] finalRandomTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
-            tvResult.setText("");
-            tvResult.setText(finalRandomTitle[0]);
-            if (category.equals("Wszystko"))
-                tvResultCategory.setText(finalRandomTitle[1]);
-            else
-                tvResultCategory.setText("");
+            myObservable = new FirebaseDatabaseHelper().countr(categoryName);
+
+            compositeDisposable.add(myObservable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(getObserver(categoryName))
+            );
+
+
+            // String[] finalRandomTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
+
+
         });
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -59,6 +75,33 @@ public class PopActivity extends Activity {
         params.x = 0;
         params.y = -20;
         getWindow().setAttributes(params);
+
+    }
+
+    private DisposableObserver getObserver(String category) {
+        myObserver = new DisposableObserver<String[]>() {
+            @Override
+            public void onNext(String[] s) {
+                tvResult.setText("");
+                tvResult.setText(s[0]);
+                if (category.equals("Wszystko"))
+                    tvResultCategory.setText(s[1]);
+                else
+                    tvResultCategory.setText("");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+
+        return myObserver;
 
     }
 }

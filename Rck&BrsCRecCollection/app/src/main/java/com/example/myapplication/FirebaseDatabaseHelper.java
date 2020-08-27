@@ -14,10 +14,13 @@ import java.util.stream.Collectors;
 import androidx.annotation.NonNull;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 import static com.example.myapplication.MainActivity.roomDatabaseHelper;
 
@@ -25,12 +28,14 @@ class FirebaseDatabaseHelper {
     private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
     private List<Element> testFirebaseList = new ArrayList<>();
-
-    List<Element> buforList = new ArrayList<>();
+    List<Element> buforList;
     List<Element> filterList = new ArrayList<>();
-    private Observable<String> myObservable;
-    private DisposableObserver<String> myObserver;
+    String[] d = {"No results"};
+    private Observable<String[]> myObservable;
+    private Observer<String[]> myObserver;
+    private String[] resultTitle;
     private CompositeDisposable disposable = new CompositeDisposable();
+    private Observable<List<Element>> elementObservable;
     //zastanowić się czy aby na pewno musi to byc static
 
     public interface DataStatus {
@@ -94,60 +99,85 @@ class FirebaseDatabaseHelper {
     }
 
     /*
+    Opcja Filter przyda się przy RxJava - przy losowaniu, bo tam bedzie mozna odsiać elementy, które zostały już oglądnięte
+     */
+    /*
     #5. - Trzeba innaczej to nazwać, jest mylące*/
-
-    DisposableObserver<String> countCategory(final String category) {
-
-        String[] resultTitle = new String[2];
-
-
 //Poprawić to. Sekcja 13 - film 3 - 0:56 min. Kombo
+    public Observable<String[]> countr(final String category) {
+        elementObservable = roomDatabaseHelper.getElementDao().getElements().toObservable();
+
+        disposable.add(roomDatabaseHelper.getElementDao().getElements().toObservable()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap((Function<List<Element>, Observable<String[]>>) elements -> {
+                    if (elements.isEmpty()) {
+                        return Observable.just(d);
+                    } else {
+                        List<String> keys = new ArrayList<>();
+                        for (Element e : elements) {
+                            if (!e.isWatched()) {
+                                if (e.category.equals(category)) {
+                                    keys.add(e.getTitle());
+                                    keys.add(e.getCategory());
+                                } else if (category.equals("Wszystko")) {
+                                    keys.add(e.getTitle());
+                                    keys.add(e.getCategory());
+                                }
+                            }
+                        }
+                        if (keys.isEmpty())
+                            return Observable.just(d);
+                        else {
+                            int randomIndex = generateRandomIndex(keys.size());
+                            resultTitle[0] = keys.get(randomIndex);
+
+                            if (category.equals("Wszystko"))
+                                resultTitle[1] = keys.get(randomIndex + 1);
+                        }
+                    }
+                    return myObservable;
+                })
+                .subscribe());
+        return myObservable;
+    }
+
+    public String[] countCategory(final String category) {
+        resultTitle = new String[2];
+        buforList = new ArrayList<>();
         disposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(elements1 -> {
-                            buforList.clear();
-                            buforList.addAll(elements1);
-                            filterList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(buforList);
-                            //elementAdapter.notifyDataSetChanged(); - Not Working
-                            if (buforList.isEmpty())
-                                resultTitle[0] = "No Results";
-                            else {
-                                List<String> keys = new ArrayList<>();
-                                for (Element e : buforList) {
-                                    if (!e.isWatched) {
-                                        if (e.category.equals(category)) {
-                                            keys.add(e.getTitle());
-                                            keys.add(e.getCategory());
-                                        } else if (category.equals("Wszystko")) {
-                                            keys.add(e.getTitle());
-                                            keys.add(e.getCategory());
-                                        }
-                                    }
-                                }
-                                if (keys.isEmpty())
-                                    resultTitle[0] = "No Results";
-                                else {
-                                    int randomIndex = generateRandomIndex(keys.size());
-                                    resultTitle[0] = keys.get(randomIndex);
 
-                                    if (category.equals("Wszystko"))
-                                        resultTitle[1] = keys.get(randomIndex + 1);
-                                }
-                            }
-                        }, throwable -> {
-                        }
-                ));
+                .filter(new Predicate<List<Element>>() {
+                    @Override
+                    public boolean test(List<Element> elements) throws Exception {
 
 
-        return myObserver;
+                        return elements.isEmpty();
+                    }
+                })
+                .subscribeWith(new DisposableSubscriber<List<Element>>() {
+                    @Override
+                    public void onNext(List<Element> elements) {
+                    }
 
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        resultTitle[0] = "sad";
+                    }
+                }));
+        return resultTitle;
+    }
 
        /*
        RxJava włącznie z return
         String[] resultTitle = new String[2];
-
-
         List<Element> buforList = new FirebaseDatabaseHelper()
                 .complementationList(new ArrayList<>(MainActivity
                         .roomDatabaseHelper.getElementDao().getElements()));
@@ -165,9 +195,7 @@ class FirebaseDatabaseHelper {
                     } else if (category.equals("Wszystko")) {
                         keys.add(e.getTitle());
                         keys.add(e.getCategory());
-                    }
-                }
-            }
+                    }}}
             if (keys.isEmpty())
                 resultTitle[0] = "No Results";
             else {
@@ -176,11 +204,10 @@ class FirebaseDatabaseHelper {
 
                 if (category.equals("Wszystko"))
                     resultTitle[1] = keys.get(randomIndex + 1);
-            }
-        }
+            }}
         return resultTitle;*/
         //return null;
-    }
+
 
     public int generateRandomIndex(int sizeOfList) {
         Random r = new Random();
