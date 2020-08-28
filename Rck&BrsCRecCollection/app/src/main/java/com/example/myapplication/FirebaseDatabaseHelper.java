@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -35,7 +36,7 @@ class FirebaseDatabaseHelper {
     private Observer<String[]> myObserver;
     private String[] resultTitle;
     private CompositeDisposable disposable = new CompositeDisposable();
-    private Observable<List<Element>> elementObservable;
+    private Flowable<List<Element>> elementObservable;
     //zastanowić się czy aby na pewno musi to byc static
 
     public interface DataStatus {
@@ -104,8 +105,54 @@ class FirebaseDatabaseHelper {
     /*
     #5. - Trzeba innaczej to nazwać, jest mylące*/
 //Poprawić to. Sekcja 13 - film 3 - 0:56 min. Kombo
+    public Flowable<String[]> countfuck(final String category) {
+        return roomDatabaseHelper.getElementDao().getElements()
+                .flatMap(new Function<List<Element>, Flowable<Element>>() {
+                    @Override
+                    public Flowable<Element> apply(List<Element> elements) throws Exception {
+                        return Flowable.fromArray(elements.toArray(new Element[0]));
+                    }
+                })
+                .skipWhile(Element::isWatched)
+                .filter(new Predicate<Element>() {
+                    @Override
+                    public boolean test(Element element) throws Exception {
+                        List<String> keys = new ArrayList<>();
+
+                  /*      for (Element e : elements) {
+                            if (e.category.equals(category)) {
+                                keys.add(e.getTitle());
+                                keys.add(e.getCategory());
+                            } else if (category.equals("Wszystko")) {
+                                keys.add(e.getTitle());
+                                keys.add(e.getCategory());
+                            }
+                        }*/
+                        if (category.equals("Wszystko"))
+                            return true;
+                        else {
+                            return element.category.equals(category);
+                        }
+                        //return !element.isWatched();
+                    }
+                }).map(new Function<Element, String[]>() {
+                    @Override
+                    public String[] apply(Element element) throws Exception {
+
+
+                        int randomIndex = generateRandomIndex(elements.size());
+                        //   resultTitle[0] = keys.get(randomIndex);
+
+                        //   if (category.equals("Wszystko"))
+                        // resultTitle[1] = keys.get(randomIndex + 1);
+                        return resultTitle;
+                    }
+                })
+                .defaultIfEmpty(d);
+    }
+
     public Observable<String[]> countr(final String category) {
-        elementObservable = roomDatabaseHelper.getElementDao().getElements().toObservable();
+        elementObservable = roomDatabaseHelper.getElementDao().getElements();
 
         disposable.add(roomDatabaseHelper.getElementDao().getElements().toObservable()
                 .subscribeOn(Schedulers.computation())
