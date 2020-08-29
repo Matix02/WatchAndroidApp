@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +17,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +38,11 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subscribers.DefaultSubscriber;
+import io.reactivex.subscribers.DisposableSubscriber;
 
+import static com.example.myapplication.MainActivity.elementsSize;
 import static com.example.myapplication.MainActivity.roomDatabaseHelper;
 
 public class PopActivity extends Activity {
@@ -44,15 +51,17 @@ public class PopActivity extends Activity {
     private RadioButton radioButton;
     private TextView tvResult;
     private TextView tvResultCategory;
+    PublishSubject<Element> publishSubject = PublishSubject.create();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Observable<String[]> myObservable;
-    private DisposableObserver<String[]> myObserver;
+    private DisposableSubscriber e;
     String[] d = {"No results"};
-    private DisposableObserver<Element> myTrueObserver;
-    private List<Element> testRoomList = new ArrayList<>();
+    private DisposableSubscriber<Element> myObserver;
+    private DisposableSubscriber<Element> myTrueObserver;
     private String[] resultTitle;
+    private List<Element> testRoomList;
 
-
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,40 +79,32 @@ public class PopActivity extends Activity {
             String categoryName = radioButton.getText().toString();
 
             Flowable<List<Element>> e = roomDatabaseHelper.getElementDao().getElements();
+            Flowable<List<Element>> e2 = roomDatabaseHelper.getElementDao().getElements();
 
-
-            compositeDisposable.add(e
-                    .subscribeOn(Schedulers.io())
+            //    Observable.fromArray(e)
+            testRoomList = new ArrayList<>();
+            roomDatabaseHelper.getElementDao().getElements().subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap((Function<List<Element>, Flowable<Element>>)
-                            elements -> Flowable.fromArray(elements.toArray(new Element[0])))
-                    .filter(element -> {
-                        if (!element.isWatched()) {
-                            if (categoryName.equals("Wszystko"))
-                                return true;
-                            else return element.category.equals(categoryName);
-                        } else
-                            return false;
-                    })
-                    .subscribeWith()
-            );
+
+                    .subscribe(new DisposableSubscriber<List<Element>>() {
+                                   @Override
+                                   public void onNext(List<Element> elements) {
+
+                                   }
+
+                                   @Override
+                                   public void onError(Throwable t) {
+
+                                   }
+
+                                   @Override
+                                   public void onComplete() {
+
+                                   }
+                               }
+                    );
 
 
-           /* myObservable = new FirebaseDatabaseHelper().countr(categoryName);
-
-            compositeDisposable.add(new FirebaseDatabaseHelper().countfuck(categoryName)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe());
-
-            compositeDisposable.add(myObservable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(getObserver(categoryName))
-            );*/
-
-
-            // String[] finalRandomTitle = new FirebaseDatabaseHelper().countCategory(categoryName);
 
 
         });
@@ -125,8 +126,9 @@ public class PopActivity extends Activity {
 
     }
 
-    private DisposableObserver fuckThat() {
-        myTrueObserver = new DisposableObserver<Element>() {
+    private FlowableSubscriber<Element> fuckThat() {
+        myTrueObserver = new DisposableSubscriber<Element>() {
+
             @Override
             public void onNext(Element element) {
                 Log.i("Test", element.getTitle());
@@ -134,12 +136,12 @@ public class PopActivity extends Activity {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
             public void onComplete() {
-
+                Log.d("Test", "Done");
             }
         };
         return myTrueObserver;
@@ -151,30 +153,6 @@ public class PopActivity extends Activity {
         return r.nextInt((sizeOfList) / 2) * 2;
     }
 
-    private DisposableObserver<String[]> getObserver(String category) {
-        myObserver = new DisposableObserver<String[]>() {
-            @Override
-            public void onNext(String[] s) {
-                tvResult.setText("");
-                tvResult.setText(s[0]);
-                if (category.equals("Wszystko"))
-                    tvResultCategory.setText(s[1]);
-                else
-                    tvResultCategory.setText("");
-            }
 
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-
-        return myObserver;
-    }
 
 }
