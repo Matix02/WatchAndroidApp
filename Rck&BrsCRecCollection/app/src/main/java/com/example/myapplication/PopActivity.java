@@ -16,6 +16,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.lifecycle.MutableLiveData;
+
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -56,10 +58,15 @@ public class PopActivity extends Activity {
     private Observable<String[]> myObservable;
     private DisposableSubscriber e;
     String[] d = {"No results"};
+    private MutableLiveData<List<Element>> elementLiveData = new MutableLiveData<>();
+    private Observable<Element> elementObservable;
+
     private DisposableSubscriber<Element> myObserver;
     private DisposableSubscriber<Element> myTrueObserver;
     private String[] resultTitle;
     private List<Element> testRoomList;
+    private Element noWatchedList = new Element();
+
 
     @SuppressLint("CheckResult")
     @Override
@@ -75,7 +82,7 @@ public class PopActivity extends Activity {
         btnSearch.setOnClickListener(v -> {
             int radioId = radioGroup.getCheckedRadioButtonId();
             radioButton = findViewById(radioId);
-            //     String category = radioButton.getText().toString();
+            //String category = radioButton.getText().toString();
             String categoryName = radioButton.getText().toString();
 
             Flowable<List<Element>> e = roomDatabaseHelper.getElementDao().getElements();
@@ -83,29 +90,11 @@ public class PopActivity extends Activity {
 
             //    Observable.fromArray(e)
             testRoomList = new ArrayList<>();
-            roomDatabaseHelper.getElementDao().getElements().subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            noWatchedList = roomDatabaseHelper.getElementDao().getNoWatchedRandomElement();
 
-                    .subscribe(new DisposableSubscriber<List<Element>>() {
-                                   @Override
-                                   public void onNext(List<Element> elements) {
-
-                                   }
-
-                                   @Override
-                                   public void onError(Throwable t) {
-
-                                   }
-
-                                   @Override
-                                   public void onComplete() {
-
-                                   }
-                               }
-                    );
-
-
-
+            tvResult.setText(noWatchedList.getTitle());
+            tvResultCategory.setText(noWatchedList.getCategory());
+            // roomDatabaseHelper.getElementDao().getNoWatchedElements()
 
         });
         DisplayMetrics dm = new DisplayMetrics();
@@ -153,6 +142,18 @@ public class PopActivity extends Activity {
         return r.nextInt((sizeOfList) / 2) * 2;
     }
 
+    /* Pomysły:
+    #1 - Zwracanie MutableLiveData, jak przeklepanie metody z udemy
+    #2 - Zwracanie stream'a jak Observables, a następnie rozbicie tego przy pomocy Observer'a
+    #3 - Nowa Funckja w DAO, jako argument przyjmuje
 
+     */
+   /* public MutableLiveData<List<Element>> getElementLiveData(){
+        testRoomList = new ArrayList<>();
+        elementObservable=roomDatabaseHelper.getElementDao().getElements();
+
+
+    }
+*/
 
 }

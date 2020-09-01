@@ -9,9 +9,12 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import io.reactivex.Flowable;
-import io.reactivex.Single;
 
-
+/*
+Zastosować opcję z Medium.com, gdzie są podane zasady optymalizacji Room'a.
+Unikanie kopiowanych metod jak i przykład z dokumentacji Androida - paging
+Ad.Kopiowanie metod, to gdzie jest zwróć całą listę jest tym samym - skrócić, nie powielać.
+ */
 @Dao
 public interface ElementDao {
 
@@ -74,6 +77,13 @@ public interface ElementDao {
             "ORDER BY id\n" +
             "DESC LIMIT 1")
     int getLastIndex();
+
+    @Query("SELECT * \n" +
+            "FROM Element \n" +
+            "WHERE isWatched == 0\n" +
+            "ORDER BY RANDOM()\n" +
+            "LIMIT 1")
+    Element getNoWatchedRandomElement();
 
     //  Interfejst do filtracji
     @Insert

@@ -26,8 +26,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -120,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
 
         });
+
 
         FloatingActionButton fab = findViewById(R.id.fab_btn);
         fab.setOnClickListener(v -> {
