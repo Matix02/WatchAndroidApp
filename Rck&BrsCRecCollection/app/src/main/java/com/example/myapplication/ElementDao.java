@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 /*
 Zastosować opcję z Medium.com, gdzie są podane zasady optymalizacji Room'a.
@@ -80,10 +81,18 @@ public interface ElementDao {
 
     @Query("SELECT * \n" +
             "FROM Element \n" +
-            "WHERE isWatched == 0\n" +
+            "WHERE isWatched = 0\n" +
             "ORDER BY RANDOM()\n" +
             "LIMIT 1")
-    Element getNoWatchedRandomElement();
+    Single<Element> getNoWatchedRandomElement();
+
+    @Query("SELECT *\n" +
+            "FROM Element\n" +
+            "WHERE isWatched = 0\n" +
+            "AND category =:categoryName\n" +
+            "ORDER BY RANDOM()\n" +
+            "LIMIT 1")
+    Single<Element> getNoWatchedRandomElementByCategory(String categoryName);
 
     //  Interfejst do filtracji
     @Insert
