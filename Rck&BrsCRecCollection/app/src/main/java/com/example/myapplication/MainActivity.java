@@ -17,6 +17,7 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -24,9 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.FlowableSubscriber;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -161,6 +166,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
+    /*
+    Gdy będzie budowany MVVM.
+    Zbudować nowy interfejs Filterable i tam umieścić funkcję, a następnie ją wywoływać.
+    Sama filtracja w udemy została pokazana bez RxJav'y ale wywołanie już jest disposible itd.,
+    ale nie wiadomo.
+     */
     @Override
     public boolean onQueryTextChange(final String newText) {
         /* RXJAVA
@@ -182,6 +193,44 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         newKeyList.add(Long.toString(name.getId()));
                     }
                 }
+                elementAdapter.updateList(newList, newKeyList);
+            }
+            @Override
+            public void DataIsInserted() { }
+            @Override
+            public void DataIsUpdated() { }
+            @Override
+            public void DataIsDeleted() { }
+        });*/
+        String userInput = newText.toLowerCase();
+/*
+        new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
+            @Override
+            public void DataIsLoaded(List<Element> elements, List<String> keys) {
+
+                new FirebaseDatabaseHelper().complementationList(roomDatabaseHelper.getElementDao().getElements())
+               roomDatabaseHelper.getElementDao().getElements()
+                        .flatMapIterable((Function<List<Element>, Iterable<Element>>)
+                                elements1 -> elements1)
+
+               .filter(element -> element.getTitle().toLowerCase().contains(userInput))
+               .
+               ;
+                List<Element> newList = new ArrayList<>();
+                List<String> newKeyList = new ArrayList<>();
+                localList.clear();
+                testRoomList.clear();
+                //trochę mało wydajne
+                testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+
+                for (Element name : localList) {
+                    if (name.getTitle().toLowerCase().contains(userInput)) {
+                        newList.add(name);
+                        newKeyList.add(Long.toString(name.getId()));
+                    }
+                }
+
                 elementAdapter.updateList(newList, newKeyList);
             }
             @Override

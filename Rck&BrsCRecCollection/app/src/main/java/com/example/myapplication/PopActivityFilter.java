@@ -19,6 +19,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.example.myapplication.MainActivity.roomDatabaseHelper;
+
 public class PopActivityFilter extends Activity {
 
     String zazWszt = "Zaznacz Wszystko";
@@ -73,8 +75,8 @@ public class PopActivityFilter extends Activity {
         /* RxJava
         elementFilters.addAll(MainActivity.roomDatabaseHelper.getElementDao().getFilters());
 
-     mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
-      */
+        mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
+        */
 
 
 
@@ -98,17 +100,17 @@ public class PopActivityFilter extends Activity {
 
         /* Część Przypisywania Wartości z Bazy */
 
-        disposable.add(MainActivity.roomDatabaseHelper.getElementDao().getFiltersFlow()
+        disposable.add(roomDatabaseHelper.getElementDao().getFiltersFlow()
                 .subscribeOn(Schedulers.io()) //nie mam pewności co do tej operacji czy compution czy io
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(elements1 -> {
-                            elementFilters.clear();
-                            elementFilters.addAll(elements1);
-                            //localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
-                            //elementAdapter.notifyDataSetChanged(); - Not Working
-                            // elementAdapter.updateList(localList, keys);
-                            finishSwitch.setChecked(elementFilters.get(0).isFinished());
-                            unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());
+                    elementFilters.clear();
+                    elementFilters.addAll(elements1);
+                    //localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+                    //elementAdapter.notifyDataSetChanged(); - Not Working
+                    // elementAdapter.updateList(localList, keys);
+                    finishSwitch.setChecked(elementFilters.get(0).isFinished());
+                    unFinishSwitch.setChecked(elementFilters.get(0).isUnFinished());
                             filmsCheckBox.setChecked(elementFilters.get(0).isFilmCategory());
                             gamesCheckBox.setChecked(elementFilters.get(0).isGamesCategory());
                             seriesCheckBox.setChecked(elementFilters.get(0).isSeriesCategory());
