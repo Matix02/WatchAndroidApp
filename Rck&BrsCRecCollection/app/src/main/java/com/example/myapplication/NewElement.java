@@ -79,16 +79,16 @@ public class NewElement extends Activity {
 
                 element.setTitle(editText.getText().toString());
                 element.setCategory(radioButton.getText().toString());
-                    element.setRecom(radioRecomButton.getText().toString());
-                    element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
-                    new FirebaseDatabaseHelper().addElement(element, new FirebaseDatabaseHelper.DataStatus() {
-                        @Override
-                        public void DataIsLoaded(List<Element> elements, List<String> keys) {
-                        }
+                element.setRecom(radioRecomButton.getText().toString());
+                element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
+                new FirebaseDatabaseHelper().addElement(element, new FirebaseDatabaseHelper.DataStatus() {
+                    @Override
+                    public void DataIsLoaded(List<Element> elements, List<String> keys) {
+                    }
 
-                        @Override
-                        public void DataIsInserted() {
-                            Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show();
+                    @Override
+                    public void DataIsInserted() {
+                        Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
