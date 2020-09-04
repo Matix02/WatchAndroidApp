@@ -3,11 +3,13 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,42 +19,28 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private RecyclerView recyclerView;
     RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
-    private List<String> keys;
+    private List<String> keys = new ArrayList<>();
     private List<Element> testRoomList = new ArrayList<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
-    static int elementsSize;
-
+    private ElementViewModel elementViewModel;
 
     /*
     Było napisane, że apliacja robi za dużo onMainThread.
     Ogólnie przyjrzeć się tym wszystkim wiadomością, które są wyświetlane na bieżąco w zakładce RUN,
     Debug, Logcat - na czerwono.
-     */
-    /*
+    /////////////////////////////
     Może stworzyć własny pakiet, jak w książce dotyczący tego, aby zaimpelemntować w innych projektach
     bazę Firebase i Room'a.
      */
@@ -62,7 +50,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         setContentView(R.layout.activity_main);
         /*Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
         mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie */
-        recyclerView = findViewById(R.id.ele_listView);
+        RecyclerView recyclerView = findViewById(R.id.ele_listView);
+
+        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
+
       /*
         Złą praktyką jest gdy wywołujemy w taki spsoób bazę, lepiej zbudować coś w rodzaju tego modelu z Firebase'a, który występuje dotychczas lub
         po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
@@ -72,43 +63,22 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         //Operacja sprawdzania bazy, taka z progres barrem i procentami 0% - 100%
 
-
         elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
 
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
 
-                /* !!!!!!!!!!!!!!!!!!!!!!
-                Coś pomyśleć z tym keys
-                 */
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
 
-                disposable.add(roomDatabaseHelper.getElementDao().getElements()
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(elements1 -> {
-                                    testRoomList.clear();
-                                    testRoomList.addAll(elements1);
+                elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
 
-                                    localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+                    localList.clear();
+                    localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(elements1);
+                    localList.removeAll(elements1);
 
-                                    //elementAdapter.notifyDataSetChanged(); - Not Working
-                                    elementAdapter.updateList(localList, keys);
-                                }, throwable -> {
-
-                                }
-                        ));
-
-
-
-              /*  RXJAVA
-                testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
-
-                localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
-
-                elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);*/
-                //  elementsSize = elements.size();
+                    elementAdapter.updateList(localList, keys);
+                });
             }
 
             @Override
@@ -122,9 +92,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void DataIsDeleted() {
             }
-
         });
-
 
         FloatingActionButton fab = findViewById(R.id.fab_btn);
         fab.setOnClickListener(v -> {
@@ -174,7 +142,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
      */
     @Override
     public boolean onQueryTextChange(final String newText) {
-        /* RXJAVA
+        String userInput = newText.toLowerCase();
+
+         /*
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -201,45 +171,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsUpdated() { }
             @Override
             public void DataIsDeleted() { }
-        });*/
-        String userInput = newText.toLowerCase();
-/*
-        new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
-            @Override
-            public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
-                new FirebaseDatabaseHelper().complementationList(roomDatabaseHelper.getElementDao().getElements())
-               roomDatabaseHelper.getElementDao().getElements()
-                        .flatMapIterable((Function<List<Element>, Iterable<Element>>)
-                                elements1 -> elements1)
-
-               .filter(element -> element.getTitle().toLowerCase().contains(userInput))
-               .
-               ;
-                List<Element> newList = new ArrayList<>();
-                List<String> newKeyList = new ArrayList<>();
-                localList.clear();
-                testRoomList.clear();
-                //trochę mało wydajne
-                testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
-                localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
-
-                for (Element name : localList) {
-                    if (name.getTitle().toLowerCase().contains(userInput)) {
-                        newList.add(name);
-                        newKeyList.add(Long.toString(name.getId()));
-                    }
-                }
-
-                elementAdapter.updateList(newList, newKeyList);
-            }
-            @Override
-            public void DataIsInserted() { }
-            @Override
-            public void DataIsUpdated() { }
-            @Override
-            public void DataIsDeleted() { }
-        });*/
+        });
+*/
         return true;
     }
     @Override

@@ -1,5 +1,10 @@
 package com.example.myapplication;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -8,35 +13,18 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Observable;
 import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
-
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subscribers.DisposableSubscriber;
 
 import static com.example.myapplication.MainActivity.roomDatabaseHelper;
 
 class FirebaseDatabaseHelper {
-    private DatabaseReference mReferenceBooks;
     private List<Element> elements = new ArrayList<>();
+    private DatabaseReference mReferenceBooks;
     private List<Element> testFirebaseList = new ArrayList<>();
-    List<Element> buforList;
-    List<Element> filterList = new ArrayList<>();
-    String[] d = {"No results"};
-    private Observable<String[]> myObservable;
-    private Observer<String[]> myObserver;
-    private String[] resultTitle;
-    private CompositeDisposable disposable = new CompositeDisposable();
-    private Flowable<List<Element>> elementObservable;
+
     //zastanowić się czy aby na pewno musi to byc static
 
     public interface DataStatus {
@@ -71,7 +59,6 @@ class FirebaseDatabaseHelper {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //moze dodac toasta ze jakis blad wystapil
             }
         });
     }
@@ -98,12 +85,6 @@ class FirebaseDatabaseHelper {
 
         roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
     }
-
-    /*
-    Opcja Filter przyda się przy RxJava - przy losowaniu, bo tam bedzie mozna odsiać elementy, które zostały już oglądnięte
-     */
-    /*
-    #5. - Trzeba innaczej to nazwać, jest mylące*/
 
     public void updateFilter(ElementFilter elementFilter) {
         roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
