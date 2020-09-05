@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 }
             }
             elementAdapter.updateList(newList, newKeyList);
-
         });
          /*
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
@@ -189,8 +188,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 */
                   /*
                 String userInput = newText.toLowerCase();
-
-
                 localList.clear();
                 testRoomList.clear();
 
@@ -240,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 Pogrzebać na temat RxJava for Binding,
 Testując wywoływanie Filtraacji z innych miejsc.
 https://blog.mindorks.com/implement-search-using-rxjava-operators-c8882b64fe1d
-Niżej to samo: 
+Niżej to samo:
 https://github.com/droiddevgeeks/TwitterSearchDemo/blob/master/app/src/main/java/com/example/twittersearchdemo/ui/fragment/SearchFragment.java
 https://medium.com/@kishankr.maurya/handling-searchview-with-rxjava-32c60380f326
  */
