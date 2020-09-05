@@ -3,14 +3,19 @@ package com.example.myapplication;
 import android.app.Application;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -29,11 +34,30 @@ public class ElementRoomRepository {
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(elements -> elementLiveData.postValue(elements),
+                .subscribe(elements -> elementLiveData.postValue(new FirebaseDatabaseHelper().complementationList(elements)),
                         throwable -> {
 
                         }
                 ));
+    }
+
+    public void observeSearchView(SearchView searchView) {
+        compositeDisposable.add(RxSearchObservable.fromView(searchView)
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .filter(s -> {
+                    if (s.isEmpty())
+                        searchView.setQuery("", false);
+                    else
+                        return true;
+                    return false;
+                })
+                .distinctUntilChanged()
+                .switchMap((Function<String, ObservableSource<String>>) Observable::just)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+
+                }));
+
     }
 
     public void createElement(int id, final String title, final String category, final String reccomendation, Boolean isWached) {
@@ -91,6 +115,7 @@ public class ElementRoomRepository {
     public MutableLiveData<List<Element>> getElementLiveData() {
         return elementLiveData;
     }
+
 
     public void clear() {
         compositeDisposable.clear();

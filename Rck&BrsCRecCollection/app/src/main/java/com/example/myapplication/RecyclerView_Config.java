@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -76,7 +79,7 @@ public class RecyclerView_Config {
         }
     }
 
-    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView>{
+    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable {
         private List<String> keysList;
         List<Element> filterElementList;
 
@@ -104,11 +107,41 @@ public class RecyclerView_Config {
 
         void updateList(List<Element> newList, List<String> newKeyList) {
             keysList = new ArrayList<>();
-            //filterElementList.clear();
             filterElementList = new ArrayList<>();
             keysList.addAll(newKeyList);
             filterElementList.addAll(newList);
             notifyDataSetChanged();
+        }
+
+        public void initSearchView(SearchView searchView) {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+
+
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    return null;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                }
+            };
         }
     }
 }

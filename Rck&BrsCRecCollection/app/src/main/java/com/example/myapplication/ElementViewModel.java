@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.app.Application;
 
+import androidx.appcompat.widget.SearchView;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -25,6 +27,7 @@ public class ElementViewModel extends AndroidViewModel {
     public void createElement(int id, String title, String category, String reccomendation, boolean isWatched) {
         elementRoomRepository.createElement(id, title, category, reccomendation, isWatched);
     }
+
 
     public void updateElement(Element element) {
         elementRoomRepository.updateElement(element);

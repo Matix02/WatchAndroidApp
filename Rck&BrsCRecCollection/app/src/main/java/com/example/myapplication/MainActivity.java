@@ -3,13 +3,13 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +19,15 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
 
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -68,27 +72,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
-
                 findViewById(R.id.loading_elements).setVisibility(View.GONE);
 
                 elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
 
                     localList.clear();
-                    localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(elements1);
-                    localList.removeAll(elements1);
+                    //Zamiast addAll(below), było complementation itd. dla filtracji.
+                    localList.addAll(elements1);
+                    //  localList.removeAll(elements1);
 
                     elementAdapter.updateList(localList, keys);
                 });
             }
-
             @Override
             public void DataIsInserted() {
             }
-
             @Override
             public void DataIsUpdated() {
             }
-
             @Override
             public void DataIsDeleted() {
             }
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             startActivity(intent);
         });
 
+        Log.d("Test", String.valueOf(localList.size()));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -117,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
     }
 
+    //Pamiętać by dodać INIT() function.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -133,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-
     /*
     Gdy będzie budowany MVVM.
     Zbudować nowy interfejs Filterable i tam umieścić funkcję, a następnie ją wywoływać.
@@ -143,7 +145,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(final String newText) {
         String userInput = newText.toLowerCase();
+        List<Element> newList = new ArrayList<>();
+        List<String> newKeyList = new ArrayList<>();
 
+        elementViewModel.getAllElements().observe(MainActivity.this, elements -> {
+            for (Element e : elements) {
+                if (e.getTitle().toLowerCase().contains(userInput)) {
+                    newList.add(e);
+                    newKeyList.add(Long.toString(e.getId()));
+                }
+            }
+            elementAdapter.updateList(newList, newKeyList);
+
+        });
          /*
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
@@ -173,10 +187,45 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsDeleted() { }
         });
 */
+                  /*
+                String userInput = newText.toLowerCase();
+
+
+                localList.clear();
+                testRoomList.clear();
+
+                testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
+                localList = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
+
+                for (Element name : localList) {
+                    if (name.getTitle().toLowerCase().contains(userInput)) {
+                        newList.add(name);
+                        newKeyList.add(Long.toString(name.getId()));
+                    }
+                }
+                elementAdapter.updateList(newList, newKeyList);
+            });
+*/
         return true;
     }
-    @Override
-    public boolean onQueryTextSubmit(String query) { return false; }
+
+    private void observeSearchView(SearchView searchView) {
+        disposable.add(RxSearchObservable.fromView(searchView)
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .filter(s -> {
+                    if (s.isEmpty())
+                        searchView.setQuery("", false);
+                    else
+                        return true;
+                    return false;
+                })
+                .distinctUntilChanged()
+                .switchMap((Function<String, ObservableSource<String>>) Observable::just)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+
+                }));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -186,12 +235,28 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         MenuItem menuItem = menu.findItem(R.id.search_item1);
 
         SearchView searchView = (SearchView) menuItem.getActionView();
+        //   elementAdapter.initSearchView(searchView);
+/*
+Pogrzebać na temat RxJava for Binding,
+Testując wywoływanie Filtraacji z innych miejsc.
+https://blog.mindorks.com/implement-search-using-rxjava-operators-c8882b64fe1d
+Niżej to samo: 
+https://github.com/droiddevgeeks/TwitterSearchDemo/blob/master/app/src/main/java/com/example/twittersearchdemo/ui/fragment/SearchFragment.java
+https://medium.com/@kishankr.maurya/handling-searchview-with-rxjava-32c60380f326
+ */
+
         searchView.setOnQueryTextListener(this);
         searchView.setIconifiedByDefault(false);
         searchView.setQuery("", false);
-        
+
         return true;
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -199,8 +264,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             Intent intent = new Intent(getApplicationContext(), PopActivity.class);
             startActivity(intent);
             return true;
-        }
-        else if(item.getItemId() == R.id.filter) {
+        } else if (item.getItemId() == R.id.filter) {
             Intent intent = new Intent(getApplicationContext(), PopActivityFilter.class);
             intent.putExtra("id", 1);
             startActivityForResult(intent, 1);
@@ -209,14 +273,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return super.onOptionsItemSelected(item);
     }
 
-    public List<String> keysAssign(ArrayList<Element> s) {
-        List<String> keyList = new ArrayList<>();
-        for (Element e : s) {
-            String keyStr = String.valueOf(e.getId());
-            keyList.add(keyStr);
-        }
-        return keyList;
-    }
+
 
     @Override
     protected void onDestroy() {
@@ -245,8 +302,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    private void deleteEveryElements(ArrayList<Element> element){
+    private void deleteEveryElements(ArrayList<Element> element) {
         roomDatabaseHelper.getElementDao().deleteAllElements();
         element.clear();
+    }
+
+    public List<String> keysAssign(ArrayList<Element> s) {
+        List<String> keyList = new ArrayList<>();
+        for (Element e : s) {
+            String keyStr = String.valueOf(e.getId());
+            keyList.add(keyStr);
+        }
+        return keyList;
     }
 }

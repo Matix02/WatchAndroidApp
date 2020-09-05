@@ -86,6 +86,7 @@ class FirebaseDatabaseHelper {
         roomDatabaseHelper.getElementDao().deleteIdElement(Integer.parseInt(key));
     }
 
+
     public void updateFilter(ElementFilter elementFilter) {
         roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
     }
