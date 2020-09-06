@@ -91,6 +91,7 @@ class FirebaseDatabaseHelper {
         roomDatabaseHelper.getElementDao().updateFilter(elementFilter);
     }
 
+    //Przekierować strumień z RoomDatabaseHelper'a który znajduje się w MainActivity do tego z ViewModel
     public List<Element> complementationList(List<Element> elements) {
 
         List<ElementFilter> elementFilters = new ArrayList<>(roomDatabaseHelper.getElementDao().getFilters());

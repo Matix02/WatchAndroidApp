@@ -108,26 +108,12 @@ public class RecyclerView_Config {
         void updateList(List<Element> newList, List<String> newKeyList) {
             keysList = new ArrayList<>();
             filterElementList = new ArrayList<>();
+
             keysList.addAll(newKeyList);
             filterElementList.addAll(newList);
-            notifyDataSetChanged();
+            this.notifyDataSetChanged();
         }
 
-        public void initSearchView(SearchView searchView) {
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    return false;
-                }
-            });
-
-
-        }
 
         @Override
         public Filter getFilter() {

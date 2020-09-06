@@ -1,42 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+<layout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ele_listView"
+    <data></data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_margin="5sp"
-        android:focusable="auto"
-        />
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="35sp"
-        android:layout_marginBottom="25sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        tools:ignore="RelativeOverlap" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ele_listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_margin="5sp"
+                android:focusable="auto" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- app:menu_showShadow="true"-->
 
-    <ProgressBar
-        android:id="@+id/loading_elements"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="167dp"
-        android:layout_marginTop="154dp" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="35sp"
+            android:layout_marginBottom="25sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            tools:ignore="RelativeOverlap" />
 
-</RelativeLayout>
+        <!-- app:menu_showShadow="true"-->
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/loading_elements"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="167dp"
+            android:layout_marginTop="154dp" />
+
+
+    </RelativeLayout>
+</layout>

@@ -34,30 +34,11 @@ public class ElementRoomRepository {
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(elements -> elementLiveData.postValue(new FirebaseDatabaseHelper().complementationList(elements)),
+                .subscribe(elements -> elementLiveData.postValue(elements),
                         throwable -> {
 
                         }
                 ));
-    }
-
-    public void observeSearchView(SearchView searchView) {
-        compositeDisposable.add(RxSearchObservable.fromView(searchView)
-                .debounce(300, TimeUnit.MILLISECONDS)
-                .filter(s -> {
-                    if (s.isEmpty())
-                        searchView.setQuery("", false);
-                    else
-                        return true;
-                    return false;
-                })
-                .distinctUntilChanged()
-                .switchMap((Function<String, ObservableSource<String>>) Observable::just)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
-
-                }));
-
     }
 
     public void createElement(int id, final String title, final String category, final String reccomendation, Boolean isWached) {

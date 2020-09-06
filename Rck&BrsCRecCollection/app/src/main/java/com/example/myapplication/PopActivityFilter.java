@@ -78,9 +78,6 @@ public class PopActivityFilter extends Activity {
         mainElements.addAll(MainActivity.roomDatabaseHelper.getElementDao().getElements());
         */
 
-
-
-
         /* Część graficzna */
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
