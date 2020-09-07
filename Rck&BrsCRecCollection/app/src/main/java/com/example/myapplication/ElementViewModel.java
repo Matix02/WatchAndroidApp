@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.app.Application;
 
-import androidx.appcompat.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;

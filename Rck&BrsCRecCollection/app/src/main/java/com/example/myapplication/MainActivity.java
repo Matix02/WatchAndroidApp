@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.myapplication.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -30,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys = new ArrayList<>();
+    private List<Element> buforElementList = new ArrayList<>();
+    private List<Element> buforFuckingList = new ArrayList<>();
+
     private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
     private ElementViewModel elementViewModel;
@@ -52,10 +54,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         /*
         Działa odświeżanie, ale SUrowo został postawiony ten Swipe, trzeba poszukać lepszego przykładu. 
-         */
-        /*Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
+        /////////////////////////////////
+        Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
         mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie */
         elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
+        elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
+            buforFuckingList.addAll(elements1);
+        });
       /*
         Złą praktyką jest gdy wywołujemy w taki spsoób bazę, lepiej zbudować coś w rodzaju tego modelu z Firebase'a, który występuje dotychczas lub
         po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
@@ -68,7 +73,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
        // binding.setLifecycleOwner(this);
        Gdyby pomysł z binding nie działał, to usunąć databinding from gradle i layout opcję z activity_main.
          */
+
+        /*final Observer<List<Element>> elementObserver = new Observer<List<Element>>() {
+            @Override
+            public void onChanged(List<Element> elements) {
+                localList.addAll(elements);
+                elementAdapter.updateList(localList, keysAssign(elements));
+            }
+        };*/
+        loadData();
+
         setRecycleView();
+
         findViewById(R.id.loading_elements).setVisibility(View.GONE);
 
         swipeContainer = findViewById(R.id.swipeContainer);
@@ -85,12 +101,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
                     localList.clear();
 
-                    List<Element> e = new ArrayList<>(elements);
-
                     //Zamiast addAll(below), było complementation itd. dla filtracji.
-                    localList.addAll(new FirebaseDatabaseHelper().complementationList(elements1));
+                    localList.addAll(elements1);
                     //  localList.removeAll(elements1);
+
                     elementAdapter.updateList(localList, keys);
+                    Log.d("Bufor", "BufforSize " + buforFuckingList.size() + " from LoadData");
+
                 });
             }
 
@@ -135,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     fab.hide();
             }
         });
+        Log.d("Bufor", "BufforSize " + buforFuckingList.size() + " from setRecycleView");
+
     }
 
     @Override
@@ -143,17 +162,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if (requestCode == 1) {
 
-           /* RXJAVA
-           Jakiś refresh by się przydał, albo
-            testRoomList.addAll(roomDatabaseHelper.getElementDao().getElements());
-            ArrayList<Element> elements = (ArrayList<Element>) new FirebaseDatabaseHelper().complementationList(testRoomList);
-            List<String> keyList = keysAssign(elements);
-            elementAdapter.updateList(elements, keyList);
+            buforElementList = new ArrayList<>(buforFuckingList);
+            elementAdapter.updateList(new FirebaseDatabaseHelper().complementationList(buforElementList), keysAssign(buforFuckingList));
 
-            //   elementAdapter.updateList(localList, keys);*/
-            elementViewModel.getAllElements().observe(MainActivity.this, elements -> {
-
-            });
         }
     }
 
@@ -241,8 +252,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         roomDatabaseHelper.getElementDao().deleteAllElements();
         element.clear();
     }
-
-    public List<String> keysAssign(ArrayList<Element> s) {
+*/
+    public List<String> keysAssign(List<Element> s) {
         List<String> keyList = new ArrayList<>();
         for (Element e : s) {
             String keyStr = String.valueOf(e.getId());
@@ -250,6 +261,4 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         return keyList;
     }
-
-    */
 }

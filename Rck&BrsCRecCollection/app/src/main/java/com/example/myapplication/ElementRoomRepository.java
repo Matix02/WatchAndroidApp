@@ -25,6 +25,7 @@ public class ElementRoomRepository {
     private RoomDatabaseHelper roomDatabaseHelper;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private MutableLiveData<List<Element>> elementLiveData = new MutableLiveData<>();
+    private List<Element> elementList;
     private long rowIdOfTheItemInserted;
 
     public ElementRoomRepository(Application application) {
@@ -34,7 +35,11 @@ public class ElementRoomRepository {
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(elements -> elementLiveData.postValue(elements),
+                .subscribe(elements -> {
+
+                            elementLiveData.setValue(elements);
+
+                        },
                         throwable -> {
 
                         }
