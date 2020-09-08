@@ -12,6 +12,9 @@ public abstract class RoomDatabaseHelper extends RoomDatabase {
 
     public abstract ElementDao getElementDao();
 
+    public abstract FilterDao getFilterDao();
+
+
     static Migration migration = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {

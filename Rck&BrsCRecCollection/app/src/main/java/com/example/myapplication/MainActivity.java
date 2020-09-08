@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<String> keys = new ArrayList<>();
     private List<Element> buforElementList = new ArrayList<>();
     private List<Element> buforFuckingList = new ArrayList<>();
+    private List<Element> revengeList = new ArrayList<>();
 
     private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
@@ -66,32 +67,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
          */
         roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
-        /*
-       // ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-                //Operacja sprawdzania bazy przy PIERWSZYM URUCHOMIENIU APLIKACJI, taka z progres barrem i procentami 0% - 100%
-       // binding.setLifecycleOwner(this);
-       Gdyby pomysł z binding nie działał, to usunąć databinding from gradle i layout opcję z activity_main.
-         */
-
-        /*final Observer<List<Element>> elementObserver = new Observer<List<Element>>() {
-            @Override
-            public void onChanged(List<Element> elements) {
-                localList.addAll(elements);
-                elementAdapter.updateList(localList, keysAssign(elements));
-            }
-        };*/
         loadData();
 
         setRecycleView();
 
-        findViewById(R.id.loading_elements).setVisibility(View.GONE);
-
         swipeContainer = findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(() -> {
-            loadData();
+            refreshData();
             swipeContainer.setRefreshing(false);
         });
+
+        findViewById(R.id.loading_elements).setVisibility(View.GONE);
     }
 
     private void loadData() {
@@ -99,14 +86,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
+                    findViewById(R.id.loading_elements).setVisibility(View.GONE);
+
                     localList.clear();
 
-                    //Zamiast addAll(below), było complementation itd. dla filtracji.
                     localList.addAll(elements1);
-                    //  localList.removeAll(elements1);
-
-                    elementAdapter.updateList(localList, keys);
-                    Log.d("Bufor", "BufforSize " + buforFuckingList.size() + " from LoadData");
+                    revengeList.addAll(new FirebaseDatabaseHelper().complementationList(localList));
+                    elementAdapter.updateList(revengeList, keysAssign(revengeList));
 
                 });
             }
@@ -152,8 +138,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     fab.hide();
             }
         });
-        Log.d("Bufor", "BufforSize " + buforFuckingList.size() + " from setRecycleView");
-
     }
 
     @Override
@@ -161,11 +145,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
-
-            buforElementList = new ArrayList<>(buforFuckingList);
-            elementAdapter.updateList(new FirebaseDatabaseHelper().complementationList(buforElementList), keysAssign(buforFuckingList));
-
+            refreshData();
         }
+    }
+
+    private void refreshData() {
+        buforElementList = new ArrayList<>(buforFuckingList);
+        elementAdapter.updateList(new FirebaseDatabaseHelper().complementationList(buforElementList), keysAssign(buforFuckingList));
     }
 
     @Override

@@ -94,25 +94,6 @@ public interface ElementDao {
             "LIMIT 1")
     Single<Element> getNoWatchedRandomElementByCategory(String categoryName);
 
-    //  Interfejst do filtracji
-    @Insert
-    long addFilter(ElementFilter elementFilter);
-
-    @Update
-    void updateFilter(ElementFilter elementFilter);
-
-    @Delete
-    void deleteFilter(Element element);
-
-    @Query("select * from ElementFilter LIMIT 1")
-    List<ElementFilter> getFilters();
-
-    @Query("select * from ElementFilter")
-    Flowable<List<ElementFilter>> getFiltersFlow();
-
-
-    @Query("select * from ElementFilter LIMIT 1")
-    List<ElementFilter> getOneFilter();
 
 
 }

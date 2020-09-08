@@ -7,17 +7,24 @@ import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
+import org.reactivestreams.Publisher;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 public class ElementRoomRepository {
 
@@ -30,20 +37,83 @@ public class ElementRoomRepository {
 
     public ElementRoomRepository(Application application) {
         this.application = application;
-        roomDatabaseHelper = Room.databaseBuilder(application.getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").build();
+
+        if (roomDatabaseHelper == null)
+            roomDatabaseHelper = Room.databaseBuilder(application.getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").build();
 
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
+                .toObservable()
+                .flatMap((Function<List<Element>, Observable<Element>>)
+                        elements -> Observable.fromArray(elements.toArray(new Element[0])))
+                .filter(new Predicate<Element>() {
+                    @Override
+                    public boolean test(Element element) throws Exception {
+                        Single<ElementFilter> e = roomDatabaseHelper.getFilterDao().getSingleFilters();
+
+                        return false;
+                    }
+                })
+                /*  .filter(elements -> {
+                             return false;
+                          }
+                  )*/
+                .subscribe());
+        /* TRUE
+        compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
+
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+              /*  .filter(elements -> {
+                    Single<ElementFilter> e = roomDatabaseHelper.getFilterDao().getSingleFilters();
+
+
+                            return false;
+                        }
+
+                )
+
                 .subscribe(elements -> {
 
-                            elementLiveData.setValue(elements);
-
+                            elementLiveData.postValue(elements);
                         },
-                        throwable -> {
+                        throwable -> { }
+                ));*/
+    }
 
+    public void getFilter(Observable<Element> elementObservable) {
+        compositeDisposable.add(roomDatabaseHelper.getFilterDao().getSingleFilters()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(elementFilter -> {
+                    elementObservable.map(new Function<Element, Element>() {
+                        @Override
+                        public Element apply(Element element) throws Exception {
+                            if ()
+
+                                return element;
                         }
-                ));
+                    });
+                })
+        );
+    }
+
+    public void updateFilter(ElementFilter elementFilter) {
+        compositeDisposable.add(Completable.fromAction(() -> roomDatabaseHelper.getFilterDao().updateFilter(elementFilter))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(application.getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
+                    }
+                }));
     }
 
     public void createElement(int id, final String title, final String category, final String reccomendation, Boolean isWached) {
@@ -101,7 +171,6 @@ public class ElementRoomRepository {
     public MutableLiveData<List<Element>> getElementLiveData() {
         return elementLiveData;
     }
-
 
     public void clear() {
         compositeDisposable.clear();

@@ -97,7 +97,7 @@ public class PopActivityFilter extends Activity {
 
         /* Część Przypisywania Wartości z Bazy */
 
-        disposable.add(roomDatabaseHelper.getElementDao().getFiltersFlow()
+        disposable.add(roomDatabaseHelper.getFilterDao().getFiltersFlow()
                 .subscribeOn(Schedulers.io()) //nie mam pewności co do tej operacji czy compution czy io
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(elements1 -> {
