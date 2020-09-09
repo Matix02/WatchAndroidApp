@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -54,7 +55,11 @@ class FirebaseDatabaseHelper {
                     Element element = keyNode.getValue(Element.class);
                     testFirebaseList.add(element);
                 }
+
                 elements = complementationList(testFirebaseList);
+                Log.d("Bufor", " Elements size " + elements.size() + " from Firebase - ReadElements");
+                Log.d("Bufor", " Keys size " + keys.size() + " from Firebase - ReadElements");
+
                 dataStatus.DataIsLoaded(elements, keys);
             }
             @Override

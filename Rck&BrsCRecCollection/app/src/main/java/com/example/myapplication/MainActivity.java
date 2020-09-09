@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie */
         elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
         elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
+            Log.d("Bufor", "Elements1 size " + elements1.size() + " from MainActivity");
             buforFuckingList.addAll(elements1);
         });
       /*
@@ -87,12 +88,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
                 elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
                     findViewById(R.id.loading_elements).setVisibility(View.GONE);
+                    Log.d("Bufor", "Elements1 size " + elements1.size() + " from LoadData");
 
                     localList.clear();
 
                     localList.addAll(elements1);
-                    revengeList.addAll(new FirebaseDatabaseHelper().complementationList(localList));
-                    elementAdapter.updateList(revengeList, keysAssign(revengeList));
+                    //  revengeList.addAll(new FirebaseDatabaseHelper().complementationList(localList));
+                    Log.d("Bufor", "LocalList size " + localList.size() + " from LoadData");
+                    Log.d("Bufor", "Keys size " + keys.size() + " from MainActivity");
+
+                    elementAdapter.updateList(localList, keysAssign(localList));
 
                 });
             }
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void setRecycleView() {
         recyclerView = findViewById(R.id.ele_listView);
+        Log.d("Bufor", " Keys size " + keys.size() + " from setRecycleView");
 
         elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
 

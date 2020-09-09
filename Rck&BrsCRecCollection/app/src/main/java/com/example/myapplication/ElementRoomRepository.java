@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
@@ -9,6 +10,7 @@ import androidx.room.Room;
 
 import org.reactivestreams.Publisher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +21,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableCompletableObserver;
@@ -34,32 +37,66 @@ public class ElementRoomRepository {
     private MutableLiveData<List<Element>> elementLiveData = new MutableLiveData<>();
     private List<Element> elementList;
     private long rowIdOfTheItemInserted;
+    ElementFilter elementFilter;
+
 
     public ElementRoomRepository(Application application) {
         this.application = application;
+        elementList = new ArrayList<>();
 
         if (roomDatabaseHelper == null)
             roomDatabaseHelper = Room.databaseBuilder(application.getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").build();
 
+        getDatabase();
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .toObservable()
-                .flatMap((Function<List<Element>, Observable<Element>>)
-                        elements -> Observable.fromArray(elements.toArray(new Element[0])))
-                .filter(new Predicate<Element>() {
+                .flatMap(new Function<List<Element>, Observable<Element>>() {
                     @Override
-                    public boolean test(Element element) throws Exception {
-                        Single<ElementFilter> e = roomDatabaseHelper.getFilterDao().getSingleFilters();
-
-                        return false;
+                    public Observable<Element> apply(List<Element> elements) throws Exception {
+                        return Observable.fromArray(elements.toArray(new Element[0]));
                     }
                 })
-                /*  .filter(elements -> {
-                             return false;
-                          }
-                  )*/
-                .subscribe());
+                .filter(element -> {
+                    if (elementFilter.isFinished() && !elementFilter.isUnFinished())
+                        return true;
+                    else if (!elementFilter.isFinished() && elementFilter.isUnFinished())
+                        return true;
+                    else
+                        return true;
+                })
+                .filter(element -> {
+                    if (elementFilter.isBookCategory() && element.getCategory().equals("Książka"))
+                        return true;
+                    else if (elementFilter.isFilmCategory() && element.getCategory().equals("Film"))
+                        return true;
+                    else if (elementFilter.isGamesCategory() && element.getCategory().equals("Gra"))
+                        return true;
+                    else if (elementFilter.isSeriesCategory() && element.getCategory().equals("Serial"))
+                        return true;
+
+                    return false;
+                })
+                .filter(element -> {
+                    if (elementFilter.isRockRecommedation() && element.getRecom().equals("Rock"))
+                        return true;
+                    else if (elementFilter.isBorysRecommedation() && element.getRecom().equals("Borys"))
+                        return true;
+                    else if (elementFilter.isRockBorysRecommedation() && element.getRecom().equals("Rck&Brs"))
+                        return true;
+                    else if (elementFilter.isOtherRecommedation() && element.getRecom().equals("Inne"))
+                        return true;
+                    return false;
+                })
+                .subscribe(element -> {
+                    Log.d("Bufor", "działa");
+                    elementList.add(element);
+                })
+        );
+        elementLiveData.postValue(elementList);
+        Log.d("Bufor", " ElementList size " + elementList.size() + " from Contructor");
+
         /* TRUE
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
 
@@ -82,17 +119,28 @@ public class ElementRoomRepository {
                 ));*/
     }
 
+    public void getDatabase() {
+        compositeDisposable.add(roomDatabaseHelper.getFilterDao().getSingleFilters()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(elementFilter1 -> {
+                    elementFilter = elementFilter1;
+                }));
+    }
+
     public void getFilter(Observable<Element> elementObservable) {
         compositeDisposable.add(roomDatabaseHelper.getFilterDao().getSingleFilters()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(elementFilter -> {
+                    elementFilter.isFinished();
+                    elementFilter.isUnFinished();
+
                     elementObservable.map(new Function<Element, Element>() {
                         @Override
                         public Element apply(Element element) throws Exception {
-                            if ()
 
-                                return element;
+                            return element;
                         }
                     });
                 })

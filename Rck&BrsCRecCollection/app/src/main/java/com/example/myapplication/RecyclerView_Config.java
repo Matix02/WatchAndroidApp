@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +98,8 @@ public class RecyclerView_Config {
 
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {
+            Log.d("Bufor", " Keys size " + keysList.size() + " from BindViewHolder");
+
             holder.bind(keysList.get(position), filterElementList.get(position));
         }
 
