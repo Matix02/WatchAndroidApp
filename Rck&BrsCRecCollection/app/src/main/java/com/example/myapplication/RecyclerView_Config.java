@@ -2,14 +2,9 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -80,7 +75,7 @@ public class RecyclerView_Config {
         }
     }
 
-    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> implements Filterable {
+    public class ElementAdapter extends RecyclerView.Adapter<ElementItemView> {
         private List<String> keysList;
         List<Element> filterElementList;
 
@@ -98,7 +93,7 @@ public class RecyclerView_Config {
 
         @Override
         public void onBindViewHolder(@NonNull ElementItemView holder, int position) {
-            Log.d("Bufor", " Keys size " + keysList.size() + " from BindViewHolder");
+            //  Log.d("Bufor", " Keys size " + keysList.size() + " from BindViewHolder");
 
             holder.bind(keysList.get(position), filterElementList.get(position));
         }
@@ -116,21 +111,6 @@ public class RecyclerView_Config {
             filterElementList.addAll(newList);
             this.notifyDataSetChanged();
         }
-
-
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    return null;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-
-                }
-            };
-        }
     }
 }
+

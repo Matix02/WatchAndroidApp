@@ -5,6 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -17,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.myapplication.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -32,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<Element> buforElementList = new ArrayList<>();
     private List<Element> buforFuckingList = new ArrayList<>();
     private List<Element> revengeList = new ArrayList<>();
-
     private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
     private ElementViewModel elementViewModel;
@@ -52,34 +55,54 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        binding.setLifecycleOwner(this);
+        //elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
+
 
         /*
         Działa odświeżanie, ale SUrowo został postawiony ten Swipe, trzeba poszukać lepszego przykładu. 
         /////////////////////////////////
         Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
         mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie */
-        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
         elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
-            Log.d("Bufor", "Elements1 size " + elements1.size() + " from MainActivity");
+            Log.d("Bufor", "BuforFuckingList/Elements1 size " + elements1.size() + " from MainActivity");
+            buforFuckingList.clear();
             buforFuckingList.addAll(elements1);
         });
-      /*
-        Złą praktyką jest gdy wywołujemy w taki spsoób bazę, lepiej zbudować coś w rodzaju tego modelu z Firebase'a, który występuje dotychczas lub
-        po prostu poszukać czegoś co pokazuje jak użyć rooma ogólnie i to zmienić i zaimplementować
-         */
+
+        checkObserver();
         roomDatabaseHelper = Room.databaseBuilder(getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").allowMainThreadQueries().build();
 
-        loadData();
+
+        // loadData();
 
         setRecycleView();
 
+        /*
+        Przetestować na dwóch urządzeniach, kiedy jedno będzie dodawać a drugie oczekiwać i refreshować
+         */
+        //Nic nie działa!!!!!!!!!
         swipeContainer = findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(() -> {
-            refreshData();
+            // refreshData();
+            checkObserver();
             swipeContainer.setRefreshing(false);
         });
-
         findViewById(R.id.loading_elements).setVisibility(View.GONE);
+    }
+
+    private void checkObserver() {
+        final Observer<List<Element>> observer = new Observer<List<Element>>() {
+            @Override
+            public void onChanged(List<Element> elements) {
+                elementAdapter.updateList(elements, keysAssign(elements));
+                Log.d("Bufor", "Elements size " + elements.size() + " from Observer");
+            }
+        };
+        elementViewModel.getAllElements().observe(this, observer);
     }
 
     private void loadData() {
@@ -89,16 +112,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
                     findViewById(R.id.loading_elements).setVisibility(View.GONE);
                     Log.d("Bufor", "Elements1 size " + elements1.size() + " from LoadData");
-
                     localList.clear();
-
                     localList.addAll(elements1);
                     //  revengeList.addAll(new FirebaseDatabaseHelper().complementationList(localList));
                     Log.d("Bufor", "LocalList size " + localList.size() + " from LoadData");
-                    Log.d("Bufor", "Keys size " + keys.size() + " from MainActivity");
-
-                    elementAdapter.updateList(localList, keysAssign(localList));
-
+                    Log.d("Bufor", "Keys size " + keys.size() + " from LoadData/Firebase");
                 });
             }
 
@@ -114,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void DataIsDeleted() {
             }
         });
-
     }
 
     private void setRecycleView() {
@@ -128,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             Intent intent = new Intent(MainActivity.this, NewElement.class);
             startActivity(intent);
         });
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -149,15 +165,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 1) {
             refreshData();
         }
     }
 
     private void refreshData() {
+        elementViewModel.getAllElements().observe(MainActivity.this, elements -> {
+            Log.d("Bufor", "RevengeList size " + elements.size() + " from RefreshData/");
+            revengeList.clear();
+            revengeList.addAll(elements);
+            elementAdapter.updateList(revengeList, keysAssign(revengeList));
+        });
+        Log.d("Bufor", "RevengeList size " + revengeList.size() + " from RefreshData/");
+        Log.d("Bufor", "BuforFuckingList size " + buforFuckingList.size() + " from RefreshData");
         buforElementList = new ArrayList<>(buforFuckingList);
-        elementAdapter.updateList(new FirebaseDatabaseHelper().complementationList(buforElementList), keysAssign(buforFuckingList));
+        Log.d("Bufor", "BuforElementList size " + buforElementList.size() + " from RefreshData");
+        new FirebaseDatabaseHelper().complementationList(buforElementList);
+        Log.d("Bufor", "BuforElementList after Completition size " + buforElementList.size() + " from RefreshData");
     }
 
     @Override
@@ -197,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item1) {

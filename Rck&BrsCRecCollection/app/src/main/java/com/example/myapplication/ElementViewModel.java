@@ -23,6 +23,7 @@ public class ElementViewModel extends AndroidViewModel {
         return elementRoomRepository.getElementLiveData();
     }
 
+
     public void createElement(int id, String title, String category, String reccomendation, boolean isWatched) {
         elementRoomRepository.createElement(id, title, category, reccomendation, isWatched);
     }

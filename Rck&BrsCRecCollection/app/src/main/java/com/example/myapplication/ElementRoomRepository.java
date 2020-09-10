@@ -52,19 +52,13 @@ public class ElementRoomRepository {
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .toObservable()
-                .flatMap(new Function<List<Element>, Observable<Element>>() {
-                    @Override
-                    public Observable<Element> apply(List<Element> elements) throws Exception {
-                        return Observable.fromArray(elements.toArray(new Element[0]));
-                    }
-                })
+                .flatMap((Function<List<Element>, Observable<Element>>) elements -> Observable.fromArray(elements.toArray(new Element[0])))
                 .filter(element -> {
-                    if (elementFilter.isFinished() && !elementFilter.isUnFinished())
+                    if (!elementFilter.isUnFinished() && element.isWatched())
                         return true;
-                    else if (!elementFilter.isFinished() && elementFilter.isUnFinished())
+                    else if (!elementFilter.isFinished() && !element.isWatched())
                         return true;
-                    else
-                        return true;
+                    else return elementFilter.isUnFinished() && elementFilter.isFinished();
                 })
                 .filter(element -> {
                     if (elementFilter.isBookCategory() && element.getCategory().equals("Książka"))
@@ -73,10 +67,9 @@ public class ElementRoomRepository {
                         return true;
                     else if (elementFilter.isGamesCategory() && element.getCategory().equals("Gra"))
                         return true;
-                    else if (elementFilter.isSeriesCategory() && element.getCategory().equals("Serial"))
-                        return true;
+                    else
+                        return elementFilter.isSeriesCategory() && element.getCategory().equals("Serial");
 
-                    return false;
                 })
                 .filter(element -> {
                     if (elementFilter.isRockRecommedation() && element.getRecom().equals("Rock"))
@@ -85,32 +78,24 @@ public class ElementRoomRepository {
                         return true;
                     else if (elementFilter.isRockBorysRecommedation() && element.getRecom().equals("Rck&Brs"))
                         return true;
-                    else if (elementFilter.isOtherRecommedation() && element.getRecom().equals("Inne"))
-                        return true;
-                    return false;
+                    else
+                        return elementFilter.isOtherRecommedation() && element.getRecom().equals("Inne");
                 })
                 .subscribe(element -> {
-                    Log.d("Bufor", "działa");
+                    //  Log.d("Bufor", "działa");
                     elementList.add(element);
+
+                    Log.d("Bufor", " Element " + element.getTitle() + " from Contructor");
                 })
         );
         elementLiveData.postValue(elementList);
-        Log.d("Bufor", " ElementList size " + elementList.size() + " from Contructor");
 
+        Log.d("Bufor", " ElementList size " + elementList.size() + " from Contructor");
         /* TRUE
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
 
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-              /*  .filter(elements -> {
-                    Single<ElementFilter> e = roomDatabaseHelper.getFilterDao().getSingleFilters();
-
-
-                            return false;
-                        }
-
-                )
-
                 .subscribe(elements -> {
 
                             elementLiveData.postValue(elements);
@@ -223,6 +208,5 @@ public class ElementRoomRepository {
     public void clear() {
         compositeDisposable.clear();
     }
-
 
 }
