@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
@@ -35,6 +36,7 @@ public class ElementRoomRepository {
     private RoomDatabaseHelper roomDatabaseHelper;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private MutableLiveData<List<Element>> elementLiveData = new MutableLiveData<>();
+    private MutableLiveData<ElementFilter> filterLiveData = new MutableLiveData<>();
     private List<Element> elementList;
     private long rowIdOfTheItemInserted;
     ElementFilter elementFilter;
@@ -47,50 +49,26 @@ public class ElementRoomRepository {
         if (roomDatabaseHelper == null)
             roomDatabaseHelper = Room.databaseBuilder(application.getApplicationContext(), RoomDatabaseHelper.class, "ElementDB").build();
 
-        getDatabase();
+        // getDatabase();
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .toObservable()
-                .flatMap((Function<List<Element>, Observable<Element>>) elements -> Observable.fromArray(elements.toArray(new Element[0])))
-                .filter(element -> {
-                    if (!elementFilter.isUnFinished() && element.isWatched())
-                        return true;
-                    else if (!elementFilter.isFinished() && !element.isWatched())
-                        return true;
-                    else return elementFilter.isUnFinished() && elementFilter.isFinished();
-                })
-                .filter(element -> {
-                    if (elementFilter.isBookCategory() && element.getCategory().equals("Książka"))
-                        return true;
-                    else if (elementFilter.isFilmCategory() && element.getCategory().equals("Film"))
-                        return true;
-                    else if (elementFilter.isGamesCategory() && element.getCategory().equals("Gra"))
-                        return true;
-                    else
-                        return elementFilter.isSeriesCategory() && element.getCategory().equals("Serial");
+                .subscribe(elements -> {
+                    Log.d("Bufor", " Elements " + elements.size() + " from Contructor");
+                    elementLiveData.postValue(elements);
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
 
-                })
-                .filter(element -> {
-                    if (elementFilter.isRockRecommedation() && element.getRecom().equals("Rock"))
-                        return true;
-                    else if (elementFilter.isBorysRecommedation() && element.getRecom().equals("Borys"))
-                        return true;
-                    else if (elementFilter.isRockBorysRecommedation() && element.getRecom().equals("Rck&Brs"))
-                        return true;
-                    else
-                        return elementFilter.isOtherRecommedation() && element.getRecom().equals("Inne");
-                })
-                .subscribe(element -> {
-                    //  Log.d("Bufor", "działa");
-                    elementList.add(element);
-
-                    Log.d("Bufor", " Element " + element.getTitle() + " from Contructor");
+                    }
                 })
         );
-        elementLiveData.postValue(elementList);
 
-        Log.d("Bufor", " ElementList size " + elementList.size() + " from Contructor");
+        // elementList.addAll(elements);
+        // Log.d("Bufor", " Element " + elements.size() + " from Contructor");
+        //  elementLiveData.postValue(elementList);
+        // Log.d("Bufor", " ElementList size " + elementList.size() + " from Contructor");
         /* TRUE
         compositeDisposable.add(roomDatabaseHelper.getElementDao().getElements()
 
@@ -104,13 +82,20 @@ public class ElementRoomRepository {
                 ));*/
     }
 
-    public void getDatabase() {
+    public MutableLiveData<ElementFilter> getDatabase() {
         compositeDisposable.add(roomDatabaseHelper.getFilterDao().getSingleFilters()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(elementFilter1 -> {
                     elementFilter = elementFilter1;
+                    filterLiveData.postValue(elementFilter);
                 }));
+        return filterLiveData;
+    }
+
+    public MutableLiveData<List<Element>> getElementLiveData() {
+
+        return elementLiveData;
     }
 
     public void getFilter(Observable<Element> elementObservable) {
@@ -139,6 +124,8 @@ public class ElementRoomRepository {
                 .subscribeWith(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
+                        //Gdy będzie 100% pewności wtedy wyrzucić tego tosta
+                        Toast.makeText(application.getApplicationContext(), "Filters saved", Toast.LENGTH_LONG).show();
 
                     }
 
@@ -199,10 +186,6 @@ public class ElementRoomRepository {
                     }
                 })
         );
-    }
-
-    public MutableLiveData<List<Element>> getElementLiveData() {
-        return elementLiveData;
     }
 
     public void clear() {
