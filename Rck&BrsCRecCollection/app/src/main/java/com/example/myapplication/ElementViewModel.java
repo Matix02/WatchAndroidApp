@@ -42,6 +42,9 @@ public class ElementViewModel extends AndroidViewModel {
         return elementRoomRepository.getDatabase();
     }
 
+    public void updateFilter(ElementFilter elementFilter) {
+        elementRoomRepository.updateFilter(elementFilter);
+    }
 
     public void createElement(int id, String title, String category, String reccomendation, boolean isWatched) {
         elementRoomRepository.createElement(id, title, category, reccomendation, isWatched);

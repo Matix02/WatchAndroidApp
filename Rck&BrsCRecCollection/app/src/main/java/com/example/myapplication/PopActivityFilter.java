@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -42,6 +44,7 @@ public class PopActivityFilter extends Activity {
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
     ArrayList<Element> mainElements = new ArrayList<>();
     private CompositeDisposable disposable = new CompositeDisposable();
+    private ElementViewModel elementViewModel;
 
 
     /*
@@ -56,6 +59,9 @@ public class PopActivityFilter extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_filter2);
+
+        //Doprowadzić to do porządku i użyć metody z ElementRoomRepository.
+        elementViewModel = ViewModelProviders.of(PopActivityFilter.this).get(ElementViewModel.class);
 
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
