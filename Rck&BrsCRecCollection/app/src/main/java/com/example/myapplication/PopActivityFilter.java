@@ -7,12 +7,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.example.myapplication.MainActivity.roomDatabaseHelper;
 
-public class PopActivityFilter extends Activity {
+public class PopActivityFilter extends AppCompatActivity {
 
     String zazWszt = "Zaznacz Wszystko";
     String odzWszt = "Odznacz Wszystko";
@@ -61,7 +63,7 @@ public class PopActivityFilter extends Activity {
         setContentView(R.layout.activity_pop_filter2);
 
         //Doprowadzić to do porządku i użyć metody z ElementRoomRepository.
-        elementViewModel = ViewModelProviders.of(PopActivityFilter.this).get(ElementViewModel.class);
+        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
 
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
@@ -246,6 +248,7 @@ public class PopActivityFilter extends Activity {
             elementFilter.setOtherRecommedation(otherSwitch.isChecked());
             new FirebaseDatabaseHelper().updateFilter(elementFilter);
 
+            updateFilter(elementFilter);
             Intent intent = new Intent();
             intent.putExtra("id", 1);
             setResult(RESULT_OK, intent);
@@ -280,4 +283,10 @@ public class PopActivityFilter extends Activity {
             allCheckBox.setText(zazWszt);
     }
 
+    private void updateFilter(ElementFilter elementFilter) {
+
+        elementViewModel.updateFilter(elementFilter);
+
+        Log.d("Filter", "Ukończono - " + elementFilter.isFinished());
+    }
 }

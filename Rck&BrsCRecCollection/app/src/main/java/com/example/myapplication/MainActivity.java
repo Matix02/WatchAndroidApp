@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         binding.setLifecycleOwner(this);
         //elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
 
-
         /*
         /////////////////////////////////
         Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         elementViewModel.getFilter().observe(MainActivity.this, elementFilter1 -> {
             elementFilter = elementFilter1;
-            Log.d("Bufor", "ElementFilter state " + elementFilter1.toString() + " from MainActivity");
+            Log.d("Bufor", "#ElementFilter Ukończono - " + elementFilter1.isFinished() + " from MainActivity");
         });
 
 
@@ -100,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             // refreshData();
             //  checkObserver();
             // checkAdapterObserver();
+            elementViewModel.getFilter().observe(MainActivity.this, elementFilter1 -> {
+                elementFilter = elementFilter1;
+                Log.d("Bufor", "##ElementFilter Ukończono - " + elementFilter1.isFinished() + " from MainActivity");
+            });
             refreshFuckingData();
             swipeContainer.setRefreshing(false);
         });
