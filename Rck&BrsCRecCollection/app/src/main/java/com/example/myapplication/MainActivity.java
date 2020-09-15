@@ -43,12 +43,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<Element> revengeList = new ArrayList<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
-    private ElementViewModel elementViewModel;
+    public static ElementViewModel elementViewModel;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeContainer;
     ElementFilter elementFilter;
     private List<Element> fuckingfuckList = new ArrayList<>();
 
+    /*
+    Punkt nr.1 do dopisywania domyślnych danych, jak już wszystko bedzie gotowe
+    https://medium.com/androiddevelopers/7-pro-tips-for-room-fbadea4bfbd1
+     */
     /*
     Było napisane, że apliacja robi za dużo onMainThread.
     Ogólnie przyjrzeć się tym wszystkim wiadomością, które są wyświetlane na bieżąco w zakładce RUN,
@@ -61,27 +65,47 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        binding.setLifecycleOwner(this);
+        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
+        // ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        // binding.setLifecycleOwner(this);
         //elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
+
+        elementViewModel.getAllElements().observe(this, new Observer<List<Element>>() {
+            @Override
+            public void onChanged(List<Element> elements) {
+                setRecycleView();
+
+                //elementAdapter.updateList(elements, keysAssign(elements));
+                elementAdapter.notifyDataSetChanged();
+            }
+        });
 
         /*
         /////////////////////////////////
         Dodać może obrazkowe nagrody, że jak poleca Rock to bedzie R przy tytule, a jak Borys to B, natomiast w obu przypadkach to R&B chyba Rck&Brs byłoby za długie
         mozna by było dodać info o tym w jakiej minucie w odcinku było to omwienie - czyli klik na przycisk i wyskakuje youtube w otwarym odcinkiem i w danej minucie */
-        elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
+       /* elementViewModel.getAllElements().observe(MainActivity.this, elements1 -> {
             Log.d("Bufor", "BuforFuckingList/Elements1 size " + elements1.size() + " from MainActivity");
             buforFuckingList.clear();
             buforFuckingList.addAll(elements1);
-        });
+        });*/
 
-        elementViewModel.getFilter().observe(MainActivity.this, elementFilter1 -> {
+
+     /*   final Observer<ElementFilter> nameObserver = new Observer<ElementFilter>() {
+            @Override
+            public void onChanged(ElementFilter elementFilter) {
+                Log.d("Bufor", "##ElementFilter Ukończono - " + elementFilter.isFinished() + " from MainActivity");
+            }
+        };*/
+//###Filter - Observe
+        /*elementViewModel.getFilter().observe(MainActivity.this, elementFilter1 -> {
             elementFilter = elementFilter1;
             Log.d("Bufor", "#ElementFilter Ukończono - " + elementFilter1.isFinished() + " from MainActivity");
         });
-
+*/
+        // checkFilter();
 
         // checkObserver();
         //checkAdapterObserver();
@@ -89,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         // loadData();
 
-        setRecycleView();
+        //setRecycleView();
         /*
         Przetestować na dwóch urządzeniach, kiedy jedno będzie dodawać a drugie oczekiwać i refreshować
          */
@@ -99,36 +123,37 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             // refreshData();
             //  checkObserver();
             // checkAdapterObserver();
-            elementViewModel.getFilter().observe(MainActivity.this, elementFilter1 -> {
-                elementFilter = elementFilter1;
-                Log.d("Bufor", "##ElementFilter Ukończono - " + elementFilter1.isFinished() + " from MainActivity");
-            });
-            refreshFuckingData();
+            //  checkFilter();
+            // refreshFuckingData();
             swipeContainer.setRefreshing(false);
         });
         findViewById(R.id.loading_elements).setVisibility(View.GONE);
+        //  elementViewModel.getFilter().observe(this, nameObserver);
+    }
+
+    private void checkFilter() {
 
     }
 
-    private void checkObserver() {
-        final Observer<List<Element>> observer = elements -> {
-            elementAdapter.updateList(elements, keysAssign(elements));
-            Log.d("Bufor", "Elements size " + elements.size() + " from Observer");
-        };
-        elementViewModel.getAllElements().observe(this, observer);
-    }
+    /*   private void checkObserver() {
+           final Observer<List<Element>> observer = elements -> {
+               elementAdapter.updateList(elements, keysAssign(elements));
+               Log.d("Bufor", "Elements size " + elements.size() + " from Observer");
+           };
+           elementViewModel.getAllElements().observe(this, observer);
+       }
+   */
+      /* private void checkAdapterObserver() {
+           elementViewModel.getAllElements().observe(MainActivity.this, new Observer<List<Element>>() {
+               @Override
+               public void onChanged(List<Element> elements) {
 
-    private void checkAdapterObserver() {
-        elementViewModel.getAllElements().observe(MainActivity.this, new Observer<List<Element>>() {
-            @Override
-            public void onChanged(List<Element> elements) {
-
-                elementAdapter.updateList(elements, keysAssign(elements));
-            }
-        });
-    }
-
-    private void loadData() {
+                   elementAdapter.updateList(elements, keysAssign(elements));
+               }
+           });
+       }
+   */
+   /* private void loadData() {
         new FirebaseDatabaseHelper().readElements(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -156,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
     }
-
+*/
     private void setRecycleView() {
         recyclerView = findViewById(R.id.ele_listView);
         Log.d("Bufor", " Keys size " + keys.size() + " from setRecycleView");
@@ -189,12 +214,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            refreshData();
-            refreshFuckingData();
+            //  refreshData();
+            // refreshFuckingData();
         }
     }
 
-    private void refreshData() {
+  /*  private void refreshData() {
         elementViewModel.getAllElements().observe(MainActivity.this, elements -> {
             Log.d("Bufor", "RevengeList size " + elements.size() + " from RefreshData/");
             revengeList.clear();
@@ -208,49 +233,51 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         new FirebaseDatabaseHelper().complementationList(buforElementList);
         Log.d("Bufor", "BuforElementList after Completition size " + buforElementList.size() + " from RefreshData");
     }
+*/
 
-    private void refreshFuckingData() {
-        disposable.add(Observable.fromArray(buforFuckingList)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap((Function<List<Element>, Observable<Element>>) elements -> Observable.fromArray(elements.toArray(new Element[0])))
-                .filter(element -> {
-                    if (!elementFilter.isUnFinished() && element.isWatched())
-                        return true;
-                    else if (!elementFilter.isFinished() && !element.isWatched())
-                        return true;
-                    else return elementFilter.isUnFinished() && elementFilter.isFinished();
-                })
-                .filter(element -> {
-                    if (elementFilter.isBookCategory() && element.getCategory().equals("Książka"))
-                        return true;
-                    else if (elementFilter.isFilmCategory() && element.getCategory().equals("Film"))
-                        return true;
-                    else if (elementFilter.isGamesCategory() && element.getCategory().equals("Gra"))
-                        return true;
-                    else
-                        return elementFilter.isSeriesCategory() && element.getCategory().equals("Serial");
 
-                })
-                .filter(element -> {
-                    if (elementFilter.isRockRecommedation() && element.getRecom().equals("Rock"))
-                        return true;
-                    else if (elementFilter.isBorysRecommedation() && element.getRecom().equals("Borys"))
-                        return true;
-                    else if (elementFilter.isRockBorysRecommedation() && element.getRecom().equals("Rck&Brs"))
-                        return true;
-                    else
-                        return elementFilter.isOtherRecommedation() && element.getRecom().equals("Inne");
-                })
-                .subscribe(element -> {
-                    fuckingfuckList.add(element);
-                    Log.d("Bufor", "!FuckingFuckList " + element.getTitle() + " from RefreshFuckingData");
-                }));
-        Log.d("Bufor", "!FuckingFuckList before AdapterUpdate " + fuckingfuckList.size() + " from return RefreshFuckingData");
+    /*  private void refreshFuckingData() {
+          disposable.add(Observable.fromArray(buforFuckingList)
+                  .subscribeOn(Schedulers.io())
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .flatMap((Function<List<Element>, Observable<Element>>) elements -> Observable.fromArray(elements.toArray(new Element[0])))
+                  .filter(element -> {
+                      if (!elementFilter.isUnFinished() && element.isWatched())
+                          return true;
+                      else if (!elementFilter.isFinished() && !element.isWatched())
+                          return true;
+                      else return elementFilter.isUnFinished() && elementFilter.isFinished();
+                  })
+                  .filter(element -> {
+                      if (elementFilter.isBookCategory() && element.getCategory().equals("Książka"))
+                          return true;
+                      else if (elementFilter.isFilmCategory() && element.getCategory().equals("Film"))
+                          return true;
+                      else if (elementFilter.isGamesCategory() && element.getCategory().equals("Gra"))
+                          return true;
+                      else
+                          return elementFilter.isSeriesCategory() && element.getCategory().equals("Serial");
 
-        //  elementAdapter.updateList(fuckingfuckList, keysAssign(fuckingfuckList));
-    }
+                  })
+                  .filter(element -> {
+                      if (elementFilter.isRockRecommedation() && element.getRecom().equals("Rock"))
+                          return true;
+                      else if (elementFilter.isBorysRecommedation() && element.getRecom().equals("Borys"))
+                          return true;
+                      else if (elementFilter.isRockBorysRecommedation() && element.getRecom().equals("Rck&Brs"))
+                          return true;
+                      else
+                          return elementFilter.isOtherRecommedation() && element.getRecom().equals("Inne");
+                  })
+                  .subscribe(element -> {
+                      fuckingfuckList.add(element);
+                      Log.d("Bufor", "!FuckingFuckList " + element.getTitle() + " from RefreshFuckingData");
+                  }));
+          Log.d("Bufor", "!FuckingFuckList before AdapterUpdate " + fuckingfuckList.size() + " from return RefreshFuckingData");
 
+          //  elementAdapter.updateList(fuckingfuckList, keysAssign(fuckingfuckList));
+      }
+  */
     public void translateList() {
         //UnCompleted
         observable = Observable.fromArray(revengeList);

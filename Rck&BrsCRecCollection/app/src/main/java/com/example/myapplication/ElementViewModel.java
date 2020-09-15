@@ -6,6 +6,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
@@ -16,20 +17,16 @@ public class ElementViewModel extends AndroidViewModel {
     private ElementRoomRepository elementRoomRepository;
     LiveData<List<Element>> listLiveData;
     private MutableLiveData<List<Element>> elementLiveData = new MutableLiveData<>();
-
+    private MediatorLiveData<ElementFilter> elementFilterMediatorLiveData = new MediatorLiveData<>();
 
     //Dodać metodę, która filtruje ogołną bazę, w metodzie get, wyciąć te filtry i zwracam observable
     public ElementViewModel(@NonNull Application application) {
         super(application);
-
         //       elementRoomRepository = Transformations.switchMap()
-
         elementRoomRepository = new ElementRoomRepository(application);
     }
 
     public LiveData<List<Element>> getAllElements() {
-
-
         return elementRoomRepository.getElementLiveData();
     }
 
@@ -38,7 +35,7 @@ public class ElementViewModel extends AndroidViewModel {
     metod, które tutaj powinny się znaleźć, jak Edycja Filtra a następnie użycie ich w PopFilter, może wtedy zadziała trigger modyfikacji filtra.
     Może najpierw sprawdzić czy działa te dodawanie stąd 
      */
-    public LiveData<ElementFilter> getFilter() {
+    public MediatorLiveData<ElementFilter> getFilter() {
         return elementRoomRepository.getDatabase();
     }
 
@@ -48,6 +45,10 @@ public class ElementViewModel extends AndroidViewModel {
 
     public void createElement(int id, String title, String category, String reccomendation, boolean isWatched) {
         elementRoomRepository.createElement(id, title, category, reccomendation, isWatched);
+    }
+
+    public void createElement(Element element) {
+        elementRoomRepository.createElement(element);
     }
 
     public void updateElement(Element element) {
@@ -61,5 +62,4 @@ public class ElementViewModel extends AndroidViewModel {
     public void clear() {
         elementRoomRepository.clear();
     }
-
 }

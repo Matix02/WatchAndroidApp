@@ -93,7 +93,4 @@ public interface ElementDao {
             "ORDER BY RANDOM()\n" +
             "LIMIT 1")
     Single<Element> getNoWatchedRandomElementByCategory(String categoryName);
-
-
-
 }

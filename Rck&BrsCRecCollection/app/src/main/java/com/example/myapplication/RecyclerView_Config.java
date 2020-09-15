@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -106,9 +107,14 @@ public class RecyclerView_Config {
         void updateList(List<Element> newList, List<String> newKeyList) {
             keysList = new ArrayList<>();
             filterElementList = new ArrayList<>();
-
+ /*
             keysList.addAll(newKeyList);
-            filterElementList.addAll(newList);
+
+            filterElementList.addAll(newList);*/
+
+
+            filterElementList = newList.stream().distinct().collect(Collectors.toList());
+            keysList = newKeyList.stream().distinct().collect(Collectors.toList());
             this.notifyDataSetChanged();
         }
     }

@@ -75,7 +75,7 @@ class FirebaseDatabaseHelper {
                 .setValue(element)
                 .addOnSuccessListener(aVoid -> dataStatus.DataIsInserted());
         element.setId(id + 1);
-        roomDatabaseHelper.getElementDao().addElement(element);
+       // roomDatabaseHelper.getElementDao().addElement(element);
     }
 
     void updateElement(String key, Element element, final DataStatus dataStatus) {

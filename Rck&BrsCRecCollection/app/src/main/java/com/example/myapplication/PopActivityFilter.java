@@ -46,7 +46,7 @@ public class PopActivityFilter extends AppCompatActivity {
     ArrayList<ElementFilter> elementFilters = new ArrayList<>();
     ArrayList<Element> mainElements = new ArrayList<>();
     private CompositeDisposable disposable = new CompositeDisposable();
-    private ElementViewModel elementViewModel;
+    //private ElementViewModel elementViewModel;
 
 
     /*
@@ -63,7 +63,7 @@ public class PopActivityFilter extends AppCompatActivity {
         setContentView(R.layout.activity_pop_filter2);
 
         //Doprowadzić to do porządku i użyć metody z ElementRoomRepository.
-        elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
+        //elementViewModel = ViewModelProviders.of(this).get(ElementViewModel.class);
 
         finishSwitch = findViewById(R.id.finishSW);
         unFinishSwitch = findViewById(R.id.unfinishSW);
@@ -246,9 +246,11 @@ public class PopActivityFilter extends AppCompatActivity {
             elementFilter.setBorysRecommedation(borysSwitch.isChecked());
             elementFilter.setRockBorysRecommedation(rckAndBorysSwitch.isChecked());
             elementFilter.setOtherRecommedation(otherSwitch.isChecked());
-            new FirebaseDatabaseHelper().updateFilter(elementFilter);
+            //new FirebaseDatabaseHelper().updateFilter(elementFilter);
 
-            updateFilter(elementFilter);
+            // updateFilter(elementFilter);
+            MainActivity.elementViewModel.updateFilter(elementFilter);
+            //MainActivity.elementViewModel
             Intent intent = new Intent();
             intent.putExtra("id", 1);
             setResult(RESULT_OK, intent);
@@ -283,10 +285,10 @@ public class PopActivityFilter extends AppCompatActivity {
             allCheckBox.setText(zazWszt);
     }
 
-    private void updateFilter(ElementFilter elementFilter) {
+   /* private void updateFilter(ElementFilter elementFilter) {
 
         elementViewModel.updateFilter(elementFilter);
 
         Log.d("Filter", "Ukończono - " + elementFilter.isFinished());
-    }
+    }*/
 }

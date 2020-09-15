@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import static com.example.myapplication.MainActivity.roomDatabaseHelper;
+
 
 public class NewElement extends Activity {
 
@@ -57,12 +59,9 @@ public class NewElement extends Activity {
             }
         });*/
         mBackButton.setOnClickListener(v -> finish());
-        /*
-        Czy Data w Roomie jest kasowana przez usuwanie cache'u jak sprzątacz czy coś ???
-         */
+
         /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Poprawić !!! Validation - walidacja
-
 
         saveButton.setOnClickListener(v -> {
             int radioId = radioGroup.getCheckedRadioButtonId();
@@ -76,7 +75,7 @@ public class NewElement extends Activity {
 
                 radioButton = findViewById(radioId);
                 radioRecomButton = findViewById(radioRecomId);
-
+                element.setId(roomDatabaseHelper.getElementDao().getLastIndex() + 1);
                 element.setTitle(editText.getText().toString());
                 element.setCategory(radioButton.getText().toString());
                 element.setRecom(radioRecomButton.getText().toString());
@@ -89,7 +88,9 @@ public class NewElement extends Activity {
                     @Override
                     public void DataIsInserted() {
                         Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show();
-                        }
+                        MainActivity.elementViewModel.createElement(element);
+
+                    }
 
                         @Override
                         public void DataIsUpdated() {
@@ -100,9 +101,7 @@ public class NewElement extends Activity {
                         }
                     });
                 finish();
-
             }
         });
-
     }
 }

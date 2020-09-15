@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
@@ -36,7 +37,7 @@ public class ElementRoomRepository {
     private RoomDatabaseHelper roomDatabaseHelper;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private MutableLiveData<List<Element>> elementLiveData = new MutableLiveData<>();
-    private MutableLiveData<ElementFilter> filterLiveData = new MutableLiveData<>();
+    private MediatorLiveData<ElementFilter> filterLiveData = new MediatorLiveData<>();
     private List<Element> elementList;
     private long rowIdOfTheItemInserted;
     ElementFilter elementFilter;
@@ -64,7 +65,6 @@ public class ElementRoomRepository {
                     }
                 })
         );
-
         // elementList.addAll(elements);
         // Log.d("Bufor", " Element " + elements.size() + " from Contructor");
         //  elementLiveData.postValue(elementList);
@@ -82,19 +82,19 @@ public class ElementRoomRepository {
                 ));*/
     }
 
-    public MutableLiveData<ElementFilter> getDatabase() {
+    public MediatorLiveData<ElementFilter> getDatabase() {
         compositeDisposable.add(roomDatabaseHelper.getFilterDao().getSingleFilters()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(elementFilter1 -> {
                     elementFilter = elementFilter1;
+                    //sprawdzić w końcu czy postValue czy setValue
                     filterLiveData.postValue(elementFilter);
                 }));
         return filterLiveData;
     }
 
     public MutableLiveData<List<Element>> getElementLiveData() {
-
         return elementLiveData;
     }
 
@@ -138,7 +138,8 @@ public class ElementRoomRepository {
 
     public void createElement(int id, final String title, final String category, final String reccomendation, Boolean isWached) {
         compositeDisposable.add(Completable.fromAction(() -> rowIdOfTheItemInserted = roomDatabaseHelper.getElementDao().addElement(new Element(id, title, category, isWached, reccomendation)))
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
@@ -147,6 +148,24 @@ public class ElementRoomRepository {
 
                     @Override
                     public void onError(Throwable e) {
+                        Toast.makeText(application.getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
+                    }
+                }));
+    }
+
+    public void createElement(Element element) {
+        compositeDisposable.add(Completable.fromAction(() -> roomDatabaseHelper.getElementDao().addElement(element))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        Toast.makeText(application.getApplicationContext(), "Element has been added successfully ", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("Error", "Error is = " + e);
                         Toast.makeText(application.getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
                     }
                 }));
