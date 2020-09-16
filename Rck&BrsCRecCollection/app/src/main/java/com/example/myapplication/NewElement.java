@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,16 @@ public class NewElement extends Activity {
     private RadioButton radioButton;
     private RadioGroup radioRecomGroup;
     private RadioButton radioRecomButton;
+    public static final String EXTRA_ID =
+            "com.example.myapplication.ID";
+    public static final String EXTRA_TITLE =
+            "com.example.myapplication.EXTRA_TITLE";
+    public static final String EXTRA_CATEGORY =
+            "com.example.myapplication.CATEGORY";
+    public static final String EXTRA_RECOM =
+            "com.example.myapplication.RECOM";
+    public static final String EXTRA_WATCHED =
+            "com.example.myapplication.WATCHED";
 
     // Required empty public constructor
     public NewElement() {
@@ -45,7 +56,6 @@ public class NewElement extends Activity {
 
         final Button saveButton = findViewById(R.id.saveButton);
         Button mBackButton = findViewById(R.id.backButton);
-
         /* Metoda do wybierania ostatniego ID z Firebase'a
         DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Element");
         reff.addValueEventListener(new ValueEventListener() {
@@ -61,7 +71,7 @@ public class NewElement extends Activity {
         mBackButton.setOnClickListener(v -> finish());
 
         /////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //Poprawić !!! Validation - walidacja
+        //Poprawić !!! Validation
 
         saveButton.setOnClickListener(v -> {
             int radioId = radioGroup.getCheckedRadioButtonId();
@@ -80,6 +90,17 @@ public class NewElement extends Activity {
                 element.setCategory(radioButton.getText().toString());
                 element.setRecom(radioRecomButton.getText().toString());
                 element.setWatched(false); //może dodać do layoutu opcję wybory, przy dodawaniu ...
+                Intent data = new Intent();
+                data.putExtra(EXTRA_ID, element.getId());
+                data.putExtra(EXTRA_TITLE, element.getTitle());
+                data.putExtra(EXTRA_CATEGORY, element.getCategory());
+                data.putExtra(EXTRA_RECOM, element.getRecom());
+                        /*
+                    W sumie to chyba niepotrzebne, bo i tak zawsze bedzie false
+                        data.putExtra(EXTRA_WATCHED, element.isWatched());
+                        */
+
+                setResult(RESULT_OK, data);
                 new FirebaseDatabaseHelper().addElement(element, new FirebaseDatabaseHelper.DataStatus() {
                     @Override
                     public void DataIsLoaded(List<Element> elements, List<String> keys) {
@@ -88,10 +109,8 @@ public class NewElement extends Activity {
                     @Override
                     public void DataIsInserted() {
                         Toast.makeText(NewElement.this, "The element has been inserted successfully", Toast.LENGTH_LONG).show();
-                        MainActivity.elementViewModel.createElement(element);
 
                     }
-
                         @Override
                         public void DataIsUpdated() {
                         }

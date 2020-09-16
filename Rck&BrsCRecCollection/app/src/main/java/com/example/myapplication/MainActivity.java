@@ -33,7 +33,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-
+    public static final int ADD_ELEMENT_REQUEST = 1;
     RecyclerView_Config.ElementAdapter elementAdapter;
     private ArrayList<Element> localList = new ArrayList<>();
     private List<String> keys = new ArrayList<>();
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<Element> revengeList = new ArrayList<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     public static RoomDatabaseHelper roomDatabaseHelper;
-    public static ElementViewModel elementViewModel;
+    public ElementViewModel elementViewModel;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeContainer;
     ElementFilter elementFilter;
@@ -71,14 +71,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         // binding.setLifecycleOwner(this);
         //elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
+        setRecycleView();
+        recyclerView = findViewById(R.id.ele_listView);
+        Log.d("Bufor", " Keys size " + keys.size() + " from setRecycleView");
+
+        elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
+
 
         elementViewModel.getAllElements().observe(this, new Observer<List<Element>>() {
             @Override
             public void onChanged(List<Element> elements) {
-                setRecycleView();
-
-                //elementAdapter.updateList(elements, keysAssign(elements));
-                elementAdapter.notifyDataSetChanged();
+                localList.clear();
+                localList.addAll(elements);
+                elementAdapter.updateList(localList, keysAssign(localList));
             }
         });
 
@@ -126,6 +131,27 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             //  checkFilter();
             // refreshFuckingData();
             swipeContainer.setRefreshing(false);
+        });
+
+        FloatingActionButton fab = findViewById(R.id.fab_btn);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, NewElement.class);
+            startActivityForResult(intent, ADD_ELEMENT_REQUEST);
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy < 0 && !fab.isShown())
+                    fab.show();
+                else if (dy > 0 && fab.isShown())
+                    fab.hide();
+            }
         });
         findViewById(R.id.loading_elements).setVisibility(View.GONE);
         //  elementViewModel.getFilter().observe(this, nameObserver);
@@ -183,39 +209,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 */
     private void setRecycleView() {
-        recyclerView = findViewById(R.id.ele_listView);
-        Log.d("Bufor", " Keys size " + keys.size() + " from setRecycleView");
 
-        elementAdapter = new RecyclerView_Config().setConfig(recyclerView, MainActivity.this, keys, localList);
-
-        FloatingActionButton fab = findViewById(R.id.fab_btn);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, NewElement.class);
-            startActivity(intent);
-        });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy < 0 && !fab.isShown())
-                    fab.show();
-                else if (dy > 0 && fab.isShown())
-                    fab.hide();
-            }
-        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+
+        if (requestCode == ADD_ELEMENT_REQUEST && resultCode == RESULT_OK) {
             //  refreshData();
             // refreshFuckingData();
+            assert data != null;
+            long id = data.getLongExtra(NewElement.EXTRA_ID, 50);
+            String title = data.getStringExtra(NewElement.EXTRA_TITLE);
+            String category = data.getStringExtra(NewElement.EXTRA_CATEGORY);
+            String recom = data.getStringExtra(NewElement.EXTRA_RECOM);
+
+            Element element = new Element(id, title, category, false, recom);
+            elementViewModel.createElement(element);
+
+
         }
     }
 

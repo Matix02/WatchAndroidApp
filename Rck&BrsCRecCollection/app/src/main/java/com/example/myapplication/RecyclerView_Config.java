@@ -97,6 +97,7 @@ public class RecyclerView_Config {
             //  Log.d("Bufor", " Keys size " + keysList.size() + " from BindViewHolder");
 
             holder.bind(keysList.get(position), filterElementList.get(position));
+
         }
 
         @Override
@@ -105,6 +106,7 @@ public class RecyclerView_Config {
         }
 
         void updateList(List<Element> newList, List<String> newKeyList) {
+
             keysList = new ArrayList<>();
             filterElementList = new ArrayList<>();
  /*
@@ -112,10 +114,10 @@ public class RecyclerView_Config {
 
             filterElementList.addAll(newList);*/
 
-
             filterElementList = newList.stream().distinct().collect(Collectors.toList());
             keysList = newKeyList.stream().distinct().collect(Collectors.toList());
             this.notifyDataSetChanged();
+
         }
     }
 }

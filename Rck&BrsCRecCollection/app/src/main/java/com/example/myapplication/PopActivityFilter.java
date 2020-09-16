@@ -249,7 +249,7 @@ public class PopActivityFilter extends AppCompatActivity {
             //new FirebaseDatabaseHelper().updateFilter(elementFilter);
 
             // updateFilter(elementFilter);
-            MainActivity.elementViewModel.updateFilter(elementFilter);
+            // MainActivity.elementViewModel.updateFilter(elementFilter);
             //MainActivity.elementViewModel
             Intent intent = new Intent();
             intent.putExtra("id", 1);
